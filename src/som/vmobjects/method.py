@@ -21,6 +21,9 @@ class Method(AbstractObject):
 
         self._holder   = None
 
+    def get_invokable(self):
+        return self._invokable
+
     def get_universe(self):
         return self._universe
 

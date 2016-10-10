@@ -1,6 +1,5 @@
 import sys
-from som.vm.universe import main, Exit
-
+from mate.vm.universe import main, Exit
 
 try:
     main(sys.argv)

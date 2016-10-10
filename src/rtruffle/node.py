@@ -14,6 +14,24 @@ def _get_all_child_fields(cls):
         cls = cls.__base__
     return field_names
 
+def _for_each_child_recursive(node, visitor):
+    child_fields = unrolling_iterable(_get_all_child_fields(node.__class__))
+
+    for child_slot in child_fields:
+        if child_slot.endswith('[*]'):
+            child_nodes = getattr(node, child_slot[:-3])
+            if child_nodes is None:
+                continue
+
+            for child_node in child_nodes:
+                if not child_node.accept(visitor):
+                    return False
+        else:
+            child_node = getattr(node, child_slot)
+            if child_node and not child_node.accept(visitor):
+                return False
+
+    return True
 
 def _generate_replace_method(cls):
     child_fields = unrolling_iterable(_get_all_child_fields(cls))
@@ -109,3 +127,15 @@ class Node(AbstractNode):
 
     def __str__(self):
         return "%s(%s)" % (self.__class__.__name__, self._source_section)
+
+    # Interface for visitor pattern
+    def accept(self, visitor):
+        visit_method = getattr(visitor, "visit" + self.__class__.__name__)
+        assert visit_method is not None
+
+        if visit_method(self):
+            return _for_each_child_recursive(self, visitor)
+        return False
+
+
+

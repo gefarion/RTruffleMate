@@ -7,13 +7,17 @@ RPYTHON  ?= $(PYPY_DIR)/rpython/bin/rpython
 all: compile
 
 # RTruffleSOM-no-jit 
-compile: RTruffleSOM-jit
+#compile: RTruffleSOM-jit
+compile: RTruffleSOM-no-jit
 
 RTruffleSOM-no-jit: core-lib/.git
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch src/targetsomstandalone.py
 
 RTruffleSOM-jit: core-lib/.git
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch -Ojit src/targetsomstandalone.py
+
+somtest:
+	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som
 
 test: compile core-lib/.git
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests

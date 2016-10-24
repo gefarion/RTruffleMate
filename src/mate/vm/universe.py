@@ -5,6 +5,50 @@ from mate.interpreter.mateify_visitor import MateifyVisitor
 
 class MateUniverse(Universe):
 
+    _immutable_fields_ = [
+            "objectClass",
+            "classClass",
+            "metaclassClass",
+            "nilClass",
+            "integerClass",
+            "arrayClass",
+            "methodClass",
+            "symbolClass",
+            "primitiveClass",
+            "systemClass",
+            "blockClass",
+            "blockClasses[*]",
+            "stringClass",
+            "doubleClass",
+            "environmentMO",
+            "operationalSemanticsMO",
+            "messageMO",
+            "ShapeClass",
+            "_symbol_table",
+            "_globals",
+            "_object_system_initialized"]
+
+    def _initialize_object_system(self):
+
+        system_object = Universe._initialize_object_system(self)
+
+        self.environmentMO          = self.new_system_class()
+        self.operationalSemanticsMO = self.new_system_class()
+        self.messageMO              = self.new_system_class()
+        self.shapeClass             = self.new_system_class()
+
+        self._initialize_system_class(self.environmentMO, self.objectClass, "EnvironmentMO")
+        self._initialize_system_class(self.operationalSemanticsMO, self.objectClass, "OperationalSemanticsMO")
+        self._initialize_system_class(self.messageMO, self.objectClass, "MessageMO")
+        self._initialize_system_class(self.shapeClass, self.objectClass, "Shape")
+
+        self._load_system_class(self.environmentMO)
+        self._load_system_class(self.operationalSemanticsMO)
+        self._load_system_class(self.messageMO)
+        self._load_system_class(self.shapeClass)
+
+        return system_object
+
     def mateify(self, clazz):
         visitor = MateifyVisitor()
 
@@ -13,6 +57,10 @@ class MateUniverse(Universe):
             invokable = invokables.get_indexable_field(i)
             if not invokable.is_primitive():
                 invokable.get_invokable().accept(visitor)
+
+    def mateify_method(method):
+        if not method.is_primitive():
+            method.get_invokable().accept(visitor);
 
     def load_class(self, name):
         # Check if the requested class is already in the dictionary of globals

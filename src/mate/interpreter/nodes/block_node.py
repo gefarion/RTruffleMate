@@ -1,10 +1,8 @@
-from som.interpreter.nodes.block_node import BlockNode
-from som.interpreter.nodes.block_node import BlockNodeWithContext
+from mate.interpreter.nodes.mate_node import MateNode
 
-
-class MateBlockNode(BlockNode):
+class MateBlockNode(MateNode):
     pass
 
 
-class MateBlockNodeWithContext(BlockNodeWithContext):
+class MateBlockNodeWithContext(MateNode):
     pass

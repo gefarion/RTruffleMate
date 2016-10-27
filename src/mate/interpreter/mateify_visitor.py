@@ -15,49 +15,49 @@ from mate.interpreter.nodes.message.uninitialized_node import *
 class MateifyVisitor(object):
 
     def visitUninitializedMessageNode(self, node):
-        node.replace(MateUninitializedMessageNode.mateify(node))
+        node.replace(MateUninitializedMessageNode(node))
         return True
 
     def visitLocalArgumentReadNode(self, node):
-        node.replace(MateLocalArgumentReadNode.mateify(node))
+        node.replace(MateLocalArgumentReadNode(node))
         return True
 
     def visitLocalSelfReadNode(self, node):
-        node.replace(MateLocalSelfReadNode.mateify(node))
+        node.replace(MateLocalSelfReadNode(node))
         return True
 
     def visitUninitializedGlobalReadNode(self, node):
-        node.replace(MateUninitializedGlobalReadNode.mateify(node))
+        node.replace(MateUninitializedGlobalReadNode(node))
         return True
 
     def visitUninitializedWriteNode(self, node):
-        node.replace(MateUninitializedWriteNode.mateify(node))
+        node.replace(MateUninitializedWriteNode(node))
         return True
 
     def visitUninitializedReadNode(self, node):
-        node.replace(MateUninitializedReadNode.mateify(node))
+        node.replace(MateUninitializedReadNode(node))
         return True
 
     def visitFieldWriteNode(self, node):
-        node.replace(MateFieldWriteNode.mateify(node))
+        node.replace(MateFieldWriteNode(node))
         return True
 
     def visitFieldReadNode(self, node):
-        node.replace(MateFieldReadNode.mateify(node))
+        node.replace(MateFieldReadNode(node))
         return True
 
     def visit_UninitializedWriteFieldNode(self, node):
         # Analizar el codigo para ver si realmente hay que convertirlos
-        # node.replace(Mate_UninitializedWriteFieldNode.mateify(node))
+        # node.replace(Mate_UninitializedWriteFieldNode(node))
         return True
 
     def visit_UninitializedReadFieldNode(self, node):
         # Analizar el codigo para ver si realmente hay que convertirlos
-        # node.replace(Mate_UninitializedReadFieldNode.mateify(node))
+        # node.replace(Mate_UninitializedReadFieldNode(node))
         return True
 
     def visitGenericMessageNode(self, node):
-        node.replace(MateGenericMessageNode.mateify(node))
+        node.replace(MateGenericMessageNode(node))
         return True
 
     def visitLiteralNode(self, node):

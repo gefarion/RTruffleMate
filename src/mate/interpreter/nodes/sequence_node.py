@@ -1,4 +1,4 @@
-from som.interpreter.nodes.sequence_node import SequenceNode
+from mate.interpreter.nodes.mate_node import MateNode
 
-class MateSequenceNode(SequenceNode):
+class MateSequenceNode(MateNode):
     pass

@@ -1,15 +1,13 @@
-from som.interpreter.nodes.dispatch import UninitializedDispatchNode
-from som.interpreter.nodes.dispatch import GenericDispatchNode
-from som.interpreter.nodes.dispatch import SuperDispatchNode
+from mate.interpreter.nodes.mate_node import MateNode
 
 
-class MateUninitializedDispatchNode(UninitializedDispatchNode):
+class MateUninitializedDispatchNode(MateNode):
     pass
 
 
-class MateGenericDispatchNode(GenericDispatchNode):
+class MateGenericDispatchNode(MateNode):
     pass
 
 
-class MateSuperDispatchNode(SuperDispatchNode):
+class MateSuperDispatchNode(MateNode):
     pass

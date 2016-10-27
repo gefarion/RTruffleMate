@@ -1,5 +1,5 @@
-from som.interpreter.nodes.message.abstract_node import AbstractMessageNode
+from mate.interpreter.nodes.mate_node import MateNode
 
 
-class MateAbstractMessageNode(AbstractMessageNode):
+class MateAbstractMessageNode(MateNode):
     pass

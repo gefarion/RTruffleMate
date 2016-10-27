@@ -1,6 +1,5 @@
-from som.interpreter.nodes.contextual_node import ContextualNode
-from rpython.rlib.jit import unroll_safe
+from mate.interpreter.nodes.mate_node import MateNode
 
 
-class MateContextualNode(ContextualNode):
+class MateContextualNode(MateNode):
     pass

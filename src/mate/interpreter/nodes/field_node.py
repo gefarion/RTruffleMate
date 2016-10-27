@@ -1,15 +1,8 @@
-from som.interpreter.nodes.field_node import FieldReadNode
-from som.interpreter.nodes.field_node import FieldWriteNode
+from mate.interpreter.nodes.mate_node import MateNode
 
-class MateFieldReadNode(FieldReadNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._self_exp, node._field_idx, node._source_section)
+class MateFieldReadNode(MateNode):
+	pass
 
 
-class MateFieldWriteNode(FieldWriteNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._self_exp, node._value_exp, node._field_idx, node._source_section)
+class MateFieldWriteNode(MateNode):
+	pass

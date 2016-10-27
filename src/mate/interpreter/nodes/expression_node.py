@@ -1,5 +1,5 @@
-from som.interpreter.nodes.expression_node import ExpressionNode
+from mate.interpreter.nodes.mate_node import MateNode
 
 
-class MateExpressionNode(ExpressionNode):
+class MateExpressionNode(MateNode):
 	pass

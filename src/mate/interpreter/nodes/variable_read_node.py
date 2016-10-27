@@ -1,87 +1,60 @@
-from som.interpreter.nodes.variable_read_node import UninitializedReadNode
-from som.interpreter.nodes.variable_read_node import UninitializedArgumentReadNode
-from som.interpreter.nodes.variable_read_node import UninitializedWriteNode
-from som.interpreter.nodes.variable_read_node import NonLocalArgumentReadNode
-from som.interpreter.nodes.variable_read_node import NonLocalTempReadNode
-from som.interpreter.nodes.variable_read_node import NonLocalSelfReadNode
-from som.interpreter.nodes.variable_read_node import NonLocalSuperReadNode
-from som.interpreter.nodes.variable_read_node import NonLocalTempWriteNode
-from som.interpreter.nodes.variable_read_node import LocalArgumentReadNode
-from som.interpreter.nodes.variable_read_node import LocalUnsharedTempReadNode
-from som.interpreter.nodes.variable_read_node import LocalSharedTempReadNode
-from som.interpreter.nodes.variable_read_node import LocalSelfReadNode
-from som.interpreter.nodes.variable_read_node import LocalSuperReadNode
-from som.interpreter.nodes.variable_read_node import LocalSharedWriteNode
-from som.interpreter.nodes.variable_read_node import LocalUnsharedWriteNode
+from mate.interpreter.nodes.mate_node import MateNode
 
-
-class MateUninitializedReadNode(UninitializedReadNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._var, node._context_level, node._source_section)
-
-
-class MateUninitializedArgumentReadNode(UninitializedArgumentReadNode):
+class MateUninitializedReadNode(MateNode):
     pass
 
 
-class MateUninitializedWriteNode(UninitializedWriteNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._var, node._context_level, node._value_expr, node._source_section)
-
-
-class MateNonLocalArgumentReadNode(NonLocalArgumentReadNode):
+class MateUninitializedArgumentReadNode(MateNode):
     pass
 
 
-class MateNonLocalTempReadNode(NonLocalTempReadNode):
+class MateUninitializedWriteNode(MateNode):
     pass
 
 
-class MateNonLocalSelfReadNode(NonLocalSelfReadNode):
+class MateNonLocalArgumentReadNode(MateNode):
     pass
 
 
-class MateNonLocalSuperReadNode(NonLocalSuperReadNode):
+class MateNonLocalTempReadNode(MateNode):
     pass
 
 
-class MateNonLocalTempWriteNode(NonLocalTempWriteNode):
+class MateNonLocalSelfReadNode(MateNode):
     pass
 
 
-class MateLocalArgumentReadNode(LocalArgumentReadNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._frame_idx, node._source_section)
-
-
-class MateLocalUnsharedTempReadNode(LocalUnsharedTempReadNode):
+class MateNonLocalSuperReadNode(MateNode):
     pass
 
 
-class MateLocalSharedTempReadNode(LocalSharedTempReadNode):
+class MateNonLocalTempWriteNode(MateNode):
     pass
 
 
-class MateLocalSelfReadNode(LocalSelfReadNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._source_section)
-
-
-class MateLocalSuperReadNode(LocalSuperReadNode):
+class MateLocalArgumentReadNode(MateNode):
     pass
 
 
-class MateLocalSharedWriteNode(LocalSharedWriteNode):
+class MateLocalUnsharedTempReadNode(MateNode):
     pass
 
 
-class MateLocalUnsharedWriteNode(LocalUnsharedWriteNode):
+class MateLocalSharedTempReadNode(MateNode):
+    pass
+
+
+class MateLocalSelfReadNode(MateNode):
+    pass
+
+
+class MateLocalSuperReadNode(MateNode):
+    pass
+
+
+class MateLocalSharedWriteNode(MateNode):
+    pass
+
+
+class MateLocalUnsharedWriteNode(MateNode):
     pass

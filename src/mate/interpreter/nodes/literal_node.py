@@ -1,5 +1,5 @@
-from som.interpreter.nodes.literal_node import LiteralNode
+from mate.interpreter.nodes.mate_node import MateNode
 
 
-class MateLiteralNode(LiteralNode):
+class MateLiteralNode(MateNode):
 	pass

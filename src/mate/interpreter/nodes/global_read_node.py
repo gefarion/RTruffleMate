@@ -1,18 +1,13 @@
-from som.interpreter.nodes.global_read_node import UninitializedGlobalReadNode
-from som.interpreter.nodes.global_read_node import CachedGlobalReadNode
-from som.interpreter.nodes.global_read_node import ConstantGlobalReadNode
+from mate.interpreter.nodes.mate_node import MateNode
 
 
-class MateUninitializedGlobalReadNode(UninitializedGlobalReadNode):
-
-    @classmethod
-    def mateify(cls, node):
-        return cls(node._global_name, node._universe, node._source_section)
+class MateUninitializedGlobalReadNode(MateNode):
+	pass
 
 
-class MateCachedGlobalReadNode(CachedGlobalReadNode):
+class MateCachedGlobalReadNode(MateNode):
     pass
 
 
-class MateConstantGlobalReadNode(ConstantGlobalReadNode):
+class MateConstantGlobalReadNode(MateNode):
     pass

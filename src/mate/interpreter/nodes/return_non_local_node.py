@@ -1,9 +1,9 @@
-from som.interpreter.nodes.return_non_local_node import ReturnNonLocalNode
-from som.interpreter.nodes.return_non_local_node import CatchNonLocalReturnNode
+from mate.interpreter.nodes.mate_node import MateNode
 
-class MateReturnNonLocalNode(ReturnNonLocalNode):
+
+class MateReturnNonLocalNode(MateNode):
     pass
 
 
-class MateCatchNonLocalReturnNode(CatchNonLocalReturnNode):
+class MateCatchNonLocalReturnNode(MateNode):
     pass

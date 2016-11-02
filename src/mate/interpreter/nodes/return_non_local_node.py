@@ -1,9 +1,14 @@
 from mate.interpreter.nodes.mate_node import MateNode
+from mate.vm.constants import ReflectiveOp
 
 
 class MateReturnNonLocalNode(MateNode):
-    pass
+
+	def reflectiveOp(self):
+		return ReflectiveOp.ExecutorReturn
 
 
 class MateCatchNonLocalReturnNode(MateNode):
-    pass
+
+	def reflectiveOp(self):
+		return ReflectiveOp.ExecutorReturn

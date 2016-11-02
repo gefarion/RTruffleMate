@@ -47,13 +47,9 @@ class MateifyVisitor(object):
         return True
 
     def visit_UninitializedWriteFieldNode(self, node):
-        # Analizar el codigo para ver si realmente hay que convertirlos
-        # node.replace(Mate_UninitializedWriteFieldNode(node))
         return True
 
     def visit_UninitializedReadFieldNode(self, node):
-        # Analizar el codigo para ver si realmente hay que convertirlos
-        # node.replace(Mate_UninitializedReadFieldNode(node))
         return True
 
     def visitGenericMessageNode(self, node):

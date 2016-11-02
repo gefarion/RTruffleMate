@@ -1,8 +1,13 @@
 from mate.interpreter.nodes.mate_node import MateNode
+from mate.vm.constants import ReflectiveOp
 
 class MateFieldReadNode(MateNode):
-	pass
+
+	def reflectiveOp(self):
+		return ReflectiveOp.ExecutorReadField
 
 
 class MateFieldWriteNode(MateNode):
-	pass
+	
+	def reflectiveOp(self):
+		return ReflectiveOp.ExecutorWriteField

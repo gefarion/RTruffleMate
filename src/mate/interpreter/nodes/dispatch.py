@@ -1,13 +1,20 @@
 from mate.interpreter.nodes.mate_node import MateNode
+from mate.vm.constants import ReflectiveOp
 
 
 class MateUninitializedDispatchNode(MateNode):
-    pass
+    
+    def reflectiveOp(self):
+    	return ReflectiveOp.MessageActivation 
 
 
 class MateGenericDispatchNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+    	return ReflectiveOp.MessageActivation 
 
 
 class MateSuperDispatchNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+    	return ReflectiveOp.MessageActivation

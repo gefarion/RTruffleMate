@@ -8,6 +8,9 @@ class ObjectWithoutFields(AbstractObject):
     def __init__(self, obj_class):
         self._class = obj_class
 
+        # field to store meta object
+        self._meta_object = None
+
     def get_class(self, universe):
         return self._class
 

@@ -1,60 +1,87 @@
 from mate.interpreter.nodes.mate_node import MateNode
+from mate.vm.constants import ReflectiveOp
 
 class MateUninitializedReadNode(MateNode):
-    pass
 
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorReadLocal
+    
 
 class MateUninitializedArgumentReadNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorLocalArg
 
 
 class MateUninitializedWriteNode(MateNode):
-    pass
 
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorWriteLocal
 
 class MateNonLocalArgumentReadNode(MateNode):
-    pass
+    
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorNonLocalArg
 
 
 class MateNonLocalTempReadNode(MateNode):
-    pass
+    
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorReadNonLocalTemp
 
 
 class MateNonLocalSelfReadNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorNonLocalSelf
 
 
 class MateNonLocalSuperReadNode(MateNode):
-    pass
+    
+    def reflectiveOp(self):
+        return ExecutorNonLocalSuperArg
 
 
 class MateNonLocalTempWriteNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorWriteNonLocalTemp
 
 
 class MateLocalArgumentReadNode(MateNode):
-    pass
+    
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorLocalArg
 
 
 class MateLocalUnsharedTempReadNode(MateNode):
+    # TODO: Buscar que significa
     pass
 
 
 class MateLocalSharedTempReadNode(MateNode):
+    # TODO: Buscar que significa
     pass
 
 
 class MateLocalSelfReadNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorLocalSelf
 
 
 class MateLocalSuperReadNode(MateNode):
-    pass
+
+    def reflectiveOp(self):
+        return ReflectiveOp.ExecutorLocalSuper
+
 
 
 class MateLocalSharedWriteNode(MateNode):
+    # TODO: Investigar para que es
     pass
 
 
 class MateLocalUnsharedWriteNode(MateNode):
+    # TODO: Investigar para que es
     pass

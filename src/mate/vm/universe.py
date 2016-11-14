@@ -23,7 +23,7 @@ class MateUniverse(Universe):
             "environmentMO",
             "operationalSemanticsMO",
             "messageMO",
-            "ShapeClass",
+            "layoutMO",
             "_symbol_table",
             "_globals",
             "_object_system_initialized"]
@@ -35,17 +35,17 @@ class MateUniverse(Universe):
         self.environmentMO          = self.new_system_class()
         self.operationalSemanticsMO = self.new_system_class()
         self.messageMO              = self.new_system_class()
-        self.shapeClass             = self.new_system_class()
+        self.layoutMO               = self.new_system_class()
 
         self._initialize_system_class(self.environmentMO, self.objectClass, "EnvironmentMO")
         self._initialize_system_class(self.operationalSemanticsMO, self.objectClass, "OperationalSemanticsMO")
         self._initialize_system_class(self.messageMO, self.objectClass, "MessageMO")
-        self._initialize_system_class(self.shapeClass, self.objectClass, "Shape")
+        self._initialize_system_class(self.layoutMO, self.objectClass, "LayoutMO")
 
         self._load_system_class(self.environmentMO)
         self._load_system_class(self.operationalSemanticsMO)
         self._load_system_class(self.messageMO)
-        self._load_system_class(self.shapeClass)
+        self._load_system_class(self.layoutMO)
 
         return system_object
 
@@ -70,6 +70,9 @@ class MateUniverse(Universe):
 
         # Load the class
         result = Universe.load_class(self, name)
+        if result is None:
+            return result
+
         self.mateify(result)
         if result.has_super_class():
             self.mateify(result.get_super_class())

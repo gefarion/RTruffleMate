@@ -26,9 +26,6 @@ class Object(ObjectWithoutFields):
         else:
             self._object_layout = ObjectLayout(number_of_fields)
 
-        # field to store meta object
-        self._meta_object = None
-
         # IMPORTANT: when changing the number of preallocated fields,
         # you'll also need to update storage_location.py's constants:
         #  NUMBER_OF_PRIMITIVE_FIELDS and NUMBER_OF_POINTER_FIELDS

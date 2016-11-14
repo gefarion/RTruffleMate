@@ -19,6 +19,9 @@ RTruffleSOM-jit: core-lib/.git
 somtest:
 	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som
 
+matetest:
+	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite TestSuite/MateMOPSuite/MateTestHarness.som
+
 test: compile core-lib/.git
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
 	if [ -e ./RTruffleSOM-no-jit ]; then ./RTruffleSOM-no-jit -cp Smalltalk TestSuite/TestHarness.som; fi

@@ -82,6 +82,10 @@ def _halt(ivkbl, rcvr, args):
 def _class(ivkbl, rcvr, args):
     return rcvr.get_class(ivkbl.get_universe())
 
+def _set_meta_object_environment(ivkbl, rcvr, args):
+    rcvr.set_meta_object_environment(args[0])
+    return rcvr
+
 
 class ObjectPrimitives(Primitives):
     
@@ -98,3 +102,6 @@ class ObjectPrimitives(Primitives):
         
         self._install_instance_primitive(Primitive("halt",  self._universe, _halt))
         self._install_instance_primitive(Primitive("class", self._universe, _class))
+
+        self._install_instance_primitive(Primitive("installEnvironment:",  self._universe, _set_meta_object_environment))
+

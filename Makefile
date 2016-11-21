@@ -16,10 +16,10 @@ RTruffleSOM-no-jit: core-lib/.git
 RTruffleSOM-jit: core-lib/.git
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch -Ojit src/targetsomstandalone.py
 
-somtest:
+somtest: core-lib/.git
 	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som
 
-matetest:
+matetest: core-lib/.git
 	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite TestSuite/MateMOPSuite/MateTestHarness.som
 
 test: compile core-lib/.git
@@ -32,4 +32,4 @@ clean:
 	@-rm RTruffleSOM-jit
 
 core-lib/.git:
-	git submodule update --init
+	git submodule update --init --recursive --remote

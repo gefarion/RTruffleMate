@@ -11,6 +11,7 @@ from som.vmobjects.symbol        import Symbol
 from som.vmobjects.method        import Method
 from som.vmobjects.integer       import Integer
 from som.vmobjects.string        import String
+from som.vmobjects.character     import Character
 from som.vmobjects.block         import Block, block_evaluation_primitive
 from som.vmobjects.biginteger    import BigInteger
 from som.vmobjects.double        import Double
@@ -61,6 +62,7 @@ class Universe(object):
             "blockClass",
             "blockClasses[*]",
             "stringClass",
+            "characterClass",
             "doubleClass",
             "_symbol_table",
             "_globals",
@@ -84,6 +86,7 @@ class Universe(object):
         self.blockClass     = None
         self.blockClasses   = None
         self.stringClass    = None
+        self.characterClass = None
         self.doubleClass    = None
 
         self._last_exit_code = 0
@@ -205,16 +208,17 @@ class Universe(object):
         self.metaclassClass = self.new_metaclass_class()
 
         # Allocate the rest of the system classes
-        self.objectClass     = self.new_system_class()
-        self.nilClass        = self.new_system_class()
-        self.classClass      = self.new_system_class()
-        self.arrayClass      = self.new_system_class()
-        self.symbolClass     = self.new_system_class()
-        self.methodClass     = self.new_system_class()
-        self.integerClass    = self.new_system_class()
-        self.primitiveClass  = self.new_system_class()
-        self.stringClass     = self.new_system_class()
-        self.doubleClass     = self.new_system_class()
+        self.objectClass    = self.new_system_class()
+        self.nilClass       = self.new_system_class()
+        self.classClass     = self.new_system_class()
+        self.arrayClass     = self.new_system_class()
+        self.symbolClass    = self.new_system_class()
+        self.methodClass    = self.new_system_class()
+        self.integerClass   = self.new_system_class()
+        self.primitiveClass = self.new_system_class()
+        self.stringClass    = self.new_system_class()
+        self.characterClass = self.new_system_class()
+        self.doubleClass    = self.new_system_class()
 
         # Setup the class reference for the nil object
         nilObject.set_class(self.nilClass)
@@ -350,6 +354,10 @@ class Universe(object):
     @staticmethod
     def new_string(embedded_string):
         return String(embedded_string)
+
+    @staticmethod
+    def new_character(embedded_char):
+        return Character(embedded_char)
 
     def _new_symbol(self, string):
         result = Symbol(string)

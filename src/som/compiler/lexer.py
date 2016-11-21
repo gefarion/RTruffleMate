@@ -125,6 +125,14 @@ class Lexer(object):
 
         self._bufp += 1
 
+    def _lex_character(self):
+        self._sym = Symbol.Character
+        self._symc = self._current_char()
+        self._bufp += 1
+
+        self._text = self._current_char()
+        self._bufp += 1
+
     def get_sym(self):
         if self._peek_done:
             self._peek_done = False
@@ -149,6 +157,8 @@ class Lexer(object):
         
         if self._current_char() == '\'':
             self._lex_string()
+        elif self._current_char() == '$':
+            self._lex_character()
         elif self._current_char() == '[':
             self._match(Symbol.NewBlock)
         elif self._current_char() == ']':

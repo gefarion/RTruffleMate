@@ -1,16 +1,16 @@
 # Symbol is a 'lightweight' enum, in Python 3.4, we could use Enum as superclass
 class Symbol(object):
     NONE             = -1
-    Integer          =  0
-    Double           =  1
-    Not              =  2
-    And              =  3
-    Or               =  4
-    Star             =  5
-    Div              =  6
-    Mod              =  7
-    Plus             =  8
-    Minus            =  9
+    Integer          = 0
+    Double           = 1
+    Not              = 2
+    And              = 3
+    Or               = 4
+    Star             = 5
+    Div              = 6
+    Mod              = 7
+    Plus             = 8
+    Minus            = 9
     Equal            = 10
     More             = 11
     Less             = 12
@@ -33,6 +33,7 @@ class Symbol(object):
     Keyword          = 29
     KeywordSequence  = 30
     OperatorSequence = 31
+    Character        = 32
 
 
 def _sorted_symbols(cls):

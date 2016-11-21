@@ -19,6 +19,7 @@ class MateUniverse(Universe):
             "blockClass",
             "blockClasses[*]",
             "stringClass",
+            "characterClass",
             "doubleClass",
             "environmentMO",
             "operationalSemanticsMO",

@@ -27,6 +27,7 @@ class ParseError(Exception):
     def _is_printable_symbol(self):
         return (self._found_sym == Symbol.Integer or
                 self._found_sym == Symbol.Double  or
+                self._found_sym == Symbol.Character  or
                 self._found_sym >= Symbol.STString)
 
     def _expected_sym_str(self):
@@ -496,6 +497,8 @@ class Parser(object):
                 val = self._literal_symbol()
         elif self._sym == Symbol.STString:
             val = self._literal_string()
+        elif self._sym == Symbol.Character:
+            val = self._literal_character()
         else:
             is_negative = self._is_negative_number()
             if self._sym == Symbol.Integer:
@@ -579,6 +582,10 @@ class Parser(object):
         s = self._string()
         return self._universe.new_string(s)
 
+    def _literal_character(self):
+        s = self._character()
+        return self._universe.new_character(s)
+
     def _literal_array(self):
         literals = []
         self._expect(Symbol.Pound)
@@ -597,6 +604,8 @@ class Parser(object):
                 return self._literal_symbol()
         elif self._sym == Symbol.STString:
             return self._literal_string()
+        elif self._sym == Symbol.Character:
+            return self._literal_character()
         elif self._sym == Symbol.Integer:
             return self._literal_integer(self._is_negative_number())
         elif self._sym == Symbol.Double:
@@ -623,6 +632,11 @@ class Parser(object):
     def _string(self):
         s = self._text
         self._expect(Symbol.STString)
+        return s
+
+    def _character(self):
+        s = self._text
+        self._expect(Symbol.Character)
         return s
 
     def _nested_block(self, mgenc):

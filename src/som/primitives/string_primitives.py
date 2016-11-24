@@ -56,6 +56,32 @@ def _hashcode(ivkbl, rcvr, args):
     return ivkbl.get_universe().new_integer(
         compute_hash(rcvr.get_embedded_string()))
 
+def _at(ivkbl, rcvr, args):
+    index = args[0]
+    string = rcvr.get_embedded_string()
+
+    i      = index.get_embedded_integer() - 1
+    string = rcvr.get_embedded_string()
+    
+    if i < 0 or i >= len(string): 
+        return ivkbl.get_universe().new_string("Error - index out of bounds")
+    else:
+        return ivkbl.get_universe().new_string(string[i])
+
+def _charAt(ivkbl, rcvr, args):
+    index = args[0]
+    string = rcvr.get_embedded_string()
+
+    i      = index.get_embedded_integer() - 1
+    string = rcvr.get_embedded_string()
+    
+    if i < 0 or i >= len(string): 
+        return ivkbl.get_universe().new_string("Error - index out of bounds")
+    else:
+        return ivkbl.get_universe().new_string(string[i])
+        # No debería devolver un Character??? Los tests esperan un string
+        #return ivkbl.get_universe().new_character(string[i])
+
 
 class StringPrimitives(Primitives):
     
@@ -66,3 +92,5 @@ class StringPrimitives(Primitives):
         self._install_instance_primitive(Primitive("=",                     self._universe, _equals))
         self._install_instance_primitive(Primitive("primSubstringFrom:to:", self._universe, _substring))
         self._install_instance_primitive(Primitive("hashcode",              self._universe, _hashcode))
+        self._install_instance_primitive(Primitive("at:",                   self._universe, _at))
+        self._install_instance_primitive(Primitive("charAt:",               self._universe, _charAt))

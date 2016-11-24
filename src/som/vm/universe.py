@@ -233,6 +233,7 @@ class Universe(object):
         self._initialize_system_class(self.integerClass,    self.objectClass, "Integer")
         self._initialize_system_class(self.primitiveClass,  self.objectClass, "Primitive")
         self._initialize_system_class(self.stringClass,     self.objectClass, "String")
+        self._initialize_system_class(self.characterClass,  self.objectClass, "Character")
         self._initialize_system_class(self.symbolClass,     self.stringClass, "Symbol")
         self._initialize_system_class(self.doubleClass,     self.objectClass, "Double")
 

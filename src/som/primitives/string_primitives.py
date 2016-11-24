@@ -4,6 +4,7 @@ from som.primitives.primitives import Primitives
 from som.vm.globals import falseObject, trueObject
 from som.vmobjects.primitive import Primitive
 from som.vmobjects.string import String
+from som.vmobjects.character import Character
 from som.vmobjects.symbol import Symbol
 
 
@@ -35,6 +36,12 @@ def _equals(ivkbl, rcvr, args):
         if isinstance(op2, String):
             if op1.get_embedded_string() == op2.get_embedded_string():
                 return trueObject
+
+    if isinstance(op1, Character):
+        string = op2.get_embedded_string() 
+        if len(string) == 1 and string[0] == op1.get_embedded_character():
+            return trueObject
+
     return falseObject
 
 
@@ -78,9 +85,7 @@ def _charAt(ivkbl, rcvr, args):
     if i < 0 or i >= len(string): 
         return ivkbl.get_universe().new_string("Error - index out of bounds")
     else:
-        return ivkbl.get_universe().new_string(string[i])
-        # No debería devolver un Character??? Los tests esperan un string
-        #return ivkbl.get_universe().new_character(string[i])
+        return ivkbl.get_universe().new_character(string[i])
 
 
 class StringPrimitives(Primitives):

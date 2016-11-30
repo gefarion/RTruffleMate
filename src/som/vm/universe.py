@@ -248,6 +248,7 @@ class Universe(object):
         self._load_system_class(self.integerClass)
         self._load_system_class(self.primitiveClass)
         self._load_system_class(self.stringClass)
+        self._load_system_class(self.characterClass)
         self._load_system_class(self.doubleClass)
 
         # Load the generic block class

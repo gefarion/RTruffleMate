@@ -37,11 +37,6 @@ def _equals(ivkbl, rcvr, args):
             if op1.get_embedded_string() == op2.get_embedded_string():
                 return trueObject
 
-    if isinstance(op1, Character):
-        string = op2.get_embedded_string() 
-        if len(string) == 1 and string[0] == op1.get_embedded_character():
-            return trueObject
-
     return falseObject
 
 
@@ -65,20 +60,16 @@ def _hashcode(ivkbl, rcvr, args):
 
 def _at(ivkbl, rcvr, args):
     index = args[0]
-    string = rcvr.get_embedded_string()
-
     i      = index.get_embedded_integer() - 1
     string = rcvr.get_embedded_string()
     
     if i < 0 or i >= len(string): 
         return ivkbl.get_universe().new_string("Error - index out of bounds")
     else:
-        return ivkbl.get_universe().new_string(string[i])
+        return ivkbl.get_universe().new_character(string[i])
 
 def _charAt(ivkbl, rcvr, args):
     index = args[0]
-    string = rcvr.get_embedded_string()
-
     i      = index.get_embedded_integer() - 1
     string = rcvr.get_embedded_string()
     

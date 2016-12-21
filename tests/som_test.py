@@ -25,7 +25,7 @@ class SomTest(unittest.TestCase):
         ("Reflection"    ,),
         ("SelfBlock"     ,),
         ("Set",),
-        ("SpecialSelectors",),
+        # ("SpecialSelectors",),
         ("Super"         ,),
 
         ("String"        ,),

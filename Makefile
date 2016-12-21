@@ -4,28 +4,42 @@ PYPY_DIR ?= pypy
 RPYTHON  ?= $(PYPY_DIR)/rpython/bin/rpython
 
 
+ifdef MATE
+	TARGET  = src/mate/targetsomstandalone.py
+	COMMAND = ./mate.sh
+
+	ifdef JIT
+		JIT_ARGS = -Ojit
+		BIN  = ./RTruffleMATE-jit
+	else
+		BIN = ./RTruffleMATE-no-jit
+	endif
+else
+	TARGET      = src/targetsomstandalone.py
+	COMMAND = ./som.sh
+
+	ifdef JIT
+		JIT_ARGS = -Ojit
+		BIN  = ./RTruffleSOM-jit
+	else
+		BIN = ./RTruffleSOM-no-jit
+	endif
+endif
+
 all: compile
 
-# RTruffleSOM-no-jit 
-#compile: RTruffleSOM-jit
-compile: RTruffleSOM-no-jit
-
-RTruffleSOM-no-jit: core-lib/.git
-	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch src/targetsomstandalone.py
-
-RTruffleSOM-jit: core-lib/.git
-	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch -Ojit src/targetsomstandalone.py
+compile: core-lib/.git
+	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch $(JIT_ARGS) $(TARGET)
 
 somtest: core-lib/.git
-	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som
+	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som
 
 matetest: core-lib/.git
-	./som.sh -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite TestSuite/MateMOPSuite/MateTestHarness.som
+	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite TestSuite/MateMOPSuite/MateTestHarness.som
 
-test: compile core-lib/.git
+test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
-	if [ -e ./RTruffleSOM-no-jit ]; then ./RTruffleSOM-no-jit -cp Smalltalk TestSuite/TestHarness.som; fi
-	if [ -e ./RTruffleSOM-jit ];    then ./RTruffleSOM-jit    -cp Smalltalk TestSuite/TestHarness.som; fi
+	$(BIN) -cp Smalltalk TestSuite/TestHarness.som;
 
 clean:
 	@-rm RTruffleSOM-no-jit

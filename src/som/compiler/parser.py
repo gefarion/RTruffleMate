@@ -635,7 +635,7 @@ class Parser(object):
         return s
 
     def _character(self):
-        s = self._text
+        s = self._text[0]
         self._expect(Symbol.Character)
         return s
 

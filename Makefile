@@ -5,7 +5,7 @@ RPYTHON  ?= $(PYPY_DIR)/rpython/bin/rpython
 
 
 ifdef MATE
-	TARGET  = src/mate/targetsomstandalone.py
+	TARGET  = src/mate_targetsomstandalone.py
 	COMMAND = ./mate.sh
 
 	ifdef JIT

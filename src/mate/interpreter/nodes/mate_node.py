@@ -1,4 +1,5 @@
 from som.interpreter.nodes.expression_node import ExpressionNode
+from mate.interpreter.mop import MOPDispatcher
 
 class MateNode(ExpressionNode):
 
@@ -9,31 +10,40 @@ class MateNode(ExpressionNode):
 		self._som_node = som_node
 
 	def execute(self, frame):
-		value = self.doMateSemantics(frame, [frame])
-		if value is None:
+		if self.mateOff():
 			return self._som_node.execute(frame)
+
+		receiver = self._som_node.receiver(frame)
+		value = self.doMateSemantics(receiver, frame)
+
+		if value is None:
+			return self._som_node.execute(frame, receiver=receiver)
 		else:
 			return value
+
+	def mateOff(self):
+		return True
 
 	def reflectiveOp(self):
 		# Debe ser implementado por las subclases
 		assert(0)
 
-	def objectReflectiveMethod(self, frame, arguments):
-		return None
+	# Retorna el enviroment con los meta objetos (por ahora solo soporta setearlo en el objeto)
+	def getEnviromentMO(self, receiver, frame):
+		return receiver.get_meta_object_environment()
 
-	def environmentReflectiveMethod(self, frame):
-		return None
+	def MOPArguments(self):
+		# Debe ser implementado por las subclases
+		assert(0)
 
-	def reflectiveMethod(self, frame, arguments):
-		return self.environmentReflectiveMethod(frame) or self.objectReflectiveMethod(frame, arguments)
+	def doMateSemantics(self, receiver, frame):
+		enviromentMO = self.getEnviromentMO(self, receiver, frame)
+		if not enviromentMO:
+			return None
 
-	def doMateSemantics(self, frame, arguments=[]):
-		method = self.reflectiveMethod(frame, arguments)
-
+		method = MOPDispatcher.lookupInvokable( self.reflectiveOp(), enviromentMO)
 		if method is None:
 			return None
 		else:
-			#return this.getMateDispatch().executeDispatch(frame, method, arguments);
-			return None
+			return method.invoke(receiver, self.MOPArguments()) # TODO
 

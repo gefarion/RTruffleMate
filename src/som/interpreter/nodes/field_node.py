@@ -17,6 +17,8 @@ class _AbstractFieldNode(ExpressionNode):
         self._self_exp  = self.adopt_child(self_exp)
         self._field_idx = field_idx
 
+    def receiver(self, frame):
+        return self._self_exp.execute(frame)
 
 class FieldReadNode(_AbstractFieldNode):
 
@@ -27,8 +29,8 @@ class FieldReadNode(_AbstractFieldNode):
         _AbstractFieldNode.__init__(self, self_exp, field_idx, source_section)
         self._read = self.adopt_child(create_read(field_idx))
 
-    def execute(self, frame):
-        self_obj = self._self_exp.execute(frame)
+    def execute(self, frame, receiver=None):
+        self_obj = receiver or self._self_exp.execute(frame)
         assert isinstance(self_obj, Object)
         if we_are_jitted():
             return self_obj.get_field(self._field_idx)

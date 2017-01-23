@@ -21,6 +21,9 @@ class UninitializedReadNode(ExpressionNode):
         return self.replace(self._var.get_initialized_read_node(
             self._context_level, self._source_section))
 
+    def accept(self, visitor):
+        return visitor.visitUninitializedReadNode(self)
+
 
 class UninitializedArgumentReadNode(UninitializedReadNode):
 
@@ -46,6 +49,8 @@ class UninitializedWriteNode(ExpressionNode):
         return self.replace(self._var.get_initialized_write_node(
             self._context_level, self._value_expr, self._source_section))
 
+    def accept(self, visitor):
+        return visitor.visitUninitializedWriteNode(self)
 
 class _NonLocalVariableNode(ContextualNode):
 
@@ -144,6 +149,9 @@ class LocalArgumentReadNode(_LocalVariableNode):
     def execute(self, frame):
         return frame.get_argument(self._frame_idx)
 
+    def accept(self, visitor):
+        return visitor.visitLocalArgumentReadNode(self)
+
 
 class LocalUnsharedTempReadNode(_LocalVariableNode):
 
@@ -162,6 +170,8 @@ class LocalSelfReadNode(ExpressionNode):
     def execute(self, frame):
         return frame.get_self()
 
+    def accept(self, visitor):
+        return visitor.visitLocalSelfReadNode(self)
 
 class LocalSuperReadNode(LocalSelfReadNode):
 

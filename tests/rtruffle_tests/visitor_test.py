@@ -57,6 +57,15 @@ class RootNode(Node):
         self._child_node2 = self.adopt_child(child_node2)
         self._value = value
 
+    def accept(self, visitor):
+        if not visitor.visitRootNode(self):
+            return False
+        if self._child_node1 and not self._child_node1.accept(visitor):
+            return False 
+        if self._child_node2 and not self._child_node2.accept(visitor):
+            return False
+        return True
+
 
 class RootNodeWithChildList(Node):
 
@@ -68,14 +77,30 @@ class RootNodeWithChildList(Node):
         self._child_nodes = self.adopt_children(child_nodes)
         self._value = value
 
+    def accept(self, visitor):
+        if not visitor.visitRootNodeWithChildList(self):
+            return False
+
+        for child in self._child_nodes:
+            if not child.accept(visitor):
+                return False
+
+        return True
+
 class ChildNode(Node):
     def __init__(self, value):
         Node.__init__(self)
         self._value = value
 
+    def accept(self, visitor):
+        return visitor.visitChildNode(self)
+
 class NodeVisitor:
     def __init__(self):
         self._values = ""
+
+    def visitNode(self, node):
+        return True
 
     def visitChildNode(self, node):
         self._values += node._value

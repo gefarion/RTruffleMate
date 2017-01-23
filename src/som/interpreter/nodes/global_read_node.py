@@ -34,6 +34,9 @@ class UninitializedGlobalReadNode(ExpressionNode):
             cached = CachedGlobalReadNode(assoc, self.get_source_section())
         return self.replace(cached)
 
+    def accept(self, visitor):
+        return visitor.visitUninitializedGlobalReadNode(self)
+
 
 class CachedGlobalReadNode(ExpressionNode):
 

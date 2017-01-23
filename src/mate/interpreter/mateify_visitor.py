@@ -14,6 +14,9 @@ from mate.interpreter.nodes.message.uninitialized_node import *
 
 class MateifyVisitor(object):
 
+    def visitNode(self, node):
+        return True
+
     def visitUninitializedMessageNode(self, node):
         node.replace(MateUninitializedMessageNode(node))
         return True
@@ -46,83 +49,6 @@ class MateifyVisitor(object):
         node.replace(MateFieldReadNode(node))
         return True
 
-    def visit_UninitializedWriteFieldNode(self, node):
-        return True
-
-    def visit_UninitializedReadFieldNode(self, node):
-        return True
-
     def visitGenericMessageNode(self, node):
         node.replace(MateGenericMessageNode(node))
-        return True
-
-    def visitLiteralNode(self, node):
-        return True
-
-    def visitBlockNodeWithContext(self, node):
-        return True
-
-    def visitNode(self, node):
-        return True
-
-    def visitInvokable(self, node):
-        return True
-
-    def visitSequenceNode(self, node):
-        return True
-
-    def visitBlockNode(self, node):
-        return True
-
-    def visitCatchNonLocalReturnNode(self, node):
-        return True
-
-    def visit_CachedDispatchObjectCheckNode(self, node):
-        return True
-
-    def visitUninitializedDispatchNode(self, node):
-        return True
-
-    def visitCachedGlobalReadNode(self, node):
-        return True
-
-    def visitIfTrueIfFalseNode(self, node):
-        return True
-
-    def visitLocalSuperReadNode(self, node):
-        return True
-
-    def visitGenericDispatchNode(self, node):
-        return True
-
-    def visitConstantGlobalReadNode(self, node):
-        return True
-
-    # NODOS DE MATE, NO SE CONVIERTEN
-
-    def visitMateLocalSelfReadNode(self, node):
-        return True
-
-    def visitMateUninitializedGlobalReadNode(self, node):
-        return True
-
-    def visitMateUninitializedWriteNode(self, node):
-        return True
-
-    def visitMateUninitializedReadNode(self, node):
-        return True
-
-    def visitMateFieldWriteNode(self, node):
-        return True
-
-    def visitMateFieldReadNode(self, node):
-        return True
-
-    def visitMateGenericMessageNode(self, node):
-        return True
-
-    def visitMateLocalArgumentReadNode(self, node):
-        return True
-
-    def visitMateUninitializedMessageNode(self, node):
         return True

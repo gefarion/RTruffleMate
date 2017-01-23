@@ -34,3 +34,12 @@ class UninitializedMessageNode(AbstractMessageNode):
         return self.replace(
             GenericMessageNode(self._selector, self._universe, self._rcvr_expr,
                                self._arg_exprs, self._source_section))
+
+    def accept(self, visitor):
+      if not visitor.visitUninitializedMessageNode(self) or not self._rcvr_expr.accept(visitor):
+        return False
+
+      for arg_expr in _arg_exprs:
+        if not arg_expr.accept(visitor): return False
+
+      return True

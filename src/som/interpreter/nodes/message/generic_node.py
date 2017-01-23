@@ -59,3 +59,6 @@ class GenericMessageNode(AbstractMessageNode):
         return "%s(%s, %s)" % (self.__class__.__name__,
                                self._selector,
                                self._source_section)
+
+    def accept(self, visitor):
+        return visitor.visitGenericMessageNode(self) and self._dispatch.accept(visitor)

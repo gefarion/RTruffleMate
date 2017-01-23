@@ -39,11 +39,15 @@ matetest: core-lib/.git
 
 test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
+
+vmtest:
 	$(BIN) -cp Smalltalk TestSuite/TestHarness.som;
 
 clean:
 	@-rm RTruffleSOM-no-jit
 	@-rm RTruffleSOM-jit
+	@-rm RTruffleMATE-no-jit
+	@-rm RTruffleMATE-jit
 
 core-lib/.git:
 	git submodule update --init --recursive --remote

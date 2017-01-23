@@ -25,6 +25,13 @@ class ReturnNonLocalNode(ContextualNode):
             outer_self = block.get_outer_self()
             return outer_self.send_escaped_block(block, self._universe)
 
+    def _accept(self, visitor):
+        visitor.visitReturnNonLocalNode(self)
+
+    def _childrenAccept(self, visitor):
+        ContextualNode._childrenAccept(self, visitor)
+        self._expr.accept(visitor)
+
 
 class CatchNonLocalReturnNode(ExpressionNode):
 
@@ -46,3 +53,10 @@ class CatchNonLocalReturnNode(ExpressionNode):
                 return e.get_result()
         finally:
             marker.mark_as_no_longer_on_stack()
+
+    def _accept(self, visitor):
+        visitor.visitCatchNonLocalReturnNode(self)
+
+    def _childrenAccept(self, visitor):
+        ExpressionNode._childrenAccept(self, visitor)
+        self._method_body.accept(visitor)

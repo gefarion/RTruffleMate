@@ -52,3 +52,10 @@ class Invokable(Node):
         jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
 
         return self._expr_or_sequence.execute(frame)
+
+    def _accept(self, visitor):
+        visitor.visitInvokable(self)
+
+    def _childrenAccept(self, visitor):
+        Node._childrenAccept(self, visitor)
+        self._expr_or_sequence.accept(visitor)

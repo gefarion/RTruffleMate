@@ -11,6 +11,8 @@ class _AbstractDispatchNode(Node):
         Node.__init__(self, None)
         self._universe = universe
 
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")
 
 class _AbstractDispatchWithLookupNode(_AbstractDispatchNode):
 
@@ -19,6 +21,9 @@ class _AbstractDispatchWithLookupNode(_AbstractDispatchNode):
     def __init__(self, selector, universe):
         _AbstractDispatchNode.__init__(self, universe)
         self._selector = selector
+
+    def _accept(self, visitor):
+        visitor.visit_AbstractDispatchWithLookupNode(self)
 
 
 class UninitializedDispatchNode(_AbstractDispatchWithLookupNode):
@@ -65,6 +70,9 @@ class UninitializedDispatchNode(_AbstractDispatchWithLookupNode):
     def execute_dispatch(self, rcvr, args):
         return self._specialize(rcvr).execute_dispatch(rcvr, args)
 
+    def _accept(self, visitor):
+        visitor.visitUninitializedDispatchNode(self)
+
 
 class GenericDispatchNode(_AbstractDispatchWithLookupNode):
 
@@ -79,6 +87,8 @@ class GenericDispatchNode(_AbstractDispatchWithLookupNode):
             # Won't use DNU caching here, because it's a megamorphic node
             return rcvr.send_does_not_understand(self._selector, args,
                                                  self._universe)
+    def _accept(self, visitor):
+        visitor.visitGenericDispatchNode(self)
 
 
 class _AbstractCachedDispatchNode(_AbstractDispatchNode):
@@ -92,6 +102,13 @@ class _AbstractCachedDispatchNode(_AbstractDispatchNode):
         self._next           = self.adopt_child(next_dispatch)
         self._expected_class = rcvr_class
 
+    def _childrenAccept(self, visitor):
+        _AbstractDispatchNode._childrenAccept(self, visitor)
+        self._next.accept(visitor)
+
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")
+
 
 class _CachedDispatchObjectCheckNode(_AbstractCachedDispatchNode):
 
@@ -101,6 +118,8 @@ class _CachedDispatchObjectCheckNode(_AbstractCachedDispatchNode):
         else:
             return self._next.execute_dispatch(rcvr, args)
 
+    def _accept(self, visitor):
+        visitor.visit_CachedDispatchObjectCheckNode(self)
 
 class _CachedDnuObjectCheckNode(_AbstractCachedDispatchNode):
 
@@ -121,6 +140,9 @@ class _CachedDnuObjectCheckNode(_AbstractCachedDispatchNode):
         else:
             return self._next.execute_dispatch(rcvr, args)
 
+    def _accept(self, visitor):
+        visitor.visit_CachedDnuObjectCheckNode(self)
+
 
 class SuperDispatchNode(_AbstractDispatchNode):
 
@@ -134,3 +156,6 @@ class SuperDispatchNode(_AbstractDispatchNode):
 
     def execute_dispatch(self, rcvr, args):
         return self._cached_method.invoke(rcvr, args)
+
+    def _accept(self, visitor):
+        visitor.visitSuperDispatchNode(self)

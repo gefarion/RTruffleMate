@@ -26,7 +26,7 @@ class MateNode(ExpressionNode):
 
 	def reflectiveOp(self):
 		# Debe ser implementado por las subclases
-		assert(0)
+		raise NotImplementedError("Subclasses need to implement reflectiveOp(self).")
 
 	# Retorna el enviroment con los meta objetos (por ahora solo soporta setearlo en el objeto)
 	def getEnviromentMO(self, receiver, frame):
@@ -34,7 +34,7 @@ class MateNode(ExpressionNode):
 
 	def MOPArguments(self):
 		# Debe ser implementado por las subclases
-		assert(0)
+		raise NotImplementedError("Subclasses need to implement MOPArguments(self).")
 
 	def doMateSemantics(self, receiver, frame):
 		enviromentMO = self.getEnviromentMO(self, receiver, frame)

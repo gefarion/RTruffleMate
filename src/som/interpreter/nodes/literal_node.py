@@ -11,3 +11,6 @@ class LiteralNode(ExpressionNode):
 
     def execute(self, frame):
         return self._value
+
+    def _accept(self, visitor):
+    	visitor.visitLiteralNode(self)

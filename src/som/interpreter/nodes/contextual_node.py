@@ -33,3 +33,6 @@ class ContextualNode(ExpressionNode):
         for i in range(0, self._context_level):
             outer_self = outer_self.get_outer_self()
         return outer_self
+
+    def _accept(self, visitor):
+        visitor.visitContextualNode(self)

@@ -21,8 +21,8 @@ class UninitializedReadNode(ExpressionNode):
         return self.replace(self._var.get_initialized_read_node(
             self._context_level, self._source_section))
 
-    def accept(self, visitor):
-        return visitor.visitUninitializedReadNode(self)
+    def _accept(self, visitor):
+        visitor.visitUninitializedReadNode(self)
 
 
 class UninitializedArgumentReadNode(UninitializedReadNode):
@@ -30,6 +30,9 @@ class UninitializedArgumentReadNode(UninitializedReadNode):
     def _specialize(self):
         return self.replace(self._var.get_initialized_read_node(
             self._context_level, self._source_section))
+
+    def _accept(self, visitor):
+        visitor.visitUninitializedArgumentReadNode(self)
 
 
 class UninitializedWriteNode(ExpressionNode):
@@ -49,8 +52,8 @@ class UninitializedWriteNode(ExpressionNode):
         return self.replace(self._var.get_initialized_write_node(
             self._context_level, self._value_expr, self._source_section))
 
-    def accept(self, visitor):
-        return visitor.visitUninitializedWriteNode(self)
+    def _accept(self, visitor):
+        visitor.visitUninitializedWriteNode(self)
 
 class _NonLocalVariableNode(ContextualNode):
 
@@ -61,12 +64,18 @@ class _NonLocalVariableNode(ContextualNode):
         assert frame_idx >= 0
         self._frame_idx = frame_idx
 
+    def _accept(self, visitor):
+        visitor.visit_NonLocalVariableNode(self)
+
 
 class _NonLocalVariableReadNode(_NonLocalVariableNode):
 
     def execute(self, frame):
         block = self.determine_block(frame)
         return self._do_var_read(block)
+
+    def _accept(self, visitor):
+        visitor.visit_NonLocalVariableReadNode(self)
 
 
 class NonLocalArgumentReadNode(_NonLocalVariableReadNode):
@@ -75,12 +84,18 @@ class NonLocalArgumentReadNode(_NonLocalVariableReadNode):
         assert isinstance(block, Block)
         return block.get_context_argument(self._frame_idx)
 
+    def _accept(self, visitor):
+        visitor.visitNonLocalArgumentReadNode(self)
+
 
 class NonLocalTempReadNode(_NonLocalVariableReadNode):
 
     def _do_var_read(self, block):
         assert isinstance(block, Block)
         return block.get_context_temp(self._frame_idx)
+
+    def _accept(self, visitor):
+        visitor.visitNonLocalTempReadNode(self)
 
 
 class NonLocalSelfReadNode(ContextualNode):
@@ -90,6 +105,9 @@ class NonLocalSelfReadNode(ContextualNode):
 
     def execute(self, frame):
         return self.determine_outer_self(frame)
+
+    def _accept(self, visitor):
+        visitor.visitNonLocalSelfReadNode(self)
 
 
 class NonLocalSuperReadNode(NonLocalSelfReadNode):
@@ -116,6 +134,9 @@ class NonLocalSuperReadNode(NonLocalSelfReadNode):
     def get_super_class(self):
         return self._get_lexical_super_class()
 
+    def _accept(self, visitor):
+        visitor.visitNonLocalSuperReadNode(self)
+
 
 class NonLocalTempWriteNode(_NonLocalVariableNode):
 
@@ -133,6 +154,13 @@ class NonLocalTempWriteNode(_NonLocalVariableNode):
         self.determine_block(frame).set_context_temp(self._frame_idx, value)
         return value
 
+    def _accept(self, visitor):
+        visitor.NonLocalTempWriteNode(self)
+
+    def _childrenAccept(self, visitor):
+        _NonLocalVariableNode._childrenAccept(self, visitor)
+        self._value_expr.accept(visitor)
+
 
 class _LocalVariableNode(ExpressionNode):
 
@@ -143,14 +171,17 @@ class _LocalVariableNode(ExpressionNode):
         assert frame_idx >= 0
         self._frame_idx = frame_idx
 
+    def _accept(self, visitor):
+        visitor.visit_LocalVariableNode(self)
+
 
 class LocalArgumentReadNode(_LocalVariableNode):
 
     def execute(self, frame):
         return frame.get_argument(self._frame_idx)
 
-    def accept(self, visitor):
-        return visitor.visitLocalArgumentReadNode(self)
+    def _accept(self, visitor):
+        visitor.visitLocalArgumentReadNode(self)
 
 
 class LocalUnsharedTempReadNode(_LocalVariableNode):
@@ -158,11 +189,17 @@ class LocalUnsharedTempReadNode(_LocalVariableNode):
     def execute(self, frame):
         return frame.get_temp(self._frame_idx)
 
+    def _accept(self, visitor):
+        visitor.visitLocalUnsharedTempReadNode(self)
+
 
 class LocalSharedTempReadNode(_LocalVariableNode):
 
     def execute(self, frame):
         return frame.get_shared_temp(self._frame_idx)
+
+    def _accept(self, visitor):
+        visitor.visitLocalSharedTempReadNode(self)
 
 
 class LocalSelfReadNode(ExpressionNode):
@@ -170,8 +207,8 @@ class LocalSelfReadNode(ExpressionNode):
     def execute(self, frame):
         return frame.get_self()
 
-    def accept(self, visitor):
-        return visitor.visitLocalSelfReadNode(self)
+    def _accept(self, visitor):
+        visitor.visitLocalSelfReadNode(self)
 
 class LocalSuperReadNode(LocalSelfReadNode):
 
@@ -200,6 +237,9 @@ class LocalSuperReadNode(LocalSelfReadNode):
     def get_super_class(self):
         return self._get_lexical_super_class()
 
+    def _accept(self, visitor):
+        visitor.visitLocalSuperReadNode(self)
+
 
 class _LocalVariableWriteNode(_LocalVariableNode):
 
@@ -215,14 +255,27 @@ class _LocalVariableWriteNode(_LocalVariableNode):
         self._do_write(frame, val)
         return val
 
+    def _childrenAccept(self, visitor):
+        _LocalVariableNode._childrenAccept(self, visitor)
+        self._expr.accept(visitor)
+
+    def _accept(self, visitor):
+        visitor.visit_LocalVariableWriteNode(self)
+
 
 class LocalSharedWriteNode(_LocalVariableWriteNode):
 
     def _do_write(self, frame, value):
         frame.set_shared_temp(self._frame_idx, value)
 
+    def _accept(self, visitor):
+        visitor.visitLocalSharedWriteNode(self)
+
 
 class LocalUnsharedWriteNode(_LocalVariableWriteNode):
 
     def _do_write(self, frame, value):
         frame.set_temp(self._frame_idx, value)
+
+    def _accept(self, visitor):
+        visitor.visitLocalUnsharedWriteNode(self)

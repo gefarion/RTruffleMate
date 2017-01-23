@@ -20,6 +20,13 @@ class _AbstractFieldNode(ExpressionNode):
     def receiver(self, frame):
         return self._self_exp.execute(frame)
 
+    def _childrenAccept(self, visitor):
+        ExpressionNode._childrenAccept(self, visitor)
+        self._self_exp.accept(visitor)
+
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")
+
 class FieldReadNode(_AbstractFieldNode):
 
     _immutable_fields_ = ['_read?']
@@ -37,8 +44,12 @@ class FieldReadNode(_AbstractFieldNode):
         else:
             return self._read.read(self_obj)
 
-    def accept(self, visitor):
-        return visitor.visitFieldReadNode(self) and self._read.accept(visitor)
+    def _accept(self, visitor):
+        visitor.visitFieldReadNode(self)
+
+    def _childrenAccept(self, visitor):
+        _AbstractFieldNode._childrenAccept(self, visitor)
+        self._read.accept(visitor)
 
 
 class FieldWriteNode(_AbstractFieldNode):
@@ -62,8 +73,13 @@ class FieldWriteNode(_AbstractFieldNode):
             self._write.write(self_obj, value)
         return value
 
-    def accept(self, visitor):
-        return visitor.visitFieldWriteNode(self) and self._value_exp.accept(visitor) and self._write.accept(visitor)
+    def _accept(self, visitor):
+        visitor.visitFieldWriteNode(self)
+
+    def _childrenAccept(self, visitor):
+        _AbstractFieldNode._childrenAccept(self, visitor)
+        self._write.accept(visitor)
+        self._value_exp.accept(visitor)
 
 def create_read_node(self_exp, index, source_section = None):
     return FieldReadNode(self_exp, index, source_section)

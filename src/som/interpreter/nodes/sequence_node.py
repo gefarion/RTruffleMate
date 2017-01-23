@@ -20,3 +20,11 @@ class SequenceNode(ExpressionNode):
     def _execute_all_but_last(self, frame):
         for i in range(0, len(self._exprs) - 1):
             self._exprs[i].execute(frame)
+
+    def accept(self, visitor):
+        visitor.visitSequenceNode(self)
+
+    def _childrenAccept(self, visitor):
+        ExpressionNode._childrenAccept(self, visitor)
+        for child in self._exprs:
+            child.accept(visitor)

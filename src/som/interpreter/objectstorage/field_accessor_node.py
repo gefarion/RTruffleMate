@@ -24,6 +24,9 @@ class _AbstractFieldAccessorNode(Node):
         self._field_idx = field_idx
         self._depth     = depth
 
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")
+
 
 class _AbstractReadFieldNode(_AbstractFieldAccessorNode):
 
@@ -42,6 +45,9 @@ class _AbstractReadFieldNode(_AbstractFieldAccessorNode):
                                          next_read_node)
         return self.replace(node)
 
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")
+
 
 class _UninitializedReadFieldNode(_AbstractReadFieldNode):
 
@@ -54,6 +60,9 @@ class _UninitializedReadFieldNode(_AbstractReadFieldNode):
         else:
             next_node = _GenericReadFieldNode(self._field_idx, self._depth + 1)
         return self._specialize_and_read(obj, "uninitialized node", next_node)
+
+    def _accept(self, visitor):
+        visitor.visit_UninitializedReadFieldNode(self)
 
 
 class _SpecializedReadFieldNode(_AbstractReadFieldNode):
@@ -79,11 +88,21 @@ class _SpecializedReadFieldNode(_AbstractReadFieldNode):
         else:
             return self._next
 
+    def _accept(self, visitor):
+        visitor.visit_SpecializedReadFieldNode(self)
+
+    def _childrenAccept(self, visitor):
+        _AbstractReadFieldNode._childrenAccept(self, visitor)
+        self._next.accept(visitor)
+
 
 class _GenericReadFieldNode(_AbstractReadFieldNode):
 
     def read(self, obj):
         return obj.get_field(self._field_idx)
+
+    def _accept(self, visitor):
+        visitor.visit_GenericReadFieldNode(self)
 
 
 class _AbstractWriteFieldNode(_AbstractFieldAccessorNode):
@@ -99,6 +118,9 @@ class _AbstractWriteFieldNode(_AbstractFieldAccessorNode):
                                           self._depth, next_write_node)
         return self.replace(node)
 
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")
+
 
 class _UninitializedWriteFieldNode(_AbstractWriteFieldNode):
 
@@ -112,6 +134,9 @@ class _UninitializedWriteFieldNode(_AbstractWriteFieldNode):
         self._write_and_respecialize(obj, value, "initialize write node",
                                      next_node)
         return value
+
+    def _accept(self, visitor):
+        visitor.visit_UninitializedWriteFieldNode(self)
 
 
 class _SpecializedWriteFieldNode(_AbstractWriteFieldNode):
@@ -146,8 +171,18 @@ class _SpecializedWriteFieldNode(_AbstractWriteFieldNode):
             else:
                 self._next.write(obj, value)
 
+    def _childrenAccept(self, visitor):
+        _AbstractWriteFieldNode._childrenAccept(self, visitor)
+        self._next.accept(visitor)
+
+    def _accept(self, visitor):
+        visitor.visit_SpecializedWriteFieldNode(self)
+
 
 class _GenericWriteFieldNode(_AbstractWriteFieldNode):
 
     def write(self, obj, value):
         obj.set_field(self._field_idx, value)
+
+    def _accept(self, visitor):
+        visitor.visit_GenericWriteFieldNode(self)

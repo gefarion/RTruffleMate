@@ -34,8 +34,8 @@ class UninitializedGlobalReadNode(ExpressionNode):
             cached = CachedGlobalReadNode(assoc, self.get_source_section())
         return self.replace(cached)
 
-    def accept(self, visitor):
-        return visitor.visitUninitializedGlobalReadNode(self)
+    def _accept(self, visitor):
+        visitor.visitUninitializedGlobalReadNode(self)
 
 
 class CachedGlobalReadNode(ExpressionNode):
@@ -49,6 +49,9 @@ class CachedGlobalReadNode(ExpressionNode):
     def execute(self, frame):
         return self._assoc.get_value()
 
+    def _accept(self, visitor):
+        visitor.visitCachedGlobalReadNode(self)
+
 
 class ConstantGlobalReadNode(ExpressionNode):
 
@@ -60,3 +63,6 @@ class ConstantGlobalReadNode(ExpressionNode):
 
     def execute(self, frame):
         return self._value
+
+    def _accept(self, visitor):
+        visitor.visitConstantGlobalReadNode(self)        

@@ -41,7 +41,7 @@ test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
 
 vmtest:
-	$(BIN) -cp Smalltalk TestSuite/TestHarness.som;
+	$(BIN) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som;
 
 clean:
 	@-rm RTruffleSOM-no-jit

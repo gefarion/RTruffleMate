@@ -32,4 +32,11 @@ class AbstractMessageNode(ExpressionNode):
             args = [arg_exp.execute(frame) for arg_exp in self._arg_exprs]
         return rcvr, args
 
+    def _childrenAccept(self, visitor):
+        ExpressionNode._childrenAccept(self, visitor)
+        self._rcvr_expr.accept(visitor)
+        for child in self._arg_exprs:
+            child.accept(visitor)
 
+    def _accept(self, visitor):
+        raise NotImplementedError("You cant visit this node")

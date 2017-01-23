@@ -12,6 +12,9 @@ class BlockNode(LiteralNode):
     def execute(self, frame):
         return self._universe.new_block(self._value, (None, None, None, None))
 
+    def _accept(self, visitor):
+        visitor.visitBlockNode(self)
+
 
 class BlockNodeWithContext(BlockNode):
 
@@ -20,3 +23,6 @@ class BlockNodeWithContext(BlockNode):
 
     def execute(self, frame):
         return self._universe.new_block(self._value, frame.get_context_values())
+
+    def _accept(self, visitor):
+        visitor.visitBlockNodeWithContext(self)

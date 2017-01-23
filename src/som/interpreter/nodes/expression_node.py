@@ -8,3 +8,6 @@ class ExpressionNode(Node):
 
     def is_super_node(self):
         return False
+
+    def _accept(self, visitor):
+    	visitor.visitExpressionNode(self)

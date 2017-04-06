@@ -1,5 +1,5 @@
 from mate.vm.constants import ReflectiveOp
-from mate.vm.universe import Universe
+import mate.vm.universe
 
 class MOPDispatcher(object):
 
@@ -9,15 +9,15 @@ class MOPDispatcher(object):
 
 	@staticmethod
 	def lookupInvokable(reflectiveOp, enviromentMO):
-		metaClass = self.metaClassForOperation(reflectiveOp, enviromentMO)
+		metaClass = MOPDispatcher.metaClassForOperation(reflectiveOp, enviromentMO)
 		if not metaClass:
 			return None
 
-		selector = self.selectorForOperation(reflectiveOp)
+		selector = MOPDispatcher.selectorForOperation(reflectiveOp)
 		if not selector:
 			return None
 
-		return metaClass.get_class(Universe.get_current()).lookup_invokable(selector)
+		return metaClass.get_class(mate.vm.universe.get_current()).lookup_invokable(selector)
 
 	@staticmethod
 	def selectorForOperation(reflectiveOp):
@@ -35,18 +35,18 @@ class MOPDispatcher(object):
 			ReflectiveOp.LayoutWriteField:   "write:value:",
 		}
 
-		return Universe.get_current().symbol_for(selectors[reflectiveOp])
+		return mate.vm.universe.get_current().symbol_for(selectors[reflectiveOp])
 
 	@staticmethod
-	def metaclassForOperation(reflectiveOp, enviromentMO):
+	def metaClassForOperation(reflectiveOp, enviromentMO):
 
 		field_idx = None
 		if reflectiveOp <= 14:
-			field_idx = Semantics_IDX
+			field_idx = MOPDispatcher.Semantics_IDX
 		elif reflectiveOp <= 16:
-			field_idx = Message_IDX
+			field_idx = MOPDispatcher.Message_IDX
 		elif reflectiveOp <= 18:
-			field_idx = Layout_IDX
+			field_idx = MOPDispatcher.Layout_IDX
 
 		assert(field_idx)
 

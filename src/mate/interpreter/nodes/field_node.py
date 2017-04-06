@@ -3,11 +3,17 @@ from mate.vm.constants import ReflectiveOp
 
 class MateFieldReadNode(MateNode):
 
+	def mateOn(self):
+		return True
+
 	def reflectiveOp(self):
 		return ReflectiveOp.ExecutorReadField
 
 
 class MateFieldWriteNode(MateNode):
+	
+	def mateOn(self):
+		return False
 	
 	def reflectiveOp(self):
 		return ReflectiveOp.ExecutorWriteField

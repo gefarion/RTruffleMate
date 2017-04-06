@@ -44,10 +44,10 @@ vmtest:
 	$(BIN) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som;
 
 clean:
-	@-rm RTruffleSOM-no-jit
-	@-rm RTruffleSOM-jit
-	@-rm RTruffleMATE-no-jit
-	@-rm RTruffleMATE-jit
+	@rm -f RTruffleSOM-no-jit
+	@rm -f RTruffleSOM-jit
+	@rm -f RTruffleMATE-no-jit
+	@rm -f RTruffleMATE-jit
 
 core-lib/.git:
 	git submodule update --init --recursive --remote

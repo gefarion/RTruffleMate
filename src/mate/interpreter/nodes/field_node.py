@@ -13,7 +13,7 @@ class MateFieldReadNode(MateNode):
 class MateFieldWriteNode(MateNode):
 	
 	def mateOn(self):
-		return False
+		return True
 	
 	def reflectiveOp(self):
 		return ReflectiveOp.ExecutorWriteField

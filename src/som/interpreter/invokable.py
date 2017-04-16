@@ -54,7 +54,7 @@ class Invokable(Node):
         return self._expr_or_sequence.execute(frame)
 
     def _accept(self, visitor):
-        visitor.visitInvokable(self)
+        visitor.visit_Invokable(self)
 
     def _childrenAccept(self, visitor):
         Node._childrenAccept(self, visitor)

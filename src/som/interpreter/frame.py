@@ -30,6 +30,7 @@ class Frame(object):
         self = jit.hint(self, access_directly=True, fresh_virtualizable=True)
         self._receiver        = receiver
         self._arguments       = arguments
+        self._meta_object_environment = None
         self._on_stack        = _FrameOnStackMarker()
         if num_local_temps == 0:
             self._temps       = _EMPTY_LIST
@@ -50,6 +51,12 @@ class Frame(object):
 
     def get_context_values(self):
         return self._receiver, self._args_for_inner, self._temps_for_inner, self._on_stack
+
+    def get_meta_object_environment(self):
+        return self._meta_object_environment
+
+    def set_meta_object_environment(self, environment):
+        self._meta_object_environment = environment
 
     def get_argument(self, index):
         jit.promote(index)

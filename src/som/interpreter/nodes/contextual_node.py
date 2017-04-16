@@ -35,4 +35,4 @@ class ContextualNode(ExpressionNode):
         return outer_self
 
     def _accept(self, visitor):
-        visitor.visitContextualNode(self)
+        visitor.visit_ContextualNode(self)

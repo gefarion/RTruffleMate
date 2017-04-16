@@ -18,15 +18,3 @@ class ReflectiveOp:
 	MessageActivation         = 16
 	LayoutReadField           = 17
 	LayoutWriteField          = 18
-
-
-	@staticmethod
-	def hasReceiver(reflectiveOp):
-		return
-			reflectiveOp == ExecutorReadField
-			or reflectiveOp == ExecutorWriteField
-			or reflectiveOp == MessageLookup
-			or reflectiveOp == MessageActivation
-			or reflectiveOp == LayoutReadField
-			or reflectiveOp == LayoutWriteField
-			

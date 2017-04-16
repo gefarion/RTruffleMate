@@ -61,7 +61,7 @@ class GenericMessageNode(AbstractMessageNode):
                                self._source_section)
 
     def _accept(self, visitor):
-        visitor.visitGenericMessageNode(self)
+        visitor.visit_GenericMessageNode(self)
 
     def _children_accept(self, visitor):
         AbstractMessageNode._children_accept(self, visitor)

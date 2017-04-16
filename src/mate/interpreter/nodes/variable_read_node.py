@@ -3,26 +3,17 @@ from mate.vm.constants import ReflectiveOp
 
 class MateUninitializedReadNode(MateNode):
 
-    def mateOn:
-        return True
-
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorReadLocal
     
 
 class MateUninitializedArgumentReadNode(MateNode):
 
-    def mateOn:
-        return True
-
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorLocalArg
 
 
 class MateUninitializedWriteNode(MateNode):
-
-    def mateOn:
-        return True
 
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorWriteLocal
@@ -34,9 +25,6 @@ class MateNonLocalArgumentReadNode(MateNode):
 
 
 class MateNonLocalTempReadNode(MateNode):
-
-    def mateOn:
-        return True
     
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorReadNonLocalTemp

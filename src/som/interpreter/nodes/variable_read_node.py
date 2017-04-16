@@ -155,7 +155,7 @@ class NonLocalTempWriteNode(_NonLocalVariableNode):
         return value
 
     def _accept(self, visitor):
-        visitor.NonLocalTempWriteNode(self)
+        visitor.visit_NonLocalTempWriteNode(self)
 
     def _children_accept(self, visitor):
         _NonLocalVariableNode._children_accept(self, visitor)

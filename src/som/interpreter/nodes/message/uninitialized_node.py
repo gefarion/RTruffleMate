@@ -36,4 +36,4 @@ class UninitializedMessageNode(AbstractMessageNode):
                                self._arg_exprs, self._source_section))
 
     def _accept(self, visitor):
-      visitor.visitUninitializedMessageNode(self)
+      visitor.visit_UninitializedMessageNode(self)

@@ -8,19 +8,19 @@ class MOPDispatcher(object):
 	Message_IDX   = 2
 
 	@staticmethod
-	def lookupInvokable(reflectiveOp, enviromentMO):
-		metaClass = MOPDispatcher.metaClassForOperation(reflectiveOp, enviromentMO)
+	def lookup_invokable(reflective_op, enviroment):
+		metaClass = MOPDispatcher.meta_class_for_operation(reflective_op, enviroment)
 		if not metaClass:
 			return None
 
-		selector = MOPDispatcher.selectorForOperation(reflectiveOp)
+		selector = MOPDispatcher.selector_for_operation(reflective_op)
 		if not selector:
 			return None
 
 		return metaClass.get_class(mate.vm.universe.get_current()).lookup_invokable(selector)
 
 	@staticmethod
-	def selectorForOperation(reflectiveOp):
+	def selector_for_operation(reflective_op):
 
 		selectors = {
 			ReflectiveOp.MessageLookup:      "find:since:",
@@ -35,19 +35,19 @@ class MOPDispatcher(object):
 			ReflectiveOp.LayoutWriteField:   "write:value:",
 		}
 
-		return mate.vm.universe.get_current().symbol_for(selectors[reflectiveOp])
+		return mate.vm.universe.get_current().symbol_for(selectors[reflective_op])
 
 	@staticmethod
-	def metaClassForOperation(reflectiveOp, enviromentMO):
+	def meta_class_for_operation(reflective_op, enviroment):
 
 		field_idx = None
-		if reflectiveOp <= ReflectiveOp.ExecutorReturn:
+		if reflective_op <= ReflectiveOp.ExecutorReturn:
 			field_idx = MOPDispatcher.Semantics_IDX
-		elif reflectiveOp <= ReflectiveOp.MessageActivation:
+		elif reflective_op <= ReflectiveOp.MessageActivation:
 			field_idx = MOPDispatcher.Message_IDX
-		elif reflectiveOp <= ReflectiveOp.LayoutWriteField:
+		elif reflective_op <= ReflectiveOp.LayoutWriteField:
 			field_idx = MOPDispatcher.Layout_IDX
 
 		assert(field_idx)
 
-		return enviromentMO.get_field(field_idx)
+		return enviroment.get_field(field_idx)

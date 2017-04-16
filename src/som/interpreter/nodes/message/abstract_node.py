@@ -32,8 +32,8 @@ class AbstractMessageNode(ExpressionNode):
             args = [arg_exp.execute(frame) for arg_exp in self._arg_exprs]
         return rcvr, args
 
-    def _childrenAccept(self, visitor):
-        ExpressionNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        ExpressionNode._children_accept(self, visitor)
         self._rcvr_expr.accept(visitor)
         for child in self._arg_exprs:
             child.accept(visitor)

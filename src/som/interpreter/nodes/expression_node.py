@@ -10,4 +10,4 @@ class ExpressionNode(Node):
         return False
 
     def _accept(self, visitor):
-    	visitor.visitExpressionNode(self)
+    	visitor.visit_ExpressionNode(self)

@@ -8,52 +8,29 @@ class MateNode(ExpressionNode):
 
 	def __init__(self, som_node, source_section = None):
 		ExpressionNode.__init__(self, source_section)
-		self._som_node = som_node
+		self._som_node = som_node		
 
 	def execute(self, frame):
-		if not self.mateOn():
-			return self._som_node.execute(frame)
-
-		if self.hasReceiver():
-			receiver = self._som_node.receiver(frame)
-			value = self.doMateSemantics(receiver, frame)
-
-			if value is None:
-				return self._som_node.executePreEvaluated(frame, receiver)
-			else:
-				return value			
-		else:
-			value = self.doMateSemantics(None, frame)
-
-			if value is None:
-				return self._som_node.execute(frame)
-			else:
-				return value
-
-	def hasReceiver():
-		return ReflectiveOp.hasReceiver(self.reflectiveOp())
-
-	def mateOn(self):
-		return False
+		raise NotImplementedError("Subclasses need to implement execute(self, frame).") 
 
 	def reflectiveOp(self):
-		# Debe ser implementado por las subclases
 		raise NotImplementedError("Subclasses need to implement reflectiveOp(self).")
 
-	# Retorna el enviroment con los meta objetos (por ahora solo soporta setearlo en el objeto)
-	def getEnviromentMO(self, receiver, frame):
-		if receiver:
-			return receiver.get_meta_object_environment()
-		else:
-			return None	
-		# En el futuro deberia quedar algo como: receiver.get_meta_object_environment() || frame.get_meta_object_environment()
-
 	def MOPArguments(self):
-		# Debe ser implementado por las subclases
 		raise NotImplementedError("Subclasses need to implement MOPArguments(self).")
 
-	def doMateSemantics(self, receiver, frame):
-		enviromentMO = self.getEnviromentMO(receiver, frame)
+	# Retorna el enviroment con los meta objetos (por ahora solo soporta setearlo en el objeto)
+	def getEnviromentMO(self, frame, receiver):
+		assert receiver is not None
+		assert frame is not None
+
+		return receiver.get_meta_object_environment()
+
+	def doMateSemantics(self, frame, receiver):
+		assert receiver is not None
+		assert frame is not None
+
+		enviromentMO = self.getEnviromentMO(receivframe, receiver)
 		if not enviromentMO:
 			return None
 
@@ -61,4 +38,4 @@ class MateNode(ExpressionNode):
 		if method is None:
 			return None
 		else:
-			return method.invoke(receiver, self.MOPArguments()) # TODO
+			return method.invoke(receiver, self.MOPArguments())

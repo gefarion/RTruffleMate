@@ -20,8 +20,8 @@ class _AbstractFieldNode(ExpressionNode):
     def receiver(self, frame):
         return self._self_exp.execute(frame)
 
-    def _childrenAccept(self, visitor):
-        ExpressionNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        ExpressionNode._children_accept(self, visitor)
         self._self_exp.accept(visitor)
 
     def _accept(self, visitor):
@@ -36,7 +36,7 @@ class FieldReadNode(_AbstractFieldNode):
         _AbstractFieldNode.__init__(self, self_exp, field_idx, source_section)
         self._read = self.adopt_child(create_read(field_idx))
 
-    def executePreEvaluated(self, frame, self_obj):
+    def execute_evaluated(self, frame, self_obj, args):
         assert isinstance(self_obj, Object)
         if we_are_jitted():
             return self_obj.get_field(self._field_idx)
@@ -45,13 +45,13 @@ class FieldReadNode(_AbstractFieldNode):
 
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
-        return self.executePreEvaluated(frame, self_obj)
+        return self.execute_evaluated(frame, self_obj, None)
 
     def _accept(self, visitor):
-        visitor.visitFieldReadNode(self)
+        visitor.visit_FieldReadNode(self)
 
-    def _childrenAccept(self, visitor):
-        _AbstractFieldNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        _AbstractFieldNode._children_accept(self, visitor)
         self._read.accept(visitor)
 
 
@@ -65,7 +65,7 @@ class FieldWriteNode(_AbstractFieldNode):
         self._value_exp = self.adopt_child(value_exp)
         self._write     = self.adopt_child(create_write(field_idx))
 
-    def executePreEvaluated(self, frame, self_obj):
+    def execute_evaluated(self, frame, self_obj, args):
         value    = self._value_exp.execute(frame)
         assert isinstance(self_obj, Object)
         assert isinstance(value, AbstractObject)
@@ -77,13 +77,13 @@ class FieldWriteNode(_AbstractFieldNode):
 
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
-        self.executePreEvaluated(frame, self_obj)
+        self.execute_evaluated(frame, self_obj, None)
 
     def _accept(self, visitor):
-        visitor.visitFieldWriteNode(self)
+        visitor.visit_FieldWriteNode(self)
 
-    def _childrenAccept(self, visitor):
-        _AbstractFieldNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        _AbstractFieldNode._children_accept(self, visitor)
         self._write.accept(visitor)
         self._value_exp.accept(visitor)
 

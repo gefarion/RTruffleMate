@@ -14,90 +14,93 @@ from mate.interpreter.nodes.message.uninitialized_node import *
 
 class MateifyVisitor(object):
 
-    def visitNode(self, node):
+    def visit_Node(self, node):
         return True
 
     # Message MOP
 
-    def visitUninitializedMessageNode(self, node):
-        pass
-        # node.replace(MateUninitializedMessageNode(node))
+    def visit_UninitializedMessageNode(self, node):
+        return
+        node.replace(MateUninitializedMessageNode(node))
 
-    def visitGenericMessageNode(self, node):
-        pass
-        # node.replace(MateGenericMessageNode(node))
+    def visit_GenericMessageNode(self, node):
+        return
+        node.replace(MateGenericMessageNode(node))
 
-    def visitUninitializedDispatchNode(self, node):
-        pass
+    def visit_UninitializedDispatchNode(self, node):
+        return
 
     # Semantics MOP
 
-    def visitUninitializedArgumentReadNode(self, node):
+    def visit_UninitializedArgumentReadNode(self, node):
+        return
         node.replace(MateUninitializedArgumentReadNode(node))
 
-    def visitUninitializedWriteNode(self, node):
+    def visit_UninitializedWriteNode(self, node):
+        return
         node.replace(MateUninitializedWriteNode(node))
 
-    def visitUninitializedReadNode(self, node):
+    def visit_UninitializedReadNode(self, node):
+        return
         node.replace(MateUninitializedReadNode(node))
 
-    def visitFieldWriteNode(self, node):
+    def visit_FieldWriteNode(self, node):
         node.replace(MateFieldWriteNode(node))
 
-    def visitFieldReadNode(self, node):
+    def visit_FieldReadNode(self, node):
         node.replace(MateFieldReadNode(node))
 
-    def visitReturnNonLocalNode(self, node):
-        pass
+    def visit_ReturnNonLocalNode(self, node):
+        return
 
     # Layout MOP????
     # TODO
 
     # Otros nodos
 
-    def visitUninitializedGlobalReadNode(self, node):
+    def visit_UninitializedGlobalReadNode(self, node):
         pass
 
-    def visitLocalSelfReadNode(self, node):
+    def visit_LocalSelfReadNode(self, node):
         pass
 
-    def visitLocalArgumentReadNode(self, node):
+    def visit_LocalArgumentReadNode(self, node):
         pass
 
-    def visitInvokable(self, node):
+    def visit_Invokable(self, node):
         pass
 
-    def visitSequenceNode(self, node):
+    def visit_SequenceNode(self, node):
         pass
         
-    def visitLocalUnsharedWriteNode(self, node):
+    def visit_LocalUnsharedWriteNode(self, node):
         pass
         
-    def visitLocalSharedWriteNode(self, node):
+    def visit_LocalSharedWriteNode(self, node):
         pass
         
     def visit_LocalVariableWriteNode(self, node):
         pass
         
-    def NonLocalTempWriteNode(self, node):
+    def visit_NonLocalTempWriteNode(self, node):
         pass
         
-    def visitCachedGlobalReadNode(self, node):
+    def visit_CachedGlobalReadNode(self, node):
         pass
         
-    def visitConstantGlobalReadNode(self, node):
+    def visit_ConstantGlobalReadNode(self, node):
         pass
         
-    def visitNonLocalArgumentReadNode(self, node):
+    def visit_NonLocalArgumentReadNode(self, node):
         pass
         
-    def visitLocalUnsharedTempReadNode(self, node):
+    def visit_LocalUnsharedTempReadNode(self, node):
         pass
         
-    def visitLocalSharedTempReadNode(self, node):
+    def visit_LocalSharedTempReadNode(self, node):
         pass
         
-    def visitNonLocalTempReadNode(self, node):
+    def visit_NonLocalTempReadNode(self, node):
         pass
         
     def visit_NonLocalVariableReadNode(self, node):
@@ -106,7 +109,7 @@ class MateifyVisitor(object):
     def visit_NonLocalVariableNode(self, node):
         pass
         
-    def visitGenericDispatchNode(self, node):
+    def visit_GenericDispatchNode(self, node):
         pass
         
     def visit_CachedDispatchObjectCheckNode(self, node):
@@ -115,43 +118,43 @@ class MateifyVisitor(object):
     def visit_CachedDnuObjectCheckNode(self, node):
         pass
         
-    def visitUninitializedDispatchNode(self, node):
+    def visit_UninitializedDispatchNode(self, node):
         pass
         
     def visit_AbstractDispatchWithLookupNode(self, node):
         pass
         
-    def visitSuperDispatchNode(self, node):
+    def visit_SuperDispatchNode(self, node):
         pass
         
     def visit_LocalVariableNode(self, node):
         pass
         
-    def visitNonLocalSuperReadNode(self, node):
+    def visit_NonLocalSuperReadNode(self, node):
         pass
         
-    def visitBlockNodeWithContext(self, node):
+    def visit_BlockNodeWithContext(self, node):
         pass
         
-    def visitNonLocalSelfReadNode(self, node):
+    def visit_NonLocalSelfReadNode(self, node):
         pass
         
-    def visitBlockNode(self, node):
+    def visit_BlockNode(self, node):
         pass
         
-    def visitLocalSuperReadNode(self, node):
+    def visit_LocalSuperReadNode(self, node):
         pass
         
-    def visitCatchNonLocalReturnNode(self, node):
+    def visit_CatchNonLocalReturnNode(self, node):
         pass
         
-    def visitContextualNode(self, node):
+    def visit_ContextualNode(self, node):
         pass
         
-    def visitLiteralNode(self, node):
+    def visit_LiteralNode(self, node):
         pass
 
-    def visitExpressionNode(self, node):
+    def visit_ExpressionNode(self, node):
         pass
 
     def visit_UninitializedReadFieldNode(self, node):

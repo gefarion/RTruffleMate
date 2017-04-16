@@ -3,17 +3,31 @@ from mate.vm.constants import ReflectiveOp
 
 class MateFieldReadNode(MateNode):
 
-	def mateOn(self):
-		return True
+	def execute(self, frame):
+
+		receiver = self._som_node.receiver(frame)
+		value = self.doMateSemantics(frame, receiver)
+
+		if value is None:
+			return self._som_node.execute_evaluated(frame, receiver, None)
+		else:
+			return value
 
 	def reflectiveOp(self):
 		return ReflectiveOp.ExecutorReadField
 
 
 class MateFieldWriteNode(MateNode):
-	
-	def mateOn(self):
-		return True
-	
+
+	def execute(self, frame):
+
+		receiver = self._som_node.receiver(frame)
+		value = self.doMateSemantics(frame, receiver)
+
+		if value is None:
+			return self._som_node.execute_evaluated(frame, receiver, None)
+		else:
+			return value
+
 	def reflectiveOp(self):
 		return ReflectiveOp.ExecutorWriteField

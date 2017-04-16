@@ -13,4 +13,4 @@ class LiteralNode(ExpressionNode):
         return self._value
 
     def _accept(self, visitor):
-    	visitor.visitLiteralNode(self)
+    	visitor.visit_LiteralNode(self)

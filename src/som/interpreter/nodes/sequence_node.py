@@ -22,9 +22,9 @@ class SequenceNode(ExpressionNode):
             self._exprs[i].execute(frame)
 
     def accept(self, visitor):
-        visitor.visitSequenceNode(self)
+        visitor.visit_SequenceNode(self)
 
-    def _childrenAccept(self, visitor):
-        ExpressionNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        ExpressionNode._children_accept(self, visitor)
         for child in self._exprs:
             child.accept(visitor)

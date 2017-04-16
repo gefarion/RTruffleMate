@@ -71,7 +71,7 @@ class UninitializedDispatchNode(_AbstractDispatchWithLookupNode):
         return self._specialize(rcvr).execute_dispatch(rcvr, args)
 
     def _accept(self, visitor):
-        visitor.visitUninitializedDispatchNode(self)
+        visitor.visit_UninitializedDispatchNode(self)
 
 
 class GenericDispatchNode(_AbstractDispatchWithLookupNode):
@@ -88,7 +88,7 @@ class GenericDispatchNode(_AbstractDispatchWithLookupNode):
             return rcvr.send_does_not_understand(self._selector, args,
                                                  self._universe)
     def _accept(self, visitor):
-        visitor.visitGenericDispatchNode(self)
+        visitor.visit_GenericDispatchNode(self)
 
 
 class _AbstractCachedDispatchNode(_AbstractDispatchNode):
@@ -102,8 +102,8 @@ class _AbstractCachedDispatchNode(_AbstractDispatchNode):
         self._next           = self.adopt_child(next_dispatch)
         self._expected_class = rcvr_class
 
-    def _childrenAccept(self, visitor):
-        _AbstractDispatchNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        _AbstractDispatchNode._children_accept(self, visitor)
         self._next.accept(visitor)
 
     def _accept(self, visitor):
@@ -158,4 +158,4 @@ class SuperDispatchNode(_AbstractDispatchNode):
         return self._cached_method.invoke(rcvr, args)
 
     def _accept(self, visitor):
-        visitor.visitSuperDispatchNode(self)
+        visitor.visit_SuperDispatchNode(self)

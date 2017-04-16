@@ -41,11 +41,11 @@ class MOPDispatcher(object):
 	def metaClassForOperation(reflectiveOp, enviromentMO):
 
 		field_idx = None
-		if reflectiveOp <= 14:
+		if reflectiveOp <= ReflectiveOp.ExecutorReturn:
 			field_idx = MOPDispatcher.Semantics_IDX
-		elif reflectiveOp <= 16:
+		elif reflectiveOp <= ReflectiveOp.MessageActivation:
 			field_idx = MOPDispatcher.Message_IDX
-		elif reflectiveOp <= 18:
+		elif reflectiveOp <= ReflectiveOp.LayoutWriteField:
 			field_idx = MOPDispatcher.Layout_IDX
 
 		assert(field_idx)

@@ -17,17 +17,23 @@ class MateifyVisitor(object):
     def visitNode(self, node):
         return True
 
+    # Message MOP
+
     def visitUninitializedMessageNode(self, node):
-        node.replace(MateUninitializedMessageNode(node))
+        pass
+        # node.replace(MateUninitializedMessageNode(node))
 
-    def visitLocalArgumentReadNode(self, node):
-        node.replace(MateLocalArgumentReadNode(node))
+    def visitGenericMessageNode(self, node):
+        pass
+        # node.replace(MateGenericMessageNode(node))
 
-    def visitLocalSelfReadNode(self, node):
-        node.replace(MateLocalSelfReadNode(node))
+    def visitUninitializedDispatchNode(self, node):
+        pass
 
-    def visitUninitializedGlobalReadNode(self, node):
-        node.replace(MateUninitializedGlobalReadNode(node))
+    # Semantics MOP
+
+    def visitUninitializedArgumentReadNode(self, node):
+        node.replace(MateUninitializedArgumentReadNode(node))
 
     def visitUninitializedWriteNode(self, node):
         node.replace(MateUninitializedWriteNode(node))
@@ -41,8 +47,22 @@ class MateifyVisitor(object):
     def visitFieldReadNode(self, node):
         node.replace(MateFieldReadNode(node))
 
-    def visitGenericMessageNode(self, node):
-        node.replace(MateGenericMessageNode(node))
+    def visitReturnNonLocalNode(self, node):
+        pass
+
+    # Layout MOP????
+    # TODO
+
+    # Otros nodos
+
+    def visitUninitializedGlobalReadNode(self, node):
+        pass
+
+    def visitLocalSelfReadNode(self, node):
+        pass
+
+    def visitLocalArgumentReadNode(self, node):
+        pass
 
     def visitInvokable(self, node):
         pass
@@ -107,16 +127,10 @@ class MateifyVisitor(object):
     def visit_LocalVariableNode(self, node):
         pass
         
-    def visitUninitializedArgumentReadNode(self, node):
-        pass
-        
     def visitNonLocalSuperReadNode(self, node):
         pass
         
     def visitBlockNodeWithContext(self, node):
-        pass
-        
-    def visitReturnNonLocalNode(self, node):
         pass
         
     def visitNonLocalSelfReadNode(self, node):

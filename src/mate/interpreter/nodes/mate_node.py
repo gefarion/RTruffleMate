@@ -1,5 +1,6 @@
 from som.interpreter.nodes.expression_node import ExpressionNode
 from mate.interpreter.mop import MOPDispatcher
+from mate.vm.constants import ReflectiveOp
 
 class MateNode(ExpressionNode):
 
@@ -13,13 +14,24 @@ class MateNode(ExpressionNode):
 		if not self.mateOn():
 			return self._som_node.execute(frame)
 
-		receiver = self._som_node.receiver(frame)
-		value = self.doMateSemantics(receiver, frame)
+		if self.hasReceiver():
+			receiver = self._som_node.receiver(frame)
+			value = self.doMateSemantics(receiver, frame)
 
-		if value is None:
-			return self._som_node.executePreEvaluated(frame, receiver)
+			if value is None:
+				return self._som_node.executePreEvaluated(frame, receiver)
+			else:
+				return value			
 		else:
-			return value
+			value = self.doMateSemantics(None, frame)
+
+			if value is None:
+				return self._som_node.execute(frame)
+			else:
+				return value
+
+	def hasReceiver():
+		return ReflectiveOp.hasReceiver(self.reflectiveOp())
 
 	def mateOn(self):
 		return False
@@ -30,7 +42,10 @@ class MateNode(ExpressionNode):
 
 	# Retorna el enviroment con los meta objetos (por ahora solo soporta setearlo en el objeto)
 	def getEnviromentMO(self, receiver, frame):
-		return receiver.get_meta_object_environment()
+		if receiver:
+			return receiver.get_meta_object_environment()
+		else:
+			return None	
 		# En el futuro deberia quedar algo como: receiver.get_meta_object_environment() || frame.get_meta_object_environment()
 
 	def MOPArguments(self):

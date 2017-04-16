@@ -43,7 +43,6 @@ class FieldReadNode(_AbstractFieldNode):
         else:
             return self._read.read(self_obj)
 
-
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
         return self.executePreEvaluated(frame, self_obj)

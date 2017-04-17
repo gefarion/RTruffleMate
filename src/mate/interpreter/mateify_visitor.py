@@ -33,7 +33,6 @@ class MateifyVisitor(object):
     # Semantics MOP
 
     def visit_UninitializedArgumentReadNode(self, node):
-        return
         node.replace(MateUninitializedArgumentReadNode(node))
 
     def visit_UninitializedWriteNode(self, node):

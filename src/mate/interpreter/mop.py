@@ -30,9 +30,12 @@ class MOPDispatcher(object):
 			ReflectiveOp.ExecutorWriteField: "write:value:",
 
 			ReflectiveOp.ExecutorReturn:     "return:",
+
 			ReflectiveOp.ExecutorLocalArg:   "localArgument:inFrame:",
+
 			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:",
 			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:",
+
 			ReflectiveOp.LayoutReadField:    "read:",
 			ReflectiveOp.LayoutWriteField:   "write:value:",
 		}

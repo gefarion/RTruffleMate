@@ -64,6 +64,9 @@ class _NonLocalVariableNode(ContextualNode):
         assert frame_idx >= 0
         self._frame_idx = frame_idx
 
+    def frame_idx(self):
+        return self._frame_idx
+
     def _accept(self, visitor):
         visitor.visit_NonLocalVariableNode(self)
 

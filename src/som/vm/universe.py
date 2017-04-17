@@ -86,6 +86,7 @@ class Universe(object):
         self.blockClass     = None
         self.blockClasses   = None
         self.stringClass    = None
+        self.contextClass   = None
         self.characterClass = None
         self.doubleClass    = None
 
@@ -217,6 +218,7 @@ class Universe(object):
         self.integerClass   = self.new_system_class()
         self.primitiveClass = self.new_system_class()
         self.stringClass    = self.new_system_class()
+        self.contextClass   = self.new_system_class()
         self.characterClass = self.new_system_class()
         self.doubleClass    = self.new_system_class()
 
@@ -224,18 +226,19 @@ class Universe(object):
         nilObject.set_class(self.nilClass)
 
         # Initialize the system classes
-        self._initialize_system_class(self.objectClass,                 None, "Object")
-        self._initialize_system_class(self.classClass,      self.objectClass, "Class")
-        self._initialize_system_class(self.metaclassClass,   self.classClass, "Metaclass")
-        self._initialize_system_class(self.nilClass,        self.objectClass, "Nil")
-        self._initialize_system_class(self.arrayClass,      self.objectClass, "Array")
-        self._initialize_system_class(self.methodClass,     self.objectClass, "Method")
-        self._initialize_system_class(self.integerClass,    self.objectClass, "Integer")
-        self._initialize_system_class(self.primitiveClass,  self.objectClass, "Primitive")
-        self._initialize_system_class(self.stringClass,     self.objectClass, "String")
-        self._initialize_system_class(self.characterClass,  self.objectClass, "Character")
-        self._initialize_system_class(self.symbolClass,     self.stringClass, "Symbol")
-        self._initialize_system_class(self.doubleClass,     self.objectClass, "Double")
+        self._initialize_system_class(self.objectClass,    None, "Object")
+        self._initialize_system_class(self.classClass,     self.objectClass, "Class")
+        self._initialize_system_class(self.metaclassClass, self.classClass, "Metaclass")
+        self._initialize_system_class(self.nilClass,       self.objectClass, "Nil")
+        self._initialize_system_class(self.arrayClass,     self.objectClass, "Array")
+        self._initialize_system_class(self.methodClass,    self.objectClass, "Method")
+        self._initialize_system_class(self.integerClass,   self.objectClass, "Integer")
+        self._initialize_system_class(self.primitiveClass, self.objectClass, "Primitive")
+        self._initialize_system_class(self.stringClass,    self.objectClass, "String")
+        self._initialize_system_class(self.contextClass,   self.objectClass, "Context")
+        self._initialize_system_class(self.characterClass, self.objectClass, "Character")
+        self._initialize_system_class(self.symbolClass,    self.stringClass, "Symbol")
+        self._initialize_system_class(self.doubleClass,    self.objectClass, "Double")
 
         # Load methods and fields into the system classes
         self._load_system_class(self.objectClass)
@@ -248,6 +251,7 @@ class Universe(object):
         self._load_system_class(self.integerClass)
         self._load_system_class(self.primitiveClass)
         self._load_system_class(self.stringClass)
+        self._load_system_class(self.contextClass)
         self._load_system_class(self.characterClass)
         self._load_system_class(self.doubleClass)
 

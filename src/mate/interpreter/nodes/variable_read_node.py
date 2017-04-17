@@ -9,6 +9,16 @@ class MateUninitializedReadNode(MateNode):
 
 class MateUninitializedArgumentReadNode(MateNode):
 
+    def execute(self, frame):
+
+        receiver = self._som_node.receiver(frame)
+        value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.frame_idx()), Frame])
+
+        if value is None:
+            return self._som_node.execute_evaluated(frame, receiver, None)
+        else:
+            return value
+
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorLocalArg
 

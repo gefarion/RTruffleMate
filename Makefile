@@ -43,6 +43,12 @@ test:
 vmtest:
 	$(BIN) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som;
 
+som-micro:
+	rebench -c benchmarks.conf som-micro vm:RTruffleSOM-no-jit
+
+mate-micro:
+	rebench -c benchmarks.conf mate-micro vm:RTruffleMATE-no-jit
+
 clean:
 	@rm -f RTruffleSOM-no-jit
 	@rm -f RTruffleSOM-jit

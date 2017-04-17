@@ -17,6 +17,9 @@ class _AbstractFieldNode(ExpressionNode):
         self._self_exp  = self.adopt_child(self_exp)
         self._field_idx = field_idx
 
+    def field_idx(self):
+        return self._field_idx
+
     def receiver(self, frame):
         return self._self_exp.execute(frame)
 
@@ -65,19 +68,30 @@ class FieldWriteNode(_AbstractFieldNode):
         self._value_exp = self.adopt_child(value_exp)
         self._write     = self.adopt_child(create_write(field_idx))
 
+    def value(self, frame):
+        return self._value_exp.execute(frame)
+
     def execute_evaluated(self, frame, self_obj, args):
-        value    = self._value_exp.execute(frame)
+        value = args[0]
+
         assert isinstance(self_obj, Object)
         assert isinstance(value, AbstractObject)
+
         if we_are_jitted():
             self_obj.set_field(self._field_idx, value)
         else:
             self._write.write(self_obj, value)
+
         return value
 
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
-        self.execute_evaluated(frame, self_obj, None)
+        value = self._value_exp.execute(frame)
+        
+        assert isinstance(self_obj, Object)
+        assert isinstance(value, AbstractObject)
+
+        return self.execute_evaluated(frame, self_obj, [value])
 
     def _accept(self, visitor):
         visitor.visit_FieldWriteNode(self)

@@ -16,10 +16,10 @@ class MateNode(ExpressionNode):
 	def reflective_op(self):
 		raise NotImplementedError("Subclasses need to implement reflective_op(self).")
 
-	def mop_arguments(self):
+	def mop_arguments(self, frame):
 		raise NotImplementedError("Subclasses need to implement mop_arguments(self).")
 
-	def doMateSemantics(self, frame, receiver):
+	def do_mate_semantics(self, frame, receiver, args):
 		assert receiver is not None
 		assert frame is not None
 
@@ -31,4 +31,4 @@ class MateNode(ExpressionNode):
 		if method is None:
 			return None
 		else:
-			return method.invoke(receiver, self.mop_arguments())
+			return method.invoke(receiver, args)

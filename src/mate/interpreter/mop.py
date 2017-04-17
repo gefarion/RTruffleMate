@@ -25,8 +25,10 @@ class MOPDispatcher(object):
 		selectors = {
 			ReflectiveOp.MessageLookup:      "find:since:",
 			ReflectiveOp.MessageActivation:  "activate:withArguments:",
+
 			ReflectiveOp.ExecutorReadField:  "read:",
 			ReflectiveOp.ExecutorWriteField: "write:value:",
+
 			ReflectiveOp.ExecutorReturn:     "return:",
 			ReflectiveOp.ExecutorLocalArg:   "localArgument:inFrame:",
 			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:",

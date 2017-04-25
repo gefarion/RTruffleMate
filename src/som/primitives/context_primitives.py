@@ -17,22 +17,25 @@ def _local_at(ivkbl, rcvr, args):
     index = args[0]
     assert isinstance(index, Integer)
 
-    return rcvr.get_embedded_frame().get_temp(index)
+    i = index.get_embedded_integer()
+    return rcvr.get_embedded_frame().get_temp(i)
 
 def _arg_at(ivkbl, rcvr, args):
     index = args[0]
     assert isinstance(index, Integer)
 
-    return rcvr.get_embedded_frame().get_argument(index)
+    i = index.get_embedded_integer()
+    return rcvr.get_embedded_frame().get_argument(i)
 
 def _local_at_put(ivkbl, rcvr, args):
     index = args[0]
     assert isinstance(index, Integer)
 
     value = args[1]
-    assert isinstance(index, AbstractObject)
+    assert isinstance(value, AbstractObject)
 
-    return rcvr.get_embedded_frame().set_temp(index, value)
+    i = index.get_embedded_integer()
+    return rcvr.get_embedded_frame().set_temp(i, value)
 
 class ContextPrimitives(Primitives):
     

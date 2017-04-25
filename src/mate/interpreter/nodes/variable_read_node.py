@@ -1,5 +1,7 @@
 from mate.interpreter.nodes.mate_node import MateNode
 from mate.vm.constants import ReflectiveOp
+from som.vmobjects.integer import Integer
+from som.vmobjects.context import Context
 
 class MateUninitializedReadNode(MateNode):
 
@@ -12,7 +14,7 @@ class MateUninitializedArgumentReadNode(MateNode):
     def execute(self, frame):
 
         receiver = self._som_node.receiver(frame)
-        value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.frame_idx()), Frame])
+        value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.frame_idx()), Context(frame)])
 
         if value is None:
             return self._som_node.execute_evaluated(frame, receiver, None)

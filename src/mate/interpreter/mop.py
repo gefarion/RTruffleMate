@@ -26,15 +26,15 @@ class MOPDispatcher(object):
 			ReflectiveOp.MessageLookup:      "find:since:",
 			ReflectiveOp.MessageActivation:  "activate:withArguments:",
 
-			ReflectiveOp.ExecutorReadField:  "read:",
-			ReflectiveOp.ExecutorWriteField: "write:value:",
+			ReflectiveOp.ExecutorReadField:  "read:", # Listo
+			ReflectiveOp.ExecutorWriteField: "write:value:", # Listo
 
 			ReflectiveOp.ExecutorReturn:     "return:",
 
-			ReflectiveOp.ExecutorLocalArg:   "localArgument:inFrame:",
+			ReflectiveOp.ExecutorLocalArg:   "readLocalArgument:inFrame:", # Listo
 
 			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:",
-			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:",
+			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:value:",
 
 			ReflectiveOp.LayoutReadField:    "read:",
 			ReflectiveOp.LayoutWriteField:   "write:value:",

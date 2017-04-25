@@ -20,7 +20,7 @@ class _AbstractFieldNode(ExpressionNode):
     def field_idx(self):
         return self._field_idx
 
-    def receiver(self, frame):
+    def get_receiver(self, frame):
         return self._self_exp.execute(frame)
 
     def _children_accept(self, visitor):
@@ -39,7 +39,8 @@ class FieldReadNode(_AbstractFieldNode):
         _AbstractFieldNode.__init__(self, self_exp, field_idx, source_section)
         self._read = self.adopt_child(create_read(field_idx))
 
-    def execute_evaluated(self, frame, self_obj, args):
+    def execute_prevaluated(self, frame, args):
+        self_obj = args[0]
         assert isinstance(self_obj, Object)
         if we_are_jitted():
             return self_obj.get_field(self._field_idx)
@@ -48,7 +49,7 @@ class FieldReadNode(_AbstractFieldNode):
 
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
-        return self.execute_evaluated(frame, self_obj, None)
+        return self.execute_prevaluated(frame, [self_obj])
 
     def _accept(self, visitor):
         visitor.visit_FieldReadNode(self)
@@ -71,8 +72,9 @@ class FieldWriteNode(_AbstractFieldNode):
     def value(self, frame):
         return self._value_exp.execute(frame)
 
-    def execute_evaluated(self, frame, self_obj, args):
-        value = args[0]
+    def execute_prevaluated(self, frame, args):
+        self_obj = args[0]
+        value = args[1]
 
         assert isinstance(self_obj, Object)
         assert isinstance(value, AbstractObject)
@@ -91,7 +93,7 @@ class FieldWriteNode(_AbstractFieldNode):
         assert isinstance(self_obj, Object)
         assert isinstance(value, AbstractObject)
 
-        return self.execute_evaluated(frame, self_obj, [value])
+        return self.execute_evaluated(frame, [self_obj, value])
 
     def _accept(self, visitor):
         visitor.visit_FieldWriteNode(self)

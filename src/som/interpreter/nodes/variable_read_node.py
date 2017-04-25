@@ -14,6 +14,9 @@ class UninitializedReadNode(ExpressionNode):
         self._var           = var
         self._context_level = context_level
 
+    def get_var(self):
+        return self._var
+
     def execute(self, frame):
         return self._specialize().execute(frame)
 
@@ -45,6 +48,9 @@ class UninitializedWriteNode(ExpressionNode):
         self._context_level = context_level
         self._value_expr    = value_expr
 
+    def get_var(self):
+        return self._var
+
     def execute(self, frame):
         return self._specialize().execute(frame)
 
@@ -72,6 +78,9 @@ class _NonLocalVariableNode(ContextualNode):
 
 
 class _NonLocalVariableReadNode(_NonLocalVariableNode):
+
+    def execute_prevaluated(self, frame, args):
+        return self.execute(frame)
 
     def execute(self, frame):
         block = self.determine_block(frame)
@@ -253,10 +262,19 @@ class _LocalVariableWriteNode(_LocalVariableNode):
         _LocalVariableNode.__init__(self, frame_idx, source_section)
         self._expr = self.adopt_child(expr)
 
-    def execute(self, frame):
-        val = self._expr.execute(frame)
+    def execute_prevaluated(self, frame, args):
+        var = args[0]
         self._do_write(frame, val)
         return val
+
+    def execute(self, frame):
+        val = self._expr.execute(frame)
+        self.execute_prevaluated(frame, [val])
+        self._do_write(frame, val)
+        return val
+
+    def get_expr(self):
+        return self._expr
 
     def _children_accept(self, visitor):
         _LocalVariableNode._children_accept(self, visitor)

@@ -10,7 +10,7 @@ class MateFieldReadNode(MateNode):
 		value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.field_idx())])
 
 		if value is None:
-			return self._som_node.execute_evaluated(frame, receiver, None)
+			return self._som_node.execute_prevaluated(frame, [receiver])
 		else:
 			return value
 
@@ -28,7 +28,7 @@ class MateFieldWriteNode(MateNode):
 		value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.field_idx()), write_value])
 
 		if value is None:
-			return self._som_node.execute_evaluated(frame, receiver, [write_value])
+			return self._som_node.execute_prevaluated(frame, [receiver, write_value])
 		else:
 			return value
 

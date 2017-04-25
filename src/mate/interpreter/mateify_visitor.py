@@ -36,11 +36,9 @@ class MateifyVisitor(object):
         node.replace(MateUninitializedArgumentReadNode(node))
 
     def visit_UninitializedWriteNode(self, node):
-        return
         node.replace(MateUninitializedWriteNode(node))
 
     def visit_UninitializedReadNode(self, node):
-        return
         node.replace(MateUninitializedReadNode(node))
 
     def visit_FieldWriteNode(self, node):

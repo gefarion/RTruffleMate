@@ -22,6 +22,9 @@ class _Variable(object):
     def is_accessed(self):
         return self._is_read
 
+    def get_name(self):
+        return self._name
+
     def is_accessed_out_of_context(self):
         return self._is_read_out_of_context
 

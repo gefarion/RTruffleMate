@@ -3,6 +3,7 @@ from som.vmobjects.abstract_object import AbstractObject
 from som.vmobjects.primitive import Primitive
 from som.vmobjects.context import Context
 from som.vmobjects.integer import Integer
+from som.interpreter.frame import Frame
 
 def _method(ivkbl, rcvr, args):
     assert False
@@ -11,23 +12,43 @@ def _sender(ivkbl, rcvr, args):
     assert False
 
 def _receiver(ivkbl, rcvr, args):
-    return rcvr.get_embedded_frame().get_self()
+    assert isinstance(rcvr, Context)
+
+    frame = rcvr.get_embedded_frame()
+    assert isinstance(frame, Frame)
+
+    return frame.get_self()
 
 def _local_at(ivkbl, rcvr, args):
+    assert isinstance(rcvr, Context)
+
+    frame = rcvr.get_embedded_frame()
+    assert isinstance(frame, Frame)
+
     index = args[0]
     assert isinstance(index, Integer)
 
     i = index.get_embedded_integer()
-    return rcvr.get_embedded_frame().get_temp(i)
+    return frame.get_temp(i)
 
 def _arg_at(ivkbl, rcvr, args):
+    assert isinstance(rcvr, Context)
+
+    frame = rcvr.get_embedded_frame()
+    assert isinstance(frame, Frame)
+
     index = args[0]
     assert isinstance(index, Integer)
 
     i = index.get_embedded_integer()
-    return rcvr.get_embedded_frame().get_argument(i)
+    return frame.get_argument(i)
 
 def _local_at_put(ivkbl, rcvr, args):
+    assert isinstance(rcvr, Context)
+
+    frame = rcvr.get_embedded_frame()
+    assert isinstance(frame, Frame)
+
     index = args[0]
     assert isinstance(index, Integer)
 
@@ -35,11 +56,11 @@ def _local_at_put(ivkbl, rcvr, args):
     assert isinstance(value, AbstractObject)
 
     i = index.get_embedded_integer()
-    return rcvr.get_embedded_frame().set_temp(i, value)
+    return frame.set_temp(i, value)
 
 class ContextPrimitives(Primitives):
-    
-    def install_primitives(self):        
+
+    def install_primitives(self):
         self._install_instance_primitive(Primitive("method", self._universe, _method))
         self._install_instance_primitive(Primitive("sender", self._universe, _sender))
         self._install_instance_primitive(Primitive("receiver", self._universe, _receiver))

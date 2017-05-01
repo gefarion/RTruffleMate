@@ -263,7 +263,7 @@ class _LocalVariableWriteNode(_LocalVariableNode):
         self._expr = self.adopt_child(expr)
 
     def execute_prevaluated(self, frame, args):
-        var = args[0]
+        val = args[0]
         self._do_write(frame, val)
         return val
 

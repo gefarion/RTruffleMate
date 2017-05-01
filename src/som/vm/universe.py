@@ -62,6 +62,7 @@ class Universe(object):
             "blockClass",
             "blockClasses[*]",
             "stringClass",
+            "contextClass",
             "characterClass",
             "doubleClass",
             "_symbol_table",
@@ -356,6 +357,10 @@ class Universe(object):
         # Setup the metaclass hierarchy
         result.get_class(self).set_class(result)
         return result
+
+    @staticmethod
+    def new_context(frame):
+        return Context(frame)
 
     @staticmethod
     def new_string(embedded_string):

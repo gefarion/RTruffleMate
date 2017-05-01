@@ -89,11 +89,11 @@ class FieldWriteNode(_AbstractFieldNode):
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
         value = self._value_exp.execute(frame)
-        
+
         assert isinstance(self_obj, Object)
         assert isinstance(value, AbstractObject)
 
-        return self.execute_evaluated(frame, [self_obj, value])
+        return self.execute_prevaluated(frame, [self_obj, value])
 
     def _accept(self, visitor):
         visitor.visit_FieldWriteNode(self)

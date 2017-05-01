@@ -18,6 +18,7 @@ class MateUniverse(Universe):
             "systemClass",
             "blockClass",
             "blockClasses[*]",
+            "contextClass",
             "stringClass",
             "characterClass",
             "doubleClass",

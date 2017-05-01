@@ -5,6 +5,7 @@ from mate.vm.constants import ReflectiveOp
 class MateNode(ExpressionNode):
 
 	_immutable_fields_ = ["_som_node?"]
+	_child_nodes_ = ["_som_node"]
 
 	def __init__(self, som_node, source_section = None):
 		ExpressionNode.__init__(self, source_section)

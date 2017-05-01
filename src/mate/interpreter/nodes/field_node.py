@@ -6,7 +6,7 @@ class MateFieldReadNode(MateNode):
 
 	def execute(self, frame):
 
-		receiver = self._som_node.receiver(frame)
+		receiver = self._som_node.get_receiver(frame)
 		value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.field_idx())])
 
 		if value is None:
@@ -22,7 +22,7 @@ class MateFieldWriteNode(MateNode):
 
 	def execute(self, frame):
 
-		receiver = self._som_node.receiver(frame)
+		receiver = self._som_node.get_receiver(frame)
 		write_value = self._som_node.value(frame)
 
 		value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.field_idx()), write_value])

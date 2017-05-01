@@ -6,48 +6,38 @@ from mate.interpreter.mateify_visitor import MateifyVisitor
 class MateUniverse(Universe):
 
     _immutable_fields_ = [
-            "objectClass",
-            "classClass",
-            "metaclassClass",
-            "nilClass",
-            "integerClass",
-            "arrayClass",
-            "methodClass",
-            "symbolClass",
-            "primitiveClass",
-            "systemClass",
-            "blockClass",
-            "blockClasses[*]",
-            "contextClass",
-            "stringClass",
-            "characterClass",
-            "doubleClass",
-            "environmentMO",
-            "operationalSemanticsMO",
-            "messageMO",
-            "layoutMO",
-            "_symbol_table",
-            "_globals",
-            "_object_system_initialized"]
+        "environmentMOClass",
+        "operationalSemanticsMOClass",
+        "messageMOClass",
+        "layoutMOClass",
+    ]
+
+    def __init__(self, avoid_exit = False):
+        Universe.__init__(self, avoid_exit)
+
+        self.environmentMOClass          = None
+        self.operationalSemanticsMOClass = None
+        self.messageMOClass              = None
+        self.layoutMOClass               = None
 
     def _initialize_object_system(self):
 
         system_object = Universe._initialize_object_system(self)
 
-        self.environmentMO          = self.new_system_class()
-        self.operationalSemanticsMO = self.new_system_class()
-        self.messageMO              = self.new_system_class()
-        self.layoutMO               = self.new_system_class()
+        self.environmentMOClass          = self.new_system_class()
+        self.operationalSemanticsMOClass = self.new_system_class()
+        self.messageMOClass              = self.new_system_class()
+        self.layoutMOClass               = self.new_system_class()
 
-        self._initialize_system_class(self.environmentMO, self.objectClass, "EnvironmentMO")
-        self._initialize_system_class(self.operationalSemanticsMO, self.objectClass, "OperationalSemanticsMO")
-        self._initialize_system_class(self.messageMO, self.objectClass, "MessageMO")
-        self._initialize_system_class(self.layoutMO, self.objectClass, "LayoutMO")
+        self._initialize_system_class(self.environmentMOClass, self.objectClass, "EnvironmentMO")
+        self._initialize_system_class(self.operationalSemanticsMOClass, self.objectClass, "OperationalSemanticsMO")
+        self._initialize_system_class(self.messageMOClass, self.objectClass, "MessageMO")
+        self._initialize_system_class(self.layoutMOClass, self.objectClass, "LayoutMO")
 
-        self._load_system_class(self.environmentMO)
-        self._load_system_class(self.operationalSemanticsMO)
-        self._load_system_class(self.messageMO)
-        self._load_system_class(self.layoutMO)
+        self._load_system_class(self.environmentMOClass)
+        self._load_system_class(self.operationalSemanticsMOClass)
+        self._load_system_class(self.messageMOClass)
+        self._load_system_class(self.layoutMOClass)
 
         return system_object
 

@@ -6,7 +6,7 @@ from som.vmobjects.context import Context
 
 class MateUninitializedReadNode(MateNode):
 
-    _immutable_fields_ = ["_som_node?", "_var"]
+    _immutable_fields_ = ["_var_name"]
 
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
@@ -27,7 +27,7 @@ class MateUninitializedReadNode(MateNode):
 
 class MateUninitializedWriteNode(MateNode):
 
-    _immutable_fields_ = ["_som_node?", "_var"]
+    _immutable_fields_ = ["_var_name"]
 
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
@@ -36,7 +36,7 @@ class MateUninitializedWriteNode(MateNode):
     def execute(self, frame):
 
         receiver = frame.get_self()
-        value_expr = self._som_node.get_value_expr().execute(frame)
+        value_expr = self._som_node.get_expr().execute(frame)
 
         value = self.do_mate_semantics(frame, receiver, [String(self._var_name), Context(frame), value_expr])
 

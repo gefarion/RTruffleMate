@@ -1,5 +1,5 @@
 from mate.vm.constants import ReflectiveOp
-import mate.vm.universe
+import som.vm.universe
 
 class MOPDispatcher(object):
 
@@ -17,7 +17,7 @@ class MOPDispatcher(object):
 		if not selector:
 			return None
 
-		return metaClass.get_class(mate.vm.universe.get_current()).lookup_invokable(selector)
+		return metaClass.get_class(som.vm.universe.get_current()).lookup_invokable(selector)
 
 	@staticmethod
 	def selector_for_operation(reflective_op):
@@ -40,7 +40,7 @@ class MOPDispatcher(object):
 			ReflectiveOp.LayoutWriteField:   "write:value:",
 		}
 
-		return mate.vm.universe.get_current().symbol_for(selectors[reflective_op])
+		return som.vm.universe.get_current().symbol_for(selectors[reflective_op])
 
 	@staticmethod
 	def meta_class_for_operation(reflective_op, enviroment):

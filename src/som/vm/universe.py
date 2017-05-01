@@ -15,6 +15,9 @@ from som.vmobjects.character     import Character
 from som.vmobjects.block         import Block, block_evaluation_primitive
 from som.vmobjects.biginteger    import BigInteger
 from som.vmobjects.double        import Double
+from som.vmobjects.context       import Context
+
+from mate.interpreter.mateify_visitor import MateifyVisitor
 
 from som.vm.shell import Shell
 
@@ -65,6 +68,10 @@ class Universe(object):
             "contextClass",
             "characterClass",
             "doubleClass",
+            "environmentMOClass",
+            "operationalSemanticsMOClass",
+            "messageMOClass",
+            "layoutMOClass",
             "_symbol_table",
             "_globals",
             "_object_system_initialized"]
@@ -91,6 +98,11 @@ class Universe(object):
         self.characterClass = None
         self.doubleClass    = None
 
+        self.environmentMOClass          = None
+        self.operationalSemanticsMOClass = None
+        self.messageMOClass              = None
+        self.layoutMOClass               = None
+
         self._last_exit_code = 0
         self._avoid_exit     = avoid_exit
         self._dump_bytecodes = False
@@ -98,6 +110,7 @@ class Universe(object):
         self.start_time      = time.time()  # a float of the time in seconds
         self.random          = Random(abs(int(time.clock() * time.time())))
         self._object_system_initialized = False
+        self._mate_enabled = False
 
     def exit(self, error_code):
         if self._avoid_exit:
@@ -153,6 +166,8 @@ class Universe(object):
                 got_classpath = True
             elif arguments[i] == "-d":
                 self._dump_bytecodes = True
+            elif arguments[i] == "--mate":
+                self._mate_enabled = True
             elif arguments[i] in ["-h", "--help", "-?"]:
                 self._print_usage_and_exit()
             else:
@@ -204,8 +219,6 @@ class Universe(object):
 
     def _initialize_object_system(self):
 
-
-
         # Allocate the Metaclass classes
         self.metaclassClass = self.new_metaclass_class()
 
@@ -222,6 +235,11 @@ class Universe(object):
         self.contextClass   = self.new_system_class()
         self.characterClass = self.new_system_class()
         self.doubleClass    = self.new_system_class()
+
+        self.environmentMOClass          = self.new_system_class()
+        self.operationalSemanticsMOClass = self.new_system_class()
+        self.messageMOClass              = self.new_system_class()
+        self.layoutMOClass               = self.new_system_class()
 
         # Setup the class reference for the nil object
         nilObject.set_class(self.nilClass)
@@ -240,6 +258,10 @@ class Universe(object):
         self._initialize_system_class(self.characterClass, self.objectClass, "Character")
         self._initialize_system_class(self.symbolClass,    self.stringClass, "Symbol")
         self._initialize_system_class(self.doubleClass,    self.objectClass, "Double")
+        self._initialize_system_class(self.environmentMOClass, self.objectClass, "EnvironmentMO")
+        self._initialize_system_class(self.operationalSemanticsMOClass, self.objectClass, "OperationalSemanticsMO")
+        self._initialize_system_class(self.messageMOClass, self.objectClass, "MessageMO")
+        self._initialize_system_class(self.layoutMOClass, self.objectClass, "LayoutMO")
 
         # Load methods and fields into the system classes
         self._load_system_class(self.objectClass)
@@ -255,6 +277,10 @@ class Universe(object):
         self._load_system_class(self.contextClass)
         self._load_system_class(self.characterClass)
         self._load_system_class(self.doubleClass)
+        self._load_system_class(self.environmentMOClass)
+        self._load_system_class(self.operationalSemanticsMOClass)
+        self._load_system_class(self.messageMOClass)
+        self._load_system_class(self.layoutMOClass)
 
         # Load the generic block class
         self.blockClass = self.load_class(self.symbol_for("Block"))
@@ -469,7 +495,19 @@ class Universe(object):
         result = self._load_class(name, None)
         self._load_primitives(result, False)
         self.set_global(name, result)
+
+        if result is None:
+            return result
+
+        if self._mate_enabled:
+            self.mateify(result)
+            if result.has_super_class():
+                self.mateify(result.get_super_class())
+
         return result
+
+    def mate_enabled(self):
+        return self._mate_enabled
 
     @staticmethod
     def _load_primitives(clazz, is_system_class):
@@ -490,6 +528,14 @@ class Universe(object):
             self.exit(200)
 
         self._load_primitives(result, True)
+
+        if result is None:
+            return result
+
+        if self._mate_enabled:
+            self.mateify(result)
+            if result.has_super_class():
+                self.mateify(result.get_super_class())
 
     def _load_class(self, name, system_class):
         # Try loading the class from all different paths
@@ -517,6 +563,19 @@ class Universe(object):
             from som.compiler.disassembler import dump
             dump(result)
         return result
+
+    def mateify(self, clazz):
+        visitor = MateifyVisitor()
+
+        invokables = clazz.get_instance_invokables()
+        for i in xrange(0 , invokables.get_number_of_indexable_fields()):
+            invokable = invokables.get_indexable_field(i)
+            if not invokable.is_primitive():
+                invokable.get_invokable().accept(visitor)
+
+    def mateify_method(method):
+        if not method.is_primitive():
+            method.get_invokable().accept(visitor);
 
 
 _current = Universe()

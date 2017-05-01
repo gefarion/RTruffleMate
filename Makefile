@@ -2,28 +2,14 @@
 
 PYPY_DIR ?= pypy
 RPYTHON  ?= $(PYPY_DIR)/rpython/bin/rpython
+COMMAND   = ./som.sh
+TARGET    = src/targetsomstandalone.py
 
-
-ifdef MATE
-	TARGET  = src/mate_targetsomstandalone.py
-	COMMAND = ./mate.sh
-
-	ifdef JIT
-		JIT_ARGS = -Ojit
-		BIN  = ./RTruffleMATE-jit
-	else
-		BIN = ./RTruffleMATE-no-jit
-	endif
+ifdef JIT
+	JIT_ARGS = -Ojit
+	BIN  = ./RTruffleMATE-jit
 else
-	TARGET      = src/targetsomstandalone.py
-	COMMAND = ./som.sh
-
-	ifdef JIT
-		JIT_ARGS = -Ojit
-		BIN  = ./RTruffleSOM-jit
-	else
-		BIN = ./RTruffleSOM-no-jit
-	endif
+	BIN = ./RTruffleMATE-no-jit
 endif
 
 all: compile
@@ -50,8 +36,6 @@ mate-micro:
 	rebench -c benchmarks.conf mate-micro vm:RTruffleMATE-no-jit
 
 clean:
-	@rm -f RTruffleSOM-no-jit
-	@rm -f RTruffleSOM-jit
 	@rm -f RTruffleMATE-no-jit
 	@rm -f RTruffleMATE-jit
 

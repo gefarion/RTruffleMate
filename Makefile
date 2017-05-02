@@ -7,9 +7,9 @@ TARGET    = src/targetsomstandalone.py
 
 ifdef JIT
 	JIT_ARGS = -Ojit
-	BIN  = ./RTruffleMATE-jit
+	BIN = ./RTruffleSOM-jit
 else
-	BIN = ./RTruffleMATE-no-jit
+	BIN = ./RTruffleSOM-no-jit
 endif
 
 all: compile
@@ -21,13 +21,16 @@ somtest: core-lib/.git
 	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som
 
 matetest: core-lib/.git
-	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite TestSuite/MateMOPSuite/MateTestHarness.som
+	$(COMMAND) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite TestSuite/MateMOPSuite/MateTestHarness.som
 
 test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
 
 vmtest:
 	$(BIN) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som;
+
+matevmtest:
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate TestSuite/TestHarness.som;
 
 som-micro:
 	rebench -c benchmarks.conf som-micro vm:RTruffleSOM-no-jit

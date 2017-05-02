@@ -33,8 +33,8 @@ class MOPDispatcher(object):
 
 			ReflectiveOp.ExecutorLocalArg:   "readLocalArgument:inFrame:", # Listo
 
-			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:",
-			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:value:",
+			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:", # Listo
+			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:value:", # Listo
 
 			ReflectiveOp.LayoutReadField:    "read:",
 			ReflectiveOp.LayoutWriteField:   "write:value:",

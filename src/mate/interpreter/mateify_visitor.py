@@ -48,7 +48,7 @@ class MateifyVisitor(object):
         node.replace(MateFieldReadNode(node))
 
     def visit_ReturnNonLocalNode(self, node):
-        return
+        node.replace(MateReturnNonLocalNode(node))
 
     # Layout MOP????
     # TODO

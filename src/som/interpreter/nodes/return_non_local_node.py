@@ -14,8 +14,8 @@ class ReturnNonLocalNode(ContextualNode):
         self._expr     = self.adopt_child(expr)
         self._universe = universe
 
-    def execute(self, frame):
-        result = self._expr.execute(frame)
+    def execute_prevaluated(self, frame, args):
+        result = args[0]
         block = self.determine_block(frame)
 
         if block.is_outer_on_stack():
@@ -24,6 +24,13 @@ class ReturnNonLocalNode(ContextualNode):
             block      = frame.get_self()
             outer_self = block.get_outer_self()
             return outer_self.send_escaped_block(block, self._universe)
+
+    def get_expr(self):
+        return self._expr
+
+    def execute(self, frame):
+        result = self._expr.execute(frame)
+        return self.execute_prevaluated(frame, [result])
 
     def _accept(self, visitor):
         visitor.visit_ReturnNonLocalNode(self)

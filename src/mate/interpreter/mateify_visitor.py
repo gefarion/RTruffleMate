@@ -15,40 +15,38 @@ from mate.interpreter.nodes.message.uninitialized_node import *
 class MateifyVisitor(object):
 
     def visit_Node(self, node):
-        return True
+        pass
 
     # Message MOP
 
     def visit_UninitializedMessageNode(self, node):
-        return
-        node.replace(MateUninitializedMessageNode(node))
+        pass
 
     def visit_GenericMessageNode(self, node):
-        return
-        node.replace(MateGenericMessageNode(node))
+        pass
 
     def visit_UninitializedDispatchNode(self, node):
-        return
+        pass
 
     # Semantics MOP
 
     def visit_UninitializedArgumentReadNode(self, node):
-        node.replace(MateUninitializedArgumentReadNode(node))
+        MateUninitializedArgumentReadNode(node)
 
     def visit_UninitializedWriteNode(self, node):
-        node.replace(MateUninitializedWriteNode(node))
+        MateUninitializedWriteNode(node)
 
     def visit_UninitializedReadNode(self, node):
-        node.replace(MateUninitializedReadNode(node))
+        MateUninitializedReadNode(node)
 
     def visit_FieldWriteNode(self, node):
-        node.replace(MateFieldWriteNode(node))
+        MateFieldWriteNode(node)
 
     def visit_FieldReadNode(self, node):
-        node.replace(MateFieldReadNode(node))
+        MateFieldReadNode(node)
 
     def visit_ReturnNonLocalNode(self, node):
-        node.replace(MateReturnNonLocalNode(node))
+        MateReturnNonLocalNode(node)
 
     # Layout MOP????
     # TODO

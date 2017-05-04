@@ -36,7 +36,7 @@ class MateUninitializedWriteNode(MateNode):
     def execute(self, frame):
 
         receiver = frame.get_self()
-        value_expr = self._som_node.get_expr().execute(frame)
+        value_expr = self._som_node.get_value_expr().execute(frame)
 
         value = self.do_mate_semantics(frame, receiver, [String(self._var_name), Context(frame), value_expr])
 

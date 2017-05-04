@@ -9,7 +9,8 @@ class MateNode(ExpressionNode):
 
 	def __init__(self, som_node, source_section = None):
 		ExpressionNode.__init__(self, source_section)
-		self._som_node = som_node
+		som_node.replace(self)
+		self._som_node = self.adopt_child(som_node)
 
 	def execute(self, frame):
 		raise NotImplementedError("Subclasses need to implement execute(self, frame).")

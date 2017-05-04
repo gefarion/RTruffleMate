@@ -51,6 +51,9 @@ class UninitializedWriteNode(ExpressionNode):
     def get_var(self):
         return self._var
 
+    def get_value_expr(self):
+        return self._value_expr
+
     def execute(self, frame):
         return self._specialize().execute(frame)
 

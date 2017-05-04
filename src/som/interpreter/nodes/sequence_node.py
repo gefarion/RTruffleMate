@@ -21,7 +21,7 @@ class SequenceNode(ExpressionNode):
         for i in range(0, len(self._exprs) - 1):
             self._exprs[i].execute(frame)
 
-    def accept(self, visitor):
+    def _accept(self, visitor):
         visitor.visit_SequenceNode(self)
 
     def _children_accept(self, visitor):

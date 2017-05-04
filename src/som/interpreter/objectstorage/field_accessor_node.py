@@ -91,8 +91,8 @@ class _SpecializedReadFieldNode(_AbstractReadFieldNode):
     def _accept(self, visitor):
         visitor.visit_SpecializedReadFieldNode(self)
 
-    def _childrenAccept(self, visitor):
-        _AbstractReadFieldNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        _AbstractReadFieldNode._children_accept(self, visitor)
         self._next.accept(visitor)
 
 
@@ -171,8 +171,8 @@ class _SpecializedWriteFieldNode(_AbstractWriteFieldNode):
             else:
                 self._next.write(obj, value)
 
-    def _childrenAccept(self, visitor):
-        _AbstractWriteFieldNode._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        _AbstractWriteFieldNode._children_accept(self, visitor)
         self._next.accept(visitor)
 
     def _accept(self, visitor):

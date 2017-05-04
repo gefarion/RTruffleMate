@@ -56,6 +56,6 @@ class Invokable(Node):
     def _accept(self, visitor):
         visitor.visit_Invokable(self)
 
-    def _childrenAccept(self, visitor):
-        Node._childrenAccept(self, visitor)
+    def _children_accept(self, visitor):
+        Node._children_accept(self, visitor)
         self._expr_or_sequence.accept(visitor)

@@ -756,12 +756,19 @@ class Array(AbstractObject):
     # or for the empty strategy the size as an Integer object,
     # or something more complex
 
+    def get_meta_object_environment(self):
+        return self._meta_object_environment
+
+    def set_meta_object_environment(self, environment):
+        self._meta_object_environment = environment
+
     @staticmethod
     def _from_storage_and_strategy(storage, strategy):
         self = instantiate(Array)
         # self = Array()
         self._strategy = strategy
         self._storage  = storage
+        self._meta_object_environment = None
         return self
 
     @staticmethod
@@ -770,6 +777,7 @@ class Array(AbstractObject):
         # self = Array()
         self._strategy = strategy
         self._storage  = strategy.new_storage_for(size)
+        self._meta_object_environment = None
         return self
 
     @staticmethod
@@ -781,6 +789,7 @@ class Array(AbstractObject):
         else:
             self._strategy = strategy
         self._storage = self._strategy.new_storage_with_values(values)
+        self._meta_object_environment = None
         return self
 
     @staticmethod

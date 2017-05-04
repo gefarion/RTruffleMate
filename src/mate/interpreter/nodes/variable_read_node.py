@@ -11,8 +11,12 @@ class MateUninitializedReadNode(MateNode):
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
         self._var_name = som_node.get_var().get_name()
+        self._specialized = False
 
     def execute(self, frame):
+        if not self._specialized:
+            self._som_node._specialize()
+            self._specialized = True
 
         receiver = frame.get_self()
         value = self.do_mate_semantics(frame, receiver, [String(self._var_name), Context(frame)])
@@ -32,11 +36,15 @@ class MateUninitializedWriteNode(MateNode):
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
         self._var_name = som_node.get_var().get_name()
+        self._specialized = False
 
     def execute(self, frame):
+        if not self._specialized:
+            self._som_node._specialize()
+            self._specialized = True
 
         receiver = frame.get_self()
-        value_expr = self._som_node.get_value_expr().execute(frame)
+        value_expr = self._som_node.get_expr().execute(frame)
 
         value = self.do_mate_semantics(frame, receiver, [String(self._var_name), Context(frame), value_expr])
 
@@ -50,7 +58,14 @@ class MateUninitializedWriteNode(MateNode):
 
 class MateUninitializedArgumentReadNode(MateNode):
 
+    def __init__(self, som_node, source_section = None):
+        MateNode.__init__(self, som_node, source_section)
+        self._specialized = False
+
     def execute(self, frame):
+        if not self._specialized:
+            self._som_node._specialize()
+            self._specialized = True
 
         receiver = frame.get_self()
         value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.frame_idx()), Context(frame)])

@@ -51,9 +51,6 @@ class UninitializedWriteNode(ExpressionNode):
     def get_var(self):
         return self._var
 
-    def get_value_expr(self):
-        return self._value_expr
-
     def execute(self, frame):
         return self._specialize().execute(frame)
 
@@ -188,6 +185,9 @@ class _LocalVariableNode(ExpressionNode):
 
     def _accept(self, visitor):
         visitor.visit_LocalVariableNode(self)
+
+    def execute_prevaluated(self, frame, args):
+        return self.execute(frame)
 
 
 class LocalArgumentReadNode(_LocalVariableNode):

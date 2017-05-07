@@ -54,13 +54,13 @@ class Argument(_Variable):
             if self._name == "self":
                 return LocalSelfReadNode(None)
             else:
-                return LocalArgumentReadNode(self._arg_idx, None)
+                return LocalArgumentReadNode(self._arg_idx, None, self)
 
     def get_initialized_read_node(self, context_level, source_section):
         assert context_level > 0
         assert self._access_idx >= 0
         return NonLocalArgumentReadNode(context_level, self._access_idx,
-                                        source_section)
+                                        source_section, self)
 
     def get_argument_index(self):
         return self._arg_idx
@@ -105,13 +105,13 @@ class Local(_Variable):
     def get_initialized_read_node(self, context_level, source_section):
         if context_level > 0:
             return NonLocalTempReadNode(context_level, self._access_idx,
-                                        source_section)
+                                        source_section, self)
         else:
             if self.is_accessed_out_of_context():
-                return LocalSharedTempReadNode(self._access_idx, source_section)
+                return LocalSharedTempReadNode(self._access_idx, source_section, self)
             else:
                 return LocalUnsharedTempReadNode(self._access_idx,
-                                                 source_section)
+                                                 source_section, self)
 
     def get_write_node(self, context_level, value_expr):
         self._is_written = True
@@ -123,11 +123,11 @@ class Local(_Variable):
                                    source_section):
         if context_level > 0:
             return NonLocalTempWriteNode(context_level, self._access_idx,
-                                         value_expr, source_section)
+                                         value_expr, source_section, self)
         else:
             if self.is_accessed_out_of_context():
                 return LocalSharedWriteNode(self._access_idx, value_expr,
-                                            source_section)
+                                            source_section, self)
             else:
                 return LocalUnsharedWriteNode(self._access_idx, value_expr,
-                                              source_section)
+                                              source_section, self)

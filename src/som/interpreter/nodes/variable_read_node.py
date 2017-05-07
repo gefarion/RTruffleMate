@@ -17,6 +17,9 @@ class UninitializedReadNode(ExpressionNode):
     def get_var(self):
         return self._var
 
+    def  get_execute_args(frame):
+        return self._specialize().get_execute_args(frame)
+
     def execute(self, frame):
         return self._specialize().execute(frame)
 
@@ -30,6 +33,9 @@ class UninitializedReadNode(ExpressionNode):
 
 class UninitializedArgumentReadNode(UninitializedReadNode):
 
+    def  get_execute_args(frame):
+        return self._specialize().get_execute_args(frame)
+
     def _specialize(self):
         return self.replace(self._var.get_initialized_read_node(
             self._context_level, self._source_section))
@@ -41,15 +47,19 @@ class UninitializedArgumentReadNode(UninitializedReadNode):
 class UninitializedWriteNode(ExpressionNode):
 
     _immutable_fields_ = ['_var', '_context_level', '_value_expr']
+    _child_nodes_ = ['_value_expr']
 
     def __init__(self, var, context_level, value_expr, source_section):
         ExpressionNode.__init__(self, source_section)
         self._var           = var
         self._context_level = context_level
-        self._value_expr    = value_expr
+        self._value_expr    = self.adopt_child(value_expr)
 
     def get_var(self):
         return self._var
+
+    def  get_execute_args(frame):
+        return self._specialize().get_execute_args(frame)
 
     def execute(self, frame):
         return self._specialize().execute(frame)
@@ -61,14 +71,22 @@ class UninitializedWriteNode(ExpressionNode):
     def _accept(self, visitor):
         visitor.visit_UninitializedWriteNode(self)
 
+    def _children_accept(self, visitor):
+        ExpressionNode._children_accept(self, visitor)
+        self._value_expr.accept(visitor)
+
 class _NonLocalVariableNode(ContextualNode):
 
-    _immutable_fields_ = ["_frame_idx"]
+    _immutable_fields_ = ["_frame_idx", "var"]
 
-    def __init__(self, context_level, frame_idx, source_section):
+    def __init__(self, context_level, frame_idx, source_section, var):
         ContextualNode.__init__(self, context_level, source_section)
         assert frame_idx >= 0
         self._frame_idx = frame_idx
+        self._var = var
+
+    def get_var(self):
+        return self._var
 
     def frame_idx(self):
         return self._frame_idx
@@ -78,6 +96,9 @@ class _NonLocalVariableNode(ContextualNode):
 
 
 class _NonLocalVariableReadNode(_NonLocalVariableNode):
+
+    def get_execute_args(self, frame):
+        return [frame.get_self(), self._var.get_name(), Context(frame)]
 
     def execute_prevaluated(self, frame, args):
         return self.execute(frame)
@@ -91,6 +112,10 @@ class _NonLocalVariableReadNode(_NonLocalVariableNode):
 
 
 class NonLocalArgumentReadNode(_NonLocalVariableReadNode):
+
+    def get_execute_args(self, frame):
+        return [frame.get_self(), self._frame_idx(), Context(frame)]
+
 
     def _do_var_read(self, block):
         assert isinstance(block, Block)
@@ -156,10 +181,19 @@ class NonLocalTempWriteNode(_NonLocalVariableNode):
     _child_nodes_      = ['_value_expr']
 
     def __init__(self, context_level, frame_idx, value_expr,
-                 source_section = None):
+                 source_section, var):
         _NonLocalVariableNode.__init__(self, context_level, frame_idx,
-                                       source_section)
+                                       source_section, var)
         self._value_expr = self.adopt_child(value_expr)
+
+    def get_execute_args(self, frame):
+        value = self._value_expr.execute(frame)
+        return [frame.get_self(), self._var.get_name(), Context(frame), value]
+
+    def execute_prevaluated(self, frame, args):
+        value = args[3]
+        self.determine_block(frame).set_context_temp(self._frame_idx, value)
+        return value
 
     def execute(self, frame):
         value = self._value_expr.execute(frame)
@@ -178,22 +212,26 @@ class _LocalVariableNode(ExpressionNode):
 
     _immutable_fields_ = ['_frame_idx']
 
-    def __init__(self, frame_idx, source_section):
+    def __init__(self, frame_idx, source_section, var):
         ExpressionNode.__init__(self, source_section)
         assert frame_idx >= 0
         self._frame_idx = frame_idx
+        self._var = var
 
     def _accept(self, visitor):
         visitor.visit_LocalVariableNode(self)
-
-    def execute_prevaluated(self, frame, args):
-        return self.execute(frame)
 
 
 class LocalArgumentReadNode(_LocalVariableNode):
 
     def execute(self, frame):
         return frame.get_argument(self._frame_idx)
+
+    def get_execute_args(self, frame):
+        return [frame.get_self(), self._frame_idx, Context(frame)]
+
+    def execute_prevaluated(self, frame, args):
+        return self.execute(frame)
 
     def _accept(self, visitor):
         visitor.visit_LocalArgumentReadNode(self)
@@ -204,6 +242,12 @@ class LocalUnsharedTempReadNode(_LocalVariableNode):
     def execute(self, frame):
         return frame.get_temp(self._frame_idx)
 
+    def execute_prevaluated(self, frame, args):
+        return self.execute(frame)
+
+    def get_execute_args(self, frame):
+        return [frame.get_self(), self._var.get_name(), Context(frame)]
+
     def _accept(self, visitor):
         visitor.visit_LocalUnsharedTempReadNode(self)
 
@@ -212,6 +256,9 @@ class LocalSharedTempReadNode(_LocalVariableNode):
 
     def execute(self, frame):
         return frame.get_shared_temp(self._frame_idx)
+
+    def get_execute_args(self, frame):
+        return [frame.get_self(), self._var.get_name(), Context(frame)]
 
     def _accept(self, visitor):
         visitor.visit_LocalSharedTempReadNode(self)
@@ -261,18 +308,20 @@ class _LocalVariableWriteNode(_LocalVariableNode):
     _immutable_fields_ = ['_expr?']
     _child_nodes_      = ['_expr']
 
-    def __init__(self, frame_idx, expr, source_section = None):
-        _LocalVariableNode.__init__(self, frame_idx, source_section)
+    def __init__(self, frame_idx, expr, source_section, var):
+        _LocalVariableNode.__init__(self, frame_idx, source_section, var)
         self._expr = self.adopt_child(expr)
 
+    def get_execute_args(self, frame):
+        return [frame.get_self(), self._var.get_name(), Context(frame), self._expr.execute(frame)]
+
     def execute_prevaluated(self, frame, args):
-        val = args[0]
+        val = args[3]
         self._do_write(frame, val)
         return val
 
     def execute(self, frame):
         val = self._expr.execute(frame)
-        self.execute_prevaluated(frame, [val])
         self._do_write(frame, val)
         return val
 

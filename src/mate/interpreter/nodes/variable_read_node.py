@@ -6,52 +6,16 @@ from som.vmobjects.context import Context
 
 class MateUninitializedReadNode(MateNode):
 
-    _immutable_fields_ = ["_var_name"]
-
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
-        self._var_name = som_node.get_var().get_name()
-        self._specialized = False
-
-    def execute(self, frame):
-        if not self._specialized:
-            self._som_node._specialize()
-            self._specialized = True
-
-        receiver = frame.get_self()
-        value = self.do_mate_semantics(frame, receiver, [String(self._var_name), Context(frame)])
-
-        if value is None:
-            return self._som_node.execute_prevaluated(frame, [])
-        else:
-            return value
 
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorReadLocal
 
 class MateUninitializedWriteNode(MateNode):
 
-    _immutable_fields_ = ["_var_name"]
-
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
-        self._var_name = som_node.get_var().get_name()
-        self._specialized = False
-
-    def execute(self, frame):
-        if not self._specialized:
-            self._som_node._specialize()
-            self._specialized = True
-
-        receiver = frame.get_self()
-        value_expr = self._som_node.get_expr().execute(frame)
-
-        value = self.do_mate_semantics(frame, receiver, [String(self._var_name), Context(frame), value_expr])
-
-        if value is None:
-            return self._som_node.execute_prevaluated(frame, [value_expr])
-        else:
-            return value
 
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorWriteLocal
@@ -60,20 +24,6 @@ class MateUninitializedArgumentReadNode(MateNode):
 
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
-        self._specialized = False
-
-    def execute(self, frame):
-        if not self._specialized:
-            self._som_node._specialize()
-            self._specialized = True
-
-        receiver = frame.get_self()
-        value = self.do_mate_semantics(frame, receiver, [Integer(self._som_node.frame_idx()), Context(frame)])
-
-        if value is None:
-            return self._som_node.execute_prevaluated(frame, [])
-        else:
-            return value
 
     def reflectiveOp(self):
         return ReflectiveOp.ExecutorLocalArg

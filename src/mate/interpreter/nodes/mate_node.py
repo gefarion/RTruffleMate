@@ -22,8 +22,8 @@ class MateNode(ExpressionNode):
         else:
             return value
 
-    def reflective_op(self):
-        raise NotImplementedError("Subclasses need to implement reflective_op(self).")
+    # def reflective_op(self):
+    #     raise NotImplementedError("Subclasses need to implement reflective_op(self).")
 
     def mop_arguments(self, frame):
         raise NotImplementedError("Subclasses need to implement mop_arguments(self).")

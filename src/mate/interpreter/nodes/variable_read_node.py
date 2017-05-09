@@ -6,7 +6,7 @@ class MateUninitializedReadNode(MateNode):
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorReadLocal
 
 class MateUninitializedWriteNode(MateNode):
@@ -14,7 +14,7 @@ class MateUninitializedWriteNode(MateNode):
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorWriteLocal
 
 class MateUninitializedArgumentReadNode(MateNode):
@@ -22,42 +22,42 @@ class MateUninitializedArgumentReadNode(MateNode):
     def __init__(self, som_node, source_section = None):
         MateNode.__init__(self, som_node, source_section)
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorLocalArg
 
 class MateNonLocalArgumentReadNode(MateNode):
     
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorNonLocalArg
 
 
 class MateNonLocalTempReadNode(MateNode):
     
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorReadNonLocalTemp
 
 
 class MateNonLocalSelfReadNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorNonLocalSelf
 
 
 class MateNonLocalSuperReadNode(MateNode):
     
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorNonLocalSuperArg
 
 
 class MateNonLocalTempWriteNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorWriteNonLocalTemp
 
 
 class MateLocalArgumentReadNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorLocalArg
 
 
@@ -73,13 +73,13 @@ class MateLocalSharedTempReadNode(MateNode):
 
 class MateLocalSelfReadNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorLocalSelf
 
 
 class MateLocalSuperReadNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
         return ReflectiveOp.ExecutorLocalSuper
 
 

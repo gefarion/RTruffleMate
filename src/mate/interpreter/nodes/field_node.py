@@ -4,11 +4,11 @@ from som.vmobjects.integer import Integer
 
 class MateFieldReadNode(MateNode):
 
-	def reflectiveOp(self):
+	def reflective_op(self):
 		return ReflectiveOp.ExecutorReadField
 
 
 class MateFieldWriteNode(MateNode):
 
-	def reflectiveOp(self):
+	def reflective_op(self):
 		return ReflectiveOp.ExecutorWriteField

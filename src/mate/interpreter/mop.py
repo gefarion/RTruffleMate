@@ -52,7 +52,7 @@ class MOPDispatcher(object):
 			field_idx = MOPDispatcher.Message_IDX
 		elif reflective_op <= ReflectiveOp.LayoutWriteField:
 			field_idx = MOPDispatcher.Layout_IDX
-
-		assert(field_idx)
+		else:
+			raise ValueError("reflective op unknown")
 
 		return enviroment.get_field(field_idx)

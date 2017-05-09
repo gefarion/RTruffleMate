@@ -40,7 +40,7 @@ class FieldReadNode(_AbstractFieldNode):
         self._read = self.adopt_child(create_read(field_idx))
 
     def get_execute_args(self, frame):
-        return [self._som_node.get_receiver(frame)]
+        return [self.get_receiver(frame)]
 
     def execute_prevaluated(self, frame, args):
         self_obj = args[0]
@@ -76,7 +76,7 @@ class FieldWriteNode(_AbstractFieldNode):
         return self._value_exp.execute(frame)
 
     def get_execute_args(self, frame):
-        return [self._som_node.get_receiver(frame), self._som_node.value(frame)]
+        return [self.get_receiver(frame), self.value(frame)]
 
     def execute_prevaluated(self, frame, args):
         self_obj = args[0]

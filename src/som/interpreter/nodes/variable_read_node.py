@@ -20,7 +20,7 @@ class UninitializedReadNode(ExpressionNode):
     def get_var(self):
         return self._var
 
-    def  get_execute_args(frame):
+    def  get_execute_args(self, frame):
         return self._specialize().get_execute_args(frame)
 
     def execute(self, frame):
@@ -36,7 +36,7 @@ class UninitializedReadNode(ExpressionNode):
 
 class UninitializedArgumentReadNode(UninitializedReadNode):
 
-    def  get_execute_args(frame):
+    def  get_execute_args(self, frame):
         return self._specialize().get_execute_args(frame)
 
     def _specialize(self):
@@ -61,7 +61,7 @@ class UninitializedWriteNode(ExpressionNode):
     def get_var(self):
         return self._var
 
-    def  get_execute_args(frame):
+    def  get_execute_args(self, frame):
         return self._specialize().get_execute_args(frame)
 
     def execute(self, frame):
@@ -259,6 +259,9 @@ class LocalSharedTempReadNode(_LocalVariableNode):
 
     def execute(self, frame):
         return frame.get_shared_temp(self._frame_idx)
+
+    def execute_prevaluated(self, frame, args):
+        return self.execute(frame)
 
     def get_execute_args(self, frame):
         return [frame.get_self(), String(self._var.get_name()), Context(frame)]

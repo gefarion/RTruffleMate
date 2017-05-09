@@ -22,9 +22,6 @@ class MateNode(ExpressionNode):
         else:
             return value
 
-    def execute(self, frame):
-        raise NotImplementedError("Subclasses need to implement execute(self, frame).")
-
     def reflective_op(self):
         raise NotImplementedError("Subclasses need to implement reflective_op(self).")
 
@@ -32,7 +29,6 @@ class MateNode(ExpressionNode):
         raise NotImplementedError("Subclasses need to implement mop_arguments(self).")
 
     def do_mate_semantics(self, frame, args):
-        assert receiver is not None
         assert frame is not None
 
         environment = args[0].get_meta_object_environment() or frame.get_meta_object_environment()

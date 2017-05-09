@@ -1,8 +1,5 @@
 from mate.interpreter.nodes.mate_node import MateNode
 from mate.vm.constants import ReflectiveOp
-from som.vmobjects.integer import Integer
-from som.vmobjects.string import String
-from som.vmobjects.context import Context
 
 class MateUninitializedReadNode(MateNode):
 

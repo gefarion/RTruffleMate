@@ -116,9 +116,11 @@ class _NonLocalVariableReadNode(_NonLocalVariableNode):
 
 class NonLocalArgumentReadNode(_NonLocalVariableReadNode):
 
-    def get_execute_args(self, frame):
-        return [frame.get_self(), Integer(self._frame_idx()), Context(frame)]
+    def execute_prevaluated(self, frame, args):
+        return self.execute(frame)
 
+    def get_execute_args(self, frame):
+        return [frame.get_self(), Integer(self._frame_idx + 1), Context(frame)]
 
     def _do_var_read(self, block):
         assert isinstance(block, Block)
@@ -231,7 +233,7 @@ class LocalArgumentReadNode(_LocalVariableNode):
         return frame.get_argument(self._frame_idx)
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), Integer(self._frame_idx), Context(frame)]
+        return [frame.get_self(), Integer(self._frame_idx + 1), Context(frame)]
 
     def execute_prevaluated(self, frame, args):
         return self.execute(frame)

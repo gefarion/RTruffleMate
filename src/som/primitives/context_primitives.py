@@ -20,6 +20,7 @@ def _receiver(ivkbl, rcvr, args):
     return frame.get_self()
 
 def _local_at(ivkbl, rcvr, args):
+    # Arreglar esta funcion dado que deberia recibir un identificador en lugar de un int
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -41,7 +42,7 @@ def _arg_at(ivkbl, rcvr, args):
     assert isinstance(index, Integer)
 
     i = index.get_embedded_integer()
-    return frame.get_argument(i)
+    return frame.get_argument(i - 1)
 
 def _local_at_put(ivkbl, rcvr, args):
     assert isinstance(rcvr, Context)
@@ -65,6 +66,6 @@ class ContextPrimitives(Primitives):
         self._install_instance_primitive(Primitive("sender", self._universe, _sender))
         self._install_instance_primitive(Primitive("receiver", self._universe, _receiver))
         self._install_instance_primitive(Primitive("localAt:", self._universe, _local_at))
-        self._install_instance_primitive(Primitive("argAt", self._universe, _arg_at))
+        self._install_instance_primitive(Primitive("argAt:", self._universe, _arg_at))
         self._install_instance_primitive(Primitive("localAt:put:", self._universe, _local_at_put))
 

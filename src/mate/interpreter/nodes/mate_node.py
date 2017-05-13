@@ -1,6 +1,7 @@
 from som.interpreter.nodes.expression_node import ExpressionNode
 from mate.interpreter.mop import MOPDispatcher
 from mate.vm.constants import ReflectiveOp
+from som.vmobjects.object import Object
 
 class MateNode(ExpressionNode):
 
@@ -22,9 +23,6 @@ class MateNode(ExpressionNode):
         else:
             return value
 
-    # def reflective_op(self):
-    #     raise NotImplementedError("Subclasses need to implement reflective_op(self).")
-
     def mop_arguments(self, frame):
         raise NotImplementedError("Subclasses need to implement mop_arguments(self).")
 
@@ -32,11 +30,25 @@ class MateNode(ExpressionNode):
         assert frame is not None
 
         environment = args[0].get_meta_object_environment() or frame.get_meta_object_environment()
-        if not environment:
+
+        # No esta definido
+        if environment is None:
             return None
+
+        # No es nil (TODO: Ver como mejorar esto)
+        if not isinstance(environment, Object):
+            return None
+
+        print "[MATE] Encontrado environmentMO para " + str(self) + ", buscando metodo..."
 
         method = MOPDispatcher.lookup_invokable(self.reflective_op(), environment)
         if method is None:
+            print "[MATE] Metodo no encontrado"
             return None
         else:
+            print "[MATE] Metodo " + str(method) + " encontrado " + " ejecutando con " + str(args)
+
+            # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
+            args[0].set_meta_object_environment(None)
+
             return method.invoke(args[0], args[1:])

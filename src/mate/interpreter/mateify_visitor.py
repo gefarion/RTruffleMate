@@ -33,6 +33,9 @@ class MateifyVisitor(object):
     def visit_UninitializedArgumentReadNode(self, node):
         MateUninitializedArgumentReadNode(node)
 
+    def visit_LocalArgumentReadNode(self, node):
+        MateLocalArgumentReadNode(node)
+
     def visit_UninitializedWriteNode(self, node):
         MateUninitializedWriteNode(node)
 
@@ -48,6 +51,9 @@ class MateifyVisitor(object):
     def visit_ReturnNonLocalNode(self, node):
         MateReturnNonLocalNode(node)
 
+    def visit_CatchNonLocalReturnNode(self, node):
+        pass
+
     # Layout MOP????
     # TODO
 
@@ -57,9 +63,6 @@ class MateifyVisitor(object):
         pass
 
     def visit_LocalSelfReadNode(self, node):
-        pass
-
-    def visit_LocalArgumentReadNode(self, node):
         pass
 
     def visit_Invokable(self, node):
@@ -138,9 +141,6 @@ class MateifyVisitor(object):
         pass
         
     def visit_LocalSuperReadNode(self, node):
-        pass
-        
-    def visit_CatchNonLocalReturnNode(self, node):
         pass
         
     def visit_ContextualNode(self, node):

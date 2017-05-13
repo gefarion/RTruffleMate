@@ -9,15 +9,21 @@ class MOPDispatcher(object):
 
 	@staticmethod
 	def lookup_invokable(reflective_op, enviroment):
-		metaClass = MOPDispatcher.meta_class_for_operation(reflective_op, enviroment)
-		if not metaClass:
-			return None
 
+		print "[MATE] Buscando metaclase para op " + str(reflective_op)
+		metaclass = MOPDispatcher.meta_class_for_operation(reflective_op, enviroment)
+		if not metaclass:
+			return None
+		print "[MATE] Metaclase encontrada: " + str(metaclass)
+
+		print "[MATE] Buscando selector para op " + str(reflective_op)
 		selector = MOPDispatcher.selector_for_operation(reflective_op)
 		if not selector:
 			return None
+		print "[MATE] Selector encontrado: " + str(selector)
 
-		return metaClass.get_class(som.vm.universe.get_current()).lookup_invokable(selector)
+		print "[MATE] Buscando metodo " + str(selector) + " en metaclase " + str(metaclass)
+		return metaclass.get_class(som.vm.universe.get_current()).lookup_invokable(selector)
 
 	@staticmethod
 	def selector_for_operation(reflective_op):

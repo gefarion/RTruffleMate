@@ -3,6 +3,7 @@ from som.vmobjects.abstract_object import AbstractObject
 from som.vmobjects.primitive import Primitive
 from som.vmobjects.context import Context
 from som.vmobjects.integer import Integer
+from som.vmobjects.string import String
 from som.interpreter.frame import Frame
 
 def _method(ivkbl, rcvr, args):
@@ -20,17 +21,16 @@ def _receiver(ivkbl, rcvr, args):
     return frame.get_self()
 
 def _local_at(ivkbl, rcvr, args):
-    # Arreglar esta funcion dado que deberia recibir un identificador en lugar de un int
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
     assert isinstance(frame, Frame)
 
-    index = args[0]
-    assert isinstance(index, Integer)
+    name = args[0]
+    assert isinstance(name, String)
 
-    i = index.get_embedded_integer()
-    return frame.get_temp(i)
+    s = name.get_embedded_string()
+    return frame.get_temp_by_name(s)
 
 def _arg_at(ivkbl, rcvr, args):
     assert isinstance(rcvr, Context)
@@ -50,14 +50,15 @@ def _local_at_put(ivkbl, rcvr, args):
     frame = rcvr.get_embedded_frame()
     assert isinstance(frame, Frame)
 
-    index = args[0]
-    assert isinstance(index, Integer)
+    name = args[0]
+    assert isinstance(name, String)
 
     value = args[1]
     assert isinstance(value, AbstractObject)
 
-    i = index.get_embedded_integer()
-    return frame.set_temp(i, value)
+    s = name.get_embedded_string()
+    frame.set_temp_by_name(s, value)
+    return rcvr
 
 class ContextPrimitives(Primitives):
 

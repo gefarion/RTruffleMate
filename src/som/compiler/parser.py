@@ -6,7 +6,7 @@ from ..interpreter.nodes.block_node       import BlockNode, BlockNodeWithContext
 from ..interpreter.nodes.global_read_node import UninitializedGlobalReadNode
 from ..interpreter.nodes.literal_node     import LiteralNode
 from ..interpreter.nodes.message.uninitialized_node import UninitializedMessageNode
-from ..interpreter.nodes.return_non_local_node import ReturnNonLocalNode
+from ..interpreter.nodes.return_non_local_node import ReturnNonLocalNode, ReturnLocalNode
 from ..interpreter.nodes.sequence_node    import SequenceNode
 
 from .lexer                     import Lexer
@@ -341,7 +341,8 @@ class Parser(object):
             mgenc.make_catch_non_local_return()
             return self._assign_source(node, coord)
         else:
-            return exp
+            node = ReturnLocalNode(exp)
+            return self._assign_source(node, coord)
 
     def _expression(self, mgenc):
         self._peek_for_next_symbol_from_lexer()

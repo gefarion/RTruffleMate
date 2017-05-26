@@ -10,19 +10,14 @@ class MOPDispatcher(object):
 	@staticmethod
 	def lookup_invokable(reflective_op, enviroment):
 
-		print "[MATE] Buscando metaclase para op " + str(reflective_op)
 		metaclass = MOPDispatcher.meta_class_for_operation(reflective_op, enviroment)
 		if not metaclass:
 			return None
-		print "[MATE] Metaclase encontrada: " + str(metaclass)
 
-		print "[MATE] Buscando selector para op " + str(reflective_op)
 		selector = MOPDispatcher.selector_for_operation(reflective_op)
 		if not selector:
 			return None
-		print "[MATE] Selector encontrado: " + str(selector)
 
-		print "[MATE] Buscando metodo " + str(selector) + " en metaclase " + str(metaclass)
 		return metaclass.get_class(som.vm.universe.get_current()).lookup_invokable(selector)
 
 	@staticmethod
@@ -32,15 +27,15 @@ class MOPDispatcher(object):
 			ReflectiveOp.MessageLookup:      "find:since:",
 			ReflectiveOp.MessageActivation:  "activate:withArguments:",
 
-			ReflectiveOp.ExecutorReadField:  "read:", # Listo
-			ReflectiveOp.ExecutorWriteField: "write:value:", # Listo
+			ReflectiveOp.ExecutorReadField:  "read:",
+			ReflectiveOp.ExecutorWriteField: "write:value:",
 
 			ReflectiveOp.ExecutorReturn:     "return:",
 
-			ReflectiveOp.ExecutorLocalArg:   "readLocalArgument:inFrame:", # Listo
+			ReflectiveOp.ExecutorLocalArg:   "readLocalArgument:inFrame:",
 
-			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:", # Listo
-			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:value:", # Listo
+			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:",
+			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:value:",
 
 			ReflectiveOp.LayoutReadField:    "read:",
 			ReflectiveOp.LayoutWriteField:   "write:value:",

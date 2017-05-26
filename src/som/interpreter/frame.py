@@ -24,7 +24,7 @@ class Frame(object):
     _virtualizable_    = ['_temps[*]']
 
     def __init__(self, receiver, arguments, arg_mapping, num_local_temps,
-                 num_context_temps):
+                 num_context_temps, local_mapping=None):
         make_sure_not_resized(arguments)
         make_sure_not_resized(arg_mapping)
         self = jit.hint(self, access_directly=True, fresh_virtualizable=True)
@@ -32,6 +32,7 @@ class Frame(object):
         self._arguments       = arguments
         self._meta_object_environment = None
         self._on_stack        = _FrameOnStackMarker()
+        self._local_mapping = local_mapping
         if num_local_temps == 0:
             self._temps       = _EMPTY_LIST
         else:
@@ -71,6 +72,14 @@ class Frame(object):
         assert 0 <= index < len(temps)
         assert temps is not None
         return temps[index]
+
+    def get_temp_by_name(self, name):
+        jit.promote(name)
+        return self.get_temp(self._local_mapping[name])
+
+    def set_temp_by_name(self, name, value):
+        jit.promote(name)
+        self.set_temp(self._local_mapping[name], value)
 
     def set_temp(self, index, value):
         jit.promote(index)

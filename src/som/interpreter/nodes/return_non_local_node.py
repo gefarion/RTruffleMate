@@ -2,7 +2,32 @@ from .contextual_node import ContextualNode
 from .expression_node import ExpressionNode
 
 from ..control_flow   import ReturnException
+from .expression_node import ExpressionNode
 
+class ReturnLocalNode(ExpressionNode):
+
+    _immutable_fields_ = ['_expr?']
+    _child_nodes_      = ['_expr']
+
+    def __init__(self, expr, source_section=None):
+        ExpressionNode.__init__(self, source_section)
+        self._expr = self.adopt_child(expr)
+
+    def get_execute_args(self, frame):
+        return [self._expr.execute(frame)]
+
+    def get_expr(self):
+        return self._expr
+
+    def execute(self, frame):
+        return self._expr.execute(frame)
+
+    def _accept(self, visitor):
+        visitor.visit_ReturnLocalNode(self)
+
+    def _children_accept(self, visitor):
+        ExpressionNode._children_accept(self, visitor)
+        self._expr.accept(visitor)
 
 class ReturnNonLocalNode(ContextualNode):
 
@@ -15,11 +40,10 @@ class ReturnNonLocalNode(ContextualNode):
         self._universe = universe
 
     def get_execute_args(self, frame):
-        result = self._expr.execute(frame)
-        return [frame.get_self(), result]
+        return [self._expr.execute(frame)]
 
     def execute_prevaluated(self, frame, args):
-        result = args[1]
+        result = args[0]
         block = self.determine_block(frame)
 
         if block.is_outer_on_stack():
@@ -34,7 +58,14 @@ class ReturnNonLocalNode(ContextualNode):
 
     def execute(self, frame):
         result = self._expr.execute(frame)
-        return self.execute_prevaluated(frame, [None, result])
+        block = self.determine_block(frame)
+
+        if block.is_outer_on_stack():
+            raise ReturnException(result, block.get_on_stack_marker())
+        else:
+            block      = frame.get_self()
+            outer_self = block.get_outer_self()
+            return outer_self.send_escaped_block(block, self._universe)
 
     def _accept(self, visitor):
         visitor.visit_ReturnNonLocalNode(self)

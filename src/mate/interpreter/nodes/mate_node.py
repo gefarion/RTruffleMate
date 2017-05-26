@@ -15,40 +15,34 @@ class MateNode(ExpressionNode):
 
     def execute(self, frame):
 
-        args = self._som_node.get_execute_args(frame)
-        value = self.do_mate_semantics(frame, args)
+        value = self.do_mate_semantics(frame)
 
         if value is None:
-            return self._som_node.execute_prevaluated(frame, args)
+            return self._som_node.execute(frame)
         else:
             return value
 
-    def mop_arguments(self, frame):
-        raise NotImplementedError("Subclasses need to implement mop_arguments(self).")
+    def get_self(frame):
+        return frame.get_self()
 
-    def do_mate_semantics(self, frame, args):
+    def do_mate_semantics(self, frame):
         assert frame is not None
 
-        environment = args[0].get_meta_object_environment() or frame.get_meta_object_environment()
+        receiver = frame.get_self()
+        environment = receiver.get_meta_object_environment() or frame.get_meta_object_environment()
 
-        # No esta definido
-        if environment is None:
+        # No esta definido o es Nil
+        if environment is None or not isinstance(environment, Object):
             return None
-
-        # No es nil (TODO: Ver como mejorar esto)
-        if not isinstance(environment, Object):
-            return None
-
-        print "[MATE] Encontrado environmentMO para " + str(self) + ", buscando metodo..."
 
         method = MOPDispatcher.lookup_invokable(self.reflective_op(), environment)
         if method is None:
-            print "[MATE] Metodo no encontrado"
+            # El mate enviroment no define el methodo correspondiente a este nodo
             return None
-        else:
-            print "[MATE] Metodo " + str(method) + " encontrado " + " ejecutando con " + str(args)
 
-            # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-            args[0].set_meta_object_environment(None)
+        args = self._som_node.get_execute_args(frame)
 
-            return method.invoke(args[0], args[1:])
+        # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
+        receiver.set_meta_object_environment(None)
+
+        return method.invoke(receiver, args)

@@ -25,6 +25,7 @@ class AbstractMessageNode(ExpressionNode):
     @unroll_safe
     def _evaluate_rcvr_and_args(self, frame):
         rcvr = self._rcvr_expr.execute(frame)
+
         assert isinstance(rcvr, AbstractObject)
         if len(self._arg_exprs) == 0:
             args = []

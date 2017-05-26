@@ -101,7 +101,7 @@ class _NonLocalVariableNode(ContextualNode):
 class _NonLocalVariableReadNode(_NonLocalVariableNode):
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), String(self._var.get_name()), Context(frame)]
+        return [String(self._var.get_name()), Context(frame)]
 
     def execute_prevaluated(self, frame, args):
         return self.execute(frame)
@@ -120,7 +120,7 @@ class NonLocalArgumentReadNode(_NonLocalVariableReadNode):
         return self.execute(frame)
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), Integer(self._frame_idx + 1), Context(frame)]
+        return [Integer(self._frame_idx + 1), Context(frame)]
 
     def _do_var_read(self, block):
         assert isinstance(block, Block)
@@ -193,7 +193,7 @@ class NonLocalTempWriteNode(_NonLocalVariableNode):
 
     def get_execute_args(self, frame):
         value = self._value_expr.execute(frame)
-        return [frame.get_self(), String(self._var.get_name()), Context(frame), value]
+        return [String(self._var.get_name()), Context(frame), value]
 
     def execute_prevaluated(self, frame, args):
         value = args[3]
@@ -233,7 +233,7 @@ class LocalArgumentReadNode(_LocalVariableNode):
         return frame.get_argument(self._frame_idx)
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), Integer(self._frame_idx + 1), Context(frame)]
+        return [Integer(self._frame_idx + 1), Context(frame)]
 
     def execute_prevaluated(self, frame, args):
         return self.execute(frame)
@@ -251,7 +251,7 @@ class LocalUnsharedTempReadNode(_LocalVariableNode):
         return self.execute(frame)
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), String(self._var.get_name()), Context(frame)]
+        return [String(self._var.get_name()), Context(frame)]
 
     def _accept(self, visitor):
         visitor.visit_LocalUnsharedTempReadNode(self)
@@ -266,7 +266,7 @@ class LocalSharedTempReadNode(_LocalVariableNode):
         return self.execute(frame)
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), String(self._var.get_name()), Context(frame)]
+        return [String(self._var.get_name()), Context(frame)]
 
     def _accept(self, visitor):
         visitor.visit_LocalSharedTempReadNode(self)
@@ -321,10 +321,10 @@ class _LocalVariableWriteNode(_LocalVariableNode):
         self._expr = self.adopt_child(expr)
 
     def get_execute_args(self, frame):
-        return [frame.get_self(), String(self._var.get_name()), Context(frame), self._expr.execute(frame)]
+        return [String(self._var.get_name()), Context(frame), self._expr.execute(frame)]
 
     def execute_prevaluated(self, frame, args):
-        val = args[3]
+        val = args[2]
         self._do_write(frame, val)
         return val
 

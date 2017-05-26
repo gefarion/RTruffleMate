@@ -67,6 +67,11 @@ def _instVarAtPut(ivkbl, rcvr, args):
     rcvr.set_field(idx.get_embedded_integer() - 1, val)
     return val
 
+def _instVarNamedPut(ivkbl, rcvr, args):
+    i = rcvr.get_field_index(args[0])
+    val  = args[1]
+    rcvr.set_field(i, val)
+    return rcvr
 
 def _instVarNamed(ivkbl, rcvr, args):
     i = rcvr.get_field_index(args[0])
@@ -99,6 +104,7 @@ class ObjectPrimitives(Primitives):
         self._install_instance_primitive(Primitive("instVarAt:", self._universe, _instVarAt))
         self._install_instance_primitive(Primitive("instVarAt:put:", self._universe, _instVarAtPut))
         self._install_instance_primitive(Primitive("instVarNamed:",  self._universe, _instVarNamed))
+        self._install_instance_primitive(Primitive("instVarNamed:put:",  self._universe, _instVarNamedPut))
         
         self._install_instance_primitive(Primitive("halt",  self._universe, _halt))
         self._install_instance_primitive(Primitive("class", self._universe, _class))

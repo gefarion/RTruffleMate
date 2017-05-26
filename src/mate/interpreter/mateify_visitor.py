@@ -42,14 +42,13 @@ class MateifyVisitor(object):
     def visit_UninitializedReadNode(self, node):
         MateUninitializedReadNode(node)
 
-    def visit_FieldWriteNode(self, node):
-        MateFieldWriteNode(node)
-
     def visit_ReturnLocalNode(self, node):
         MateReturnLocalNode(node)
 
+    def visit_FieldWriteNode(self, node):
+        MateFieldWriteNode(node)
+
     def visit_FieldReadNode(self, node):
-        return
         MateFieldReadNode(node)
 
     def visit_ReturnNonLocalNode(self, node):

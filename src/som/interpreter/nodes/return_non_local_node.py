@@ -13,9 +13,6 @@ class ReturnLocalNode(ExpressionNode):
         ExpressionNode.__init__(self, source_section)
         self._expr = self.adopt_child(expr)
 
-    def get_execute_args(self, frame):
-        return [self._expr.execute(frame)]
-
     def get_expr(self):
         return self._expr
 
@@ -38,20 +35,6 @@ class ReturnNonLocalNode(ContextualNode):
         ContextualNode.__init__(self, context_level, source_section)
         self._expr     = self.adopt_child(expr)
         self._universe = universe
-
-    def get_execute_args(self, frame):
-        return [self._expr.execute(frame)]
-
-    def execute_prevaluated(self, frame, args):
-        result = args[0]
-        block = self.determine_block(frame)
-
-        if block.is_outer_on_stack():
-            raise ReturnException(result, block.get_on_stack_marker())
-        else:
-            block      = frame.get_self()
-            outer_self = block.get_outer_self()
-            return outer_self.send_escaped_block(block, self._universe)
 
     def get_expr(self):
         return self._expr

@@ -39,9 +39,6 @@ class FieldReadNode(_AbstractFieldNode):
         _AbstractFieldNode.__init__(self, self_exp, field_idx, source_section)
         self._read = self.adopt_child(create_read(field_idx))
 
-    def get_execute_args(self, frame):
-        return [frame.get_self().get_field_name(self._field_idx)]
-
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
         assert isinstance(self_obj, Object)
@@ -70,9 +67,6 @@ class FieldWriteNode(_AbstractFieldNode):
 
     def value(self, frame):
         return self._value_exp.execute(frame)
-
-    def get_execute_args(self, frame):
-        return [frame.get_self().get_field_name(self._field_idx), self.value(frame)]
 
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)

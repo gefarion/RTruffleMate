@@ -3,18 +3,18 @@ from mate.vm.constants import ReflectiveOp
 
 
 class MateUninitializedDispatchNode(MateNode):
-    
-    def reflectiveOp(self):
+
+    def reflective_op(self):
     	return ReflectiveOp.MessageActivation 
 
 
 class MateGenericDispatchNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
     	return ReflectiveOp.MessageActivation 
 
 
 class MateSuperDispatchNode(MateNode):
 
-    def reflectiveOp(self):
+    def reflective_op(self):
     	return ReflectiveOp.MessageActivation

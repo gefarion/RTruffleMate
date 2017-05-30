@@ -30,9 +30,6 @@ class MateifyVisitor(object):
 
     # Semantics MOP
 
-    def visit_UninitializedArgumentReadNode(self, node):
-        MateUninitializedArgumentReadNode(node)
-
     def visit_LocalArgumentReadNode(self, node):
         MateLocalArgumentReadNode(node)
 
@@ -53,13 +50,15 @@ class MateifyVisitor(object):
 
     def visit_ReturnNonLocalNode(self, node):
         return
-        MateReturnNonLocalNode(node)
 
 
     # Layout MOP????
     # TODO
 
     # Otros nodos
+
+    def visit_UninitializedArgumentReadNode(self, node):
+        pass
 
     def visit_CatchNonLocalReturnNode(self, node):
         pass

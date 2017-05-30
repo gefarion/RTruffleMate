@@ -13,6 +13,9 @@ class MateNode(ExpressionNode):
         som_node.replace(self)
         self._som_node = self.adopt_child(som_node)
 
+    def get_meta_args(self, frame):
+        raise NotImplementedError("Subclass must implement this method")
+
     def execute(self, frame):
 
         value = self.do_mate_semantics(frame)
@@ -21,9 +24,6 @@ class MateNode(ExpressionNode):
             return self._som_node.execute(frame)
         else:
             return value
-
-    def get_self(frame):
-        return frame.get_self()
 
     def do_mate_semantics(self, frame):
         assert frame is not None
@@ -40,9 +40,11 @@ class MateNode(ExpressionNode):
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None
 
-        args = self._som_node.get_execute_args(frame)
+        args = self.get_meta_args(frame)
 
         # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
         receiver.set_meta_object_environment(None)
+        res = method.invoke(receiver, args)
+        receiver.set_meta_object_environment(environment)
 
-        return method.invoke(receiver, args)
+        return res

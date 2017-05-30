@@ -4,5 +4,5 @@ from mate.vm.constants import ReflectiveOp
 
 class MateGenericMessageNode(MateNode):
 
-	def reflectiveOp(self):
+	def reflective_op(self):
 		return ReflectiveOp.MessageLookup

@@ -11,6 +11,7 @@ from mate.interpreter.nodes.variable_read_node import *
 from mate.interpreter.nodes.message.abstract_node import *
 from mate.interpreter.nodes.message.generic_node import *
 from mate.interpreter.nodes.message.uninitialized_node import *
+from mate.interpreter.invokable import *
 
 class MateifyVisitor(object):
 
@@ -27,6 +28,9 @@ class MateifyVisitor(object):
 
     def visit_UninitializedDispatchNode(self, node):
         pass
+
+    def visit_Invokable(self, node):
+        MateInvokable(node)
 
     # Semantics MOP
 
@@ -67,9 +71,6 @@ class MateifyVisitor(object):
         pass
 
     def visit_LocalSelfReadNode(self, node):
-        pass
-
-    def visit_Invokable(self, node):
         pass
 
     def visit_SequenceNode(self, node):

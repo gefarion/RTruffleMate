@@ -29,7 +29,7 @@ jitdriver = jit.JitDriver(
 class Invokable(Node):
 
     _immutable_fields_ = ['_expr_or_sequence?', '_universe', '_arg_mapping[*]',
-                          '_num_local_temps', '_num_context_temps', 'local_mapping[*]']
+                          '_num_local_temps', '_num_context_temps', '_local_mapping[*]', '_method']
     _child_nodes_      = ['_expr_or_sequence']
 
     def __init__(self, source_section, expr_or_sequence,
@@ -43,6 +43,13 @@ class Invokable(Node):
         self._local_mapping = local_mapping
         self._num_local_temps   = number_of_local_temps
         self._num_context_temps = number_of_context_temps
+        self._method = None
+
+    def set_method(self, method):
+        self._method = method
+
+    def get_method(self):
+        return self._method
 
     def invoke(self, receiver, arguments):
         assert arguments is not None

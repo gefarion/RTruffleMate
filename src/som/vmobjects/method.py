@@ -62,7 +62,7 @@ class Method(AbstractObject):
     def __str__(self):
         return ("Method(" + self.get_holder().get_name().get_string() + ">>" +
                 str(self.get_signature()) + ")")
-    
+
     def get_class(self, universe):
         return universe.methodClass
 

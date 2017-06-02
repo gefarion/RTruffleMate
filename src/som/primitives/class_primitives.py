@@ -1,7 +1,6 @@
 from som.primitives.primitives import Primitives
-
-from som.vmobjects.primitive   import Primitive
-
+from som.vm.globals import falseObject, trueObject
+from som.vmobjects.primitive       import Primitive
 
 def _new(ivkbl, rcvr, args):
     return ivkbl.get_universe().new_instance(rcvr)
@@ -17,11 +16,22 @@ def _super_class(ivkbl, rcvr, args):
 
 def _methods(ivkbl, rcvr, args):
     return rcvr.get_instance_invokables()
-    
 
 def _fields(ivkbl, rcvr, args):
     return rcvr.get_instance_fields()
 
+def _has_method(ivkbl, rcvr, args):
+    signature = args[0]
+
+    invokables = rcvr.get_instance_invokables()
+    ninvokables = invokables.get_number_of_indexable_fields()
+
+    for i in xrange(0, ninvokables):
+        invokable = invokables.get_indexable_field(i)
+        if invokable.get_signature() == signature:
+            return trueObject
+
+    return falseObject
 
 class ClassPrimitives(Primitives):
     def install_primitives(self):
@@ -30,3 +40,4 @@ class ClassPrimitives(Primitives):
         self._install_instance_primitive(Primitive("superclass", self._universe, _super_class))
         self._install_instance_primitive(Primitive("methods",    self._universe, _methods))
         self._install_instance_primitive(Primitive("fields",     self._universe, _fields))
+        self._install_instance_primitive(Primitive("hasMethod",     self._universe, _has_method))

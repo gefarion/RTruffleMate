@@ -1,15 +1,16 @@
 from mate.interpreter.nodes.mate_node import MateNode
 from mate.vm.constants import ReflectiveOp
-
+from mate.interpreter.nodes.message.generic_node import MateGenericMessageNode
+from som.interpreter.nodes.message.generic_node import GenericMessageNode
 
 class MateUninitializedMessageNode(MateNode):
 
     def _specialize(self, frame, rcvr, args):
 
         if (isinstance(self._som_node._specialize(frame, rcvr, args), GenericMessageNode)):
-            return self._replace(MateGenericMessageNode(self._som_node))
+            return self.replace(MateGenericMessageNode(self._som_node))
         else:
-            return self._replace(self._som_node)
+            return self.replace(self._som_node)
 
     def execute(self, frame):
 

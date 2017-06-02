@@ -21,7 +21,7 @@ class MateifyVisitor(object):
     # Message MOP
 
     def visit_UninitializedMessageNode(self, node):
-        pass
+        MateUninitializedMessageNode(node)
 
     def visit_GenericMessageNode(self, node):
         pass

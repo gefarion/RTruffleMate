@@ -5,9 +5,9 @@ from som.interpreter.nodes.message.generic_node import GenericMessageNode
 
 class MateUninitializedMessageNode(MateNode):
 
-    def _specialize(self, frame, rcvr, args):
+    def _mate_specialize(self, frame, rcvr, args):
 
-        if (isinstance(self._som_node._specialize(frame, rcvr, args), GenericMessageNode)):
+        if (isinstance(self._som_node.message_specialize(frame, rcvr, args), GenericMessageNode)):
             return self.replace(MateGenericMessageNode(self._som_node))
         else:
             return self.replace(self._som_node)
@@ -15,7 +15,7 @@ class MateUninitializedMessageNode(MateNode):
     def execute(self, frame):
 
         rcvr, args = self._som_node._evaluate_rcvr_and_args(frame)
-        return self._specialize(frame, rcvr, args).execute_evaluated(frame, rcvr, args)
+        return self._mate_specialize(frame, rcvr, args).execute_evaluated(frame, rcvr, args)
 
     def reflective_op(self):
         return ReflectiveOp.MessageLookup

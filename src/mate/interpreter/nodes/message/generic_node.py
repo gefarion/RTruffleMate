@@ -15,7 +15,6 @@ class MateGenericMessageNode(MateNode):
 
         method = self.lookup_invokable(frame, receiver)
         if method:
-            print self._som_node.get_selector()
             return method.invoke(receiver, args)
         else:
             return self._som_node.execute_evaluated(frame, receiver, args)

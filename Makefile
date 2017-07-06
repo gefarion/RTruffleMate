@@ -38,6 +38,14 @@ som-micro:
 mate-micro:
 	rebench -c benchmarks.conf mate-micro vm:RTruffleMATE-no-jit
 
+#make BENCH=Storage.som som-bench
+som-bench:
+	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+
+#make BENCH=Storage.som mate-bench
+mate-bench:
+	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+
 clean:
 	@rm -f RTruffleMATE-no-jit
 	@rm -f RTruffleMATE-jit

@@ -24,6 +24,9 @@ class _AbstractFieldAccessorNode(Node):
         self._field_idx = field_idx
         self._depth     = depth
 
+    def field_idx(self):
+        return self._field_idx
+
     def _accept(self, visitor):
         raise NotImplementedError("You cant visit this node")
 

@@ -35,9 +35,9 @@ def _has_method(ivkbl, rcvr, args):
 
 class ClassPrimitives(Primitives):
     def install_primitives(self):
-        self._install_instance_primitive(Primitive("new",        self._universe, _new))
+        self._install_instance_primitive(Primitive("basicNew",   self._universe, _new))
         self._install_instance_primitive(Primitive("name",       self._universe, _name))
         self._install_instance_primitive(Primitive("superclass", self._universe, _super_class))
         self._install_instance_primitive(Primitive("methods",    self._universe, _methods))
         self._install_instance_primitive(Primitive("fields",     self._universe, _fields))
-        self._install_instance_primitive(Primitive("hasMethod",     self._universe, _has_method))
+        self._install_instance_primitive(Primitive("hasMethod",  self._universe, _has_method))

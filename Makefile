@@ -32,6 +32,9 @@ vmtest:
 matevmtest:
 	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/TestHarness.som;
 
+matevmmatetestsuite:
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate:Smalltalk/Mate/MOP:TestSuite:TestSuite/MateMOPSuite:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/DelegationProxies::Examples/Benchmarks/Mate/Immutability/Handles MateTestHarness.som;
+
 som-micro:
 	rebench -c benchmarks.conf som-micro vm:RTruffleSOM-no-jit
 

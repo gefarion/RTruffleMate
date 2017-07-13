@@ -311,9 +311,10 @@ class Parser(object):
                 # the end of the method has been found (EndTerm) - make it
                 # implicitly return "self"
                 self_exp = self._variable_read(mgenc, "self")
-                self_coord = self._lexer.get_source_coordinate()
-                self._assign_source(self_exp, self_coord)
-                expressions.append(self_exp)
+                node = ReturnLocalNode(self_exp)
+                self._assign_source(node, self._lexer.get_source_coordinate())
+
+                expressions.append(node)
                 return self._create_sequence_node(coordinate, expressions)
 
             expressions.append(self._expression(mgenc))

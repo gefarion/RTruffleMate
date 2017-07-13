@@ -29,7 +29,7 @@ class MateNode(ExpressionNode):
         assert frame is not None
 
         receiver = frame.get_self()
-        environment = receiver.get_meta_object_environment() or frame.get_meta_object_environment()
+        environment = frame.get_meta_object_environment() or receiver.get_meta_object_environment()
 
         # No esta definido o es Nil
         if environment is None or not isinstance(environment, Object):

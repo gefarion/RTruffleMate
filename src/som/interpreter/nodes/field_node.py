@@ -45,7 +45,7 @@ class FieldReadNode(_AbstractFieldNode):
         if we_are_jitted():
             return self_obj.get_field(self._field_idx)
         else:
-            return self._read.read(self_obj)
+            return self._read.read(frame, self_obj)
 
     def _accept(self, visitor):
         visitor.visit_FieldReadNode(self)
@@ -78,7 +78,7 @@ class FieldWriteNode(_AbstractFieldNode):
         if we_are_jitted():
             self_obj.set_field(self._field_idx, value)
         else:
-            self._write.write(self_obj, value)
+            self._write.write(frame, self_obj, value)
 
         return value
 

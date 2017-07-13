@@ -33,8 +33,8 @@ class _AbstractFieldAccessorNode(Node):
 
 class _AbstractReadFieldNode(_AbstractFieldAccessorNode):
 
-    def _specialize_and_read(self, obj, reason, next_read_node):
-        return self._specialize(obj, reason, next_read_node).read(obj)
+    def _specialize_and_read(self, frame, obj, reason, next_read_node):
+        return self._specialize(obj, reason, next_read_node).read(frame, obj)
 
     def _specialize(self, obj, reason, next_read_node):
         assert isinstance(obj, Object)
@@ -54,7 +54,7 @@ class _AbstractReadFieldNode(_AbstractFieldAccessorNode):
 
 class _UninitializedReadFieldNode(_AbstractReadFieldNode):
 
-    def read(self, obj):
+    def read(self, frame, obj):
         if we_are_jitted():
             assert False
         if self._depth < _max_chain_length:
@@ -62,7 +62,7 @@ class _UninitializedReadFieldNode(_AbstractReadFieldNode):
                                                     self._depth + 1)
         else:
             next_node = _GenericReadFieldNode(self._field_idx, self._depth + 1)
-        return self._specialize_and_read(obj, "uninitialized node", next_node)
+        return self._specialize_and_read(frame, obj, "uninitialized node", next_node)
 
     def _accept(self, visitor):
         visitor.visit_UninitializedReadFieldNode(self)
@@ -79,11 +79,11 @@ class _SpecializedReadFieldNode(_AbstractReadFieldNode):
         self._location = location
         self._next = self.adopt_child(next_read_node)
 
-    def read(self, obj):
+    def read(self, frame, obj):
         if self._layout is obj.get_object_layout():
             return self._location.read_location(obj)
         else:
-            return self._respecialize_or_next(obj).read(obj)
+            return self._respecialize_or_next(obj).read(frame, obj)
 
     def _respecialize_or_next(self, obj):
         if self._layout.is_for_same_class(obj.get_class(None)):
@@ -101,7 +101,7 @@ class _SpecializedReadFieldNode(_AbstractReadFieldNode):
 
 class _GenericReadFieldNode(_AbstractReadFieldNode):
 
-    def read(self, obj):
+    def read(self, frame, obj):
         return obj.get_field(self._field_idx)
 
     def _accept(self, visitor):
@@ -127,7 +127,7 @@ class _AbstractWriteFieldNode(_AbstractFieldAccessorNode):
 
 class _UninitializedWriteFieldNode(_AbstractWriteFieldNode):
 
-    def write(self, obj, value):
+    def write(self, frame, obj, value):
         if self._depth < _max_chain_length:
             next_node = _UninitializedWriteFieldNode(self._field_idx,
                                                      self._depth + 1)
@@ -153,7 +153,7 @@ class _SpecializedWriteFieldNode(_AbstractWriteFieldNode):
         self._location = location
         self._next = self.adopt_child(next_write_node)
 
-    def _do_write(self, obj, value):
+    def _do_write(self, frame, obj, value):
         try:
             self._location.write_location(obj, value)
             return
@@ -162,17 +162,17 @@ class _SpecializedWriteFieldNode(_AbstractWriteFieldNode):
                                                       value.__class__)
         except GeneralizeStorageLocationException:
             obj._update_layout_with_generalized_field(self._field_idx)
-        self._respecialize(obj, value, self._next).write(obj, value)
+        self._respecialize(obj, value, self._next).write(frame, obj, value)
 
-    def write(self, obj, value):
+    def write(self, frame, obj, value):
         if self._layout is obj.get_object_layout():
-            self._do_write(obj, value)
+            self._do_write(frame, obj, value)
         else:
             if self._layout.is_for_same_class(obj.get_class(None)):
                 self._write_and_respecialize(obj, value, "update outdated node",
                                              self._next)
             else:
-                self._next.write(obj, value)
+                self._next.write(frame, obj, value)
 
     def _children_accept(self, visitor):
         _AbstractWriteFieldNode._children_accept(self, visitor)
@@ -184,7 +184,7 @@ class _SpecializedWriteFieldNode(_AbstractWriteFieldNode):
 
 class _GenericWriteFieldNode(_AbstractWriteFieldNode):
 
-    def write(self, obj, value):
+    def write(self, frame, obj, value):
         obj.set_field(self._field_idx, value)
 
     def _accept(self, visitor):

@@ -7,10 +7,10 @@ from som.vmobjects.object import Object
 
 class MateUninitializedAbstractFieldNode(MateNode):
 
-    def do_layout_mate_semantics(self, obj, value):
+    def do_layout_mate_semantics(self, frame, obj, value):
         assert obj is not None
 
-        environment = obj.get_meta_object_environment()
+        environment = frame.get_meta_object_environment() or obj.get_meta_object_environment()
 
         # No esta definido o es Nil
         if environment is None or not isinstance(environment, Object):
@@ -31,11 +31,11 @@ class MateUninitializedAbstractFieldNode(MateNode):
 
 class MateUninitializedReadFieldNode(MateUninitializedAbstractFieldNode):
 
-    def read(self, obj):
-        value = self.do_layout_mate_semantics(obj, None)
+    def read(self, frame, obj):
+        value = self.do_layout_mate_semantics(frame, obj, None)
 
         if value is None:
-            return self._som_node.read(obj)
+            return self._som_node.read(frame, obj)
         else:
             return value
 
@@ -45,11 +45,11 @@ class MateUninitializedReadFieldNode(MateUninitializedAbstractFieldNode):
 
 class MateUninitializedWriteFieldNode(MateUninitializedAbstractFieldNode):
 
-    def write(self, obj, value_to_write):
-        value = self.do_layout_mate_semantics(obj, value_to_write)
+    def write(self, frame, obj, value_to_write):
+        value = self.do_layout_mate_semantics(frame, obj, value_to_write)
 
         if value is None:
-            return self._som_node.write(obj, value_to_write)
+            return self._som_node.write(frame, obj, value_to_write)
         else:
             return value
 

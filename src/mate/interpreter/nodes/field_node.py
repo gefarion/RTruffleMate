@@ -5,7 +5,7 @@ from som.vmobjects.integer import Integer
 class MateFieldReadNode(MateNode):
 
     def get_meta_args(self, frame):
-        return [frame.get_self().get_field_name(self._som_node.field_idx())]
+        return [Integer(self._som_node.field_idx() + 1)]
 
     def reflective_op(self):
         return ReflectiveOp.ExecutorReadField
@@ -14,7 +14,7 @@ class MateFieldReadNode(MateNode):
 class MateFieldWriteNode(MateNode):
 
     def get_meta_args(self, frame):
-        return [frame.get_self().get_field_name(self._som_node.field_idx()), self._som_node.value(frame)]
+        return [Integer(self._som_node.field_idx() + 1), self._som_node.value(frame)]
 
     def reflective_op(self):
         return ReflectiveOp.ExecutorWriteField

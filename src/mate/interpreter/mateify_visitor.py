@@ -11,24 +11,16 @@ from mate.interpreter.nodes.variable_read_node import *
 from mate.interpreter.nodes.message.abstract_node import *
 from mate.interpreter.nodes.message.generic_node import *
 from mate.interpreter.nodes.message.uninitialized_node import *
+from mate.interpreter.nodes.message.generic_node import *
 from mate.interpreter.invokable import *
 from mate.interpreter.objectstorage.field_accessor_node import *
 
 class MateifyVisitor(object):
 
-    def visit_Node(self, node):
-        pass
-
     # Message MOP
 
     def visit_UninitializedMessageNode(self, node):
-        MateUninitializedMessageNode(node)
-
-    def visit_GenericMessageNode(self, node):
-        pass
-
-    def visit_UninitializedDispatchNode(self, node):
-        pass
+        MateGenericMessageNode(node)
 
     def visit_Invokable(self, node):
         MateInvokable(node)
@@ -56,6 +48,8 @@ class MateifyVisitor(object):
     def visit_ReturnNonLocalNode(self, node):
         return
 
+    # Layout MOP
+
     def visit_UninitializedReadFieldNode(self, node):
         MateUninitializedReadFieldNode(node)
         pass
@@ -64,10 +58,10 @@ class MateifyVisitor(object):
         MateUninitializedWriteFieldNode(node)
         pass
 
-    # Layout MOP????
-    # TODO
-
     # Otros nodos
+
+    def visit_Node(self, node):
+        pass
 
     def visit_UninitializedArgumentReadNode(self, node):
         pass
@@ -175,4 +169,10 @@ class MateifyVisitor(object):
         pass
 
     def visit_SpecializedWriteFieldNode(self, node):
+        pass
+
+    def visit_GenericMessageNode(self, node):
+        pass
+
+    def visit_UninitializedDispatchNode(self, node):
         pass

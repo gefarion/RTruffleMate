@@ -22,6 +22,16 @@ class AbstractToDoNode(ExpressionNode):
         self._body_expr  = self.adopt_child(body_expr)
         self._universe   = universe
 
+    def evaluate_rcvr_and_args(self, frame):
+        rcvr  = self._rcvr_expr.execute(frame)
+        limit = self._limit_expr.execute(frame)
+        body  = self._body_expr.execute(frame)
+
+        return rcvr, [limit, body]
+
+    def get_universe(self):
+        return self._universe
+
     def execute(self, frame):
         rcvr  = self._rcvr_expr.execute(frame)
         limit = self._limit_expr.execute(frame)
@@ -59,6 +69,9 @@ class IntToIntDoNode(AbstractToDoNode):
             block_method.invoke(body_block, [self._universe.new_integer(i)])
             i += 1
 
+    def get_selector(self):
+        return self._universe.symbol_for("to:do:")
+
     @staticmethod
     def can_specialize(selector, rcvr, args, node):
         return (isinstance(args[0], Integer) and isinstance(rcvr, Integer) and
@@ -92,6 +105,9 @@ class IntToDoubleDoNode(AbstractToDoNode):
             double_driver.jit_merge_point(block_method = block_method)
             block_method.invoke(body_block, [self._universe.new_integer(i)])
             i += 1
+
+    def get_selector(self):
+        return self._universe.symbol_for("to:do")
 
     @staticmethod
     def can_specialize(selector, rcvr, args, node):

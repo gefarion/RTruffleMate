@@ -17,6 +17,19 @@ class IfTrueIfFalseNode(ExpressionNode):
         self._false_expr = self.adopt_child(false_expr)
         self._universe   = universe
 
+    def get_universe(self):
+        return self._universe
+
+    def get_selector(self):
+        return self._universe.symbol_for("ifTrue:ifFalse:")
+
+    def evaluate_rcvr_and_args(self, frame):
+        rcvr  = self._rcvr_expr.execute(frame)
+        true  = self._true_expr.execute(frame)
+        false = self._false_expr.execute(frame)
+
+        return rcvr, [true, false]
+
     def execute(self, frame):
         rcvr  = self._rcvr_expr.execute(frame)
         true  = self._true_expr.execute(frame)
@@ -66,6 +79,21 @@ class IfNode(ExpressionNode):
         self._branch_expr = self.adopt_child(branch_expr)
         self._condition   = condition_obj
         self._universe    = universe
+
+    def get_universe(self):
+        return self._universe
+
+    def get_selector(self):
+        if self._condition is trueObject:
+            return self._universe.symbol_for("ifTrue:")
+        else:
+            return self._universe.symbol_for("ifFalse")
+
+    def evaluate_rcvr_and_args(self, frame):
+        rcvr  = self._rcvr_expr.execute(frame)
+        branch = self._branch_expr.execute(frame)
+
+        return rcvr, [branch]
 
     def execute(self, frame):
         rcvr   = self._rcvr_expr.execute(frame)

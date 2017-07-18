@@ -32,6 +32,9 @@ class IntDownToIntDoNode(AbstractToDoNode):
             block_method.invoke(body_block, [self._universe.new_integer(i)])
             i -= 1
 
+    def get_selector(self):
+        return self._universe.symbol_for("downTo:do:")
+
     @staticmethod
     def can_specialize(selector, rcvr, args, node):
         return (isinstance(args[0], Integer) and isinstance(rcvr, Integer) and
@@ -55,6 +58,9 @@ double_driver = jit.JitDriver(
 
 
 class IntDownToDoubleDoNode(AbstractToDoNode):
+
+    def get_selector(self):
+        return self._universe.symbol_for("downTo:do:")
 
     def _do_loop(self, rcvr, limit, body_block):
         block_method = body_block.get_method()

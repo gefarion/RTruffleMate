@@ -47,6 +47,9 @@ int_driver = jit.JitDriver(
 
 class IntToIntByDoNode(AbstractToByDoNode):
 
+    def get_selector(self):
+        return self._universe.symbol_for("to:by:do:")
+
     def _to_by_loop(self, rcvr, limit, step, body_block):
         block_method = body_block.get_method()
 
@@ -82,6 +85,9 @@ double_driver = jit.JitDriver(
 
 
 class IntToDoubleByDoNode(AbstractToByDoNode):
+
+    def get_selector(self):
+        return self._universe.symbol_for("to:by:do:")
 
     def _to_by_loop(self, rcvr, limit, step, body_block):
         block_method = body_block.get_method()

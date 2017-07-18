@@ -21,6 +21,21 @@ class AbstractWhileMessageNode(ExpressionNode):
         self._body_expr      = self.adopt_child(body_expr)
         self._universe       = universe
 
+    def get_universe(self):
+        return self._universe
+
+    def get_selector(self):
+        if self._predicate_bool is trueObject:
+            return self._universe.symbol_for("whileTrue:")
+        else:
+            return self._universe.symbol_for("whileFalse:")
+
+    def evaluate_rcvr_and_args(self, frame):
+        rcvr_value = self._rcvr_expr.execute(frame)
+        body_block = self._body_expr.execute(frame)
+
+        return rcvr_value, [body_block]
+
     def execute(self, frame):
         rcvr_value = self._rcvr_expr.execute(frame)
         body_block = self._body_expr.execute(frame)

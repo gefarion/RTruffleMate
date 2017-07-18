@@ -26,7 +26,6 @@ class MateGenericMessageNode(MateNode):
     def lookup_invokable(self, frame, receiver):
         assert frame is not None
 
-        receiver = frame.get_self()
         environment = frame.get_meta_object_environment() or receiver.get_meta_object_environment()
 
         # No esta definido o es Nil

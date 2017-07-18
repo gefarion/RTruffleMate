@@ -7,10 +7,8 @@ class MateUninitializedMessageNode(MateNode):
 
     def _mate_specialize(self, frame, rcvr, args):
 
-        if (isinstance(self._som_node.message_specialize(frame, rcvr, args), GenericMessageNode)):
-            return self.replace(MateGenericMessageNode(self._som_node))
-        else:
-            return self.replace(self._som_node)
+        self._som_node.message_specialize(frame, rcvr, args)
+        return self.replace(MateGenericMessageNode(self._som_node))
 
     def execute(self, frame):
 

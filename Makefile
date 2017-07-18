@@ -36,18 +36,32 @@ matevmmatetestsuite:
 	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate:Smalltalk/Mate/MOP:TestSuite:TestSuite/MateMOPSuite:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/DelegationProxies::Examples/Benchmarks/Mate/Immutability/Handles MateTestHarness.som;
 
 som-micro:
-	rebench -c benchmarks.conf som-micro vm:SOM-no-jit
+	rebench -c benchmarks.conf som-micro vm:SOM-interpreter
 
 mate-micro:
+	rebench -c benchmarks.conf mate-micro vm:MATE-interpreter
+
+somvm-micro:
+	rebench -c benchmarks.conf som-micro vm:SOM-no-jit
+
+matevm-micro:
 	rebench -c benchmarks.conf mate-micro vm:MATE-no-jit
 
 #make BENCH=Storage.som som-bench
 som-bench:
 	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
 
+#make BENCH=Storage.som somvm-bench
+somvm-bench:
+	$(BIN) -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+
 #make BENCH=Storage.som mate-bench
 mate-bench:
 	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+
+#make BENCH=Storage.som matevm-bench
+matevm-bench:
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
 
 clean:
 	@rm -f RTruffleMATE-no-jit

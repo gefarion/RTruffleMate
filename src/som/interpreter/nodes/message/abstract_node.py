@@ -28,6 +28,9 @@ class AbstractMessageNode(ExpressionNode):
     def get_selector(self):
         return self._selector
 
+    def evaluate_rcvr_and_args(self, frame):
+        return self._evaluate_rcvr_and_args(frame)
+
     @unroll_safe
     def _evaluate_rcvr_and_args(self, frame):
         rcvr = self._rcvr_expr.execute(frame)

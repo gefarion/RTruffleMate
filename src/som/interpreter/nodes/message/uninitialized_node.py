@@ -19,6 +19,10 @@ class UninitializedMessageNode(AbstractMessageNode):
         return self._specialize(frame, rcvr, args).\
             execute_evaluated(frame, rcvr, args)
 
+    def execute_evaluated(self, frame, rcvr, args):
+        return self._specialize(frame, rcvr, args).\
+            execute_evaluated(frame, rcvr, args)
+
     def message_specialize(self, frame, rcvr, args):
       return self._specialize(frame, rcvr, args)
 

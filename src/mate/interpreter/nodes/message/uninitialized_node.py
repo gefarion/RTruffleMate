@@ -14,7 +14,7 @@ class MateUninitializedMessageNode(MateNode):
 
     def execute(self, frame):
 
-        rcvr, args = self._som_node._evaluate_rcvr_and_args(frame)
+        rcvr, args = self._som_node.evaluate_rcvr_and_args(frame)
         return self._mate_specialize(frame, rcvr, args).execute_evaluated(frame, rcvr, args)
 
     def reflective_op(self):

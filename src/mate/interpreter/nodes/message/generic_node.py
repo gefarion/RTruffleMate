@@ -8,7 +8,7 @@ class MateGenericMessageNode(MateNode):
 
     def execute(self, frame):
 
-        receiver, args = self._som_node._evaluate_rcvr_and_args(frame)
+        receiver, args = self._som_node.evaluate_rcvr_and_args(frame)
         return self.execute_evaluated(frame, receiver, args)
 
     def execute_evaluated(self, frame, receiver, args):

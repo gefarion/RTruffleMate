@@ -14,6 +14,7 @@ class MateInvokable(MateNode):
 
     def invoke(self, receiver, arguments):
 
+        # Falta hacer llegar el frame
         environment = receiver.get_meta_object_environment()
 
         # No esta definido o es Nil

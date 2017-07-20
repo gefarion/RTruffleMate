@@ -13,7 +13,10 @@ class MateGenericMessageNode(MateNode):
 
     def execute_evaluated(self, frame, receiver, args):
 
-        method = self.lookup_invokable(frame, receiver)
+        method = None
+        if not frame.meta_level():
+            method = self.lookup_invokable(frame, receiver)
+
         if method:
             return method.invoke(receiver, args)
         else:

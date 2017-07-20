@@ -32,7 +32,10 @@ class MateUninitializedAbstractFieldNode(MateNode):
 class MateUninitializedReadFieldNode(MateUninitializedAbstractFieldNode):
 
     def read(self, frame, obj):
-        value = self.do_layout_mate_semantics(frame, obj, None)
+
+        value = None
+        if not frame.meta_level():
+            value = self.do_layout_mate_semantics(frame, obj, None)
 
         if value is None:
             return self._som_node.read(frame, obj)
@@ -46,7 +49,10 @@ class MateUninitializedReadFieldNode(MateUninitializedAbstractFieldNode):
 class MateUninitializedWriteFieldNode(MateUninitializedAbstractFieldNode):
 
     def write(self, frame, obj, value_to_write):
-        value = self.do_layout_mate_semantics(frame, obj, value_to_write)
+
+        value = None
+        if not frame.meta_level():
+            value = self.do_layout_mate_semantics(frame, obj, value_to_write)
 
         if value is None:
             return self._som_node.write(frame, obj, value_to_write)

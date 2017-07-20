@@ -18,7 +18,9 @@ class MateNode(ExpressionNode):
 
     def execute(self, frame):
 
-        value = self.do_mate_semantics(frame)
+        value = None
+        if not frame.meta_level():
+            value = self.do_mate_semantics(frame)
 
         if value is None:
             return self._som_node.execute(frame)

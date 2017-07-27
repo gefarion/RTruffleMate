@@ -7,15 +7,15 @@ from som.vmobjects.method          import Method
 from som.vmobjects.primitive       import Primitive
 
 
-def _holder(ivkbl, rcvr, args):
+def _holder(ivkbl, rcvr, args, meta_level):
     return rcvr.get_holder()
 
 
-def _signature(ivkbl, rcvr, args):
+def _signature(ivkbl, rcvr, args, meta_level):
     return rcvr.get_signature()
 
 
-def _invoke_on_with(ivkbl, rcvr, args):
+def _invoke_on_with(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr,    Method)
     assert isinstance(args[0], AbstractObject)
     assert isinstance(args[1], Array) or args[1] is nilObject
@@ -24,8 +24,31 @@ def _invoke_on_with(ivkbl, rcvr, args):
         direct_args = []
     else:
         direct_args = args[1].as_argument_array()
-    return rcvr.invoke(args[0], direct_args)
+    return rcvr.invoke(args[0], direct_args, meta_level)
 
+def _invoke_on_with_semantics(ivkbl, rcvr, args, meta_level):
+    assert isinstance(rcvr,    Method)
+    assert isinstance(args[0], AbstractObject)
+    assert isinstance(args[1], Array) or args[1] is nilObject
+    assert isinstance(args[2], AbstractObject)
+
+    if args[1] is nilObject:
+        direct_args = []
+    else:
+        direct_args = args[1].as_argument_array()
+    return rcvr.invoke_from_mate_with_semantics(args[0], direct_args, args[2])
+
+def _invoke_mate_on_with(ivkbl, rcvr, args, meta_level):
+    assert isinstance(rcvr,    Method)
+    assert isinstance(args[0], AbstractObject)
+    assert isinstance(args[1], Array) or args[1] is nilObject
+
+    if args[1] is nilObject:
+        direct_args = []
+    else:
+        direct_args = args[1].as_argument_array()
+
+    return rcvr.invoke_from_mate(args[0], direct_args)
 
 class MethodPrimitives(Primitives):
     def install_primitives(self):
@@ -35,3 +58,7 @@ class MethodPrimitives(Primitives):
                                                    self._universe, _signature))
         self._install_instance_primitive(Primitive("invokeOn:with:",
                                                    self._universe, _invoke_on_with))
+        self._install_instance_primitive(Primitive("invokeMateOn:with:",
+                                                   self._universe, _invoke_mate_on_with))
+        self._install_instance_primitive(Primitive("invokeOn:with:withSemantics:",
+                                                   self._universe, _invoke_on_with_semantics))

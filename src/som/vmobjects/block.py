@@ -87,11 +87,11 @@ def block_evaluation_primitive(num_args, universe):
     return Block.Evaluation(num_args, universe, _invoke)
 
 
-def block_evaluate(block, args):
+def block_evaluate(block, args, meta_level):
     method = block.get_method()
-    return method.invoke(block, args)
+    return method.invoke(block, args, meta_level)
 
 
-def _invoke(ivkbl, rcvr, args):
+def _invoke(ivkbl, rcvr, args, meta_level):
     assert isinstance(ivkbl, Block.Evaluation)
-    return block_evaluate(rcvr, args)
+    return block_evaluate(rcvr, args, meta_level)

@@ -5,15 +5,15 @@ from som.vmobjects.array       import Array
 from som.vmobjects.primitive   import Primitive 
 
 
-def _holder(ivkbl, rcvr, args):
+def _holder(ivkbl, rcvr, args, meta_level):
     return rcvr.get_holder()
 
 
-def _signature(ivkbl, rcvr, args):
+def _signature(ivkbl, rcvr, args, meta_level):
     return rcvr.get_signature()
 
 
-def _invoke_on_with(ivkbl, rcvr, args):
+def _invoke_on_with(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr,    Primitive)
     assert isinstance(args[0], AbstractObject)
     assert isinstance(args[1], Array) or args[1] is nilObject
@@ -22,7 +22,7 @@ def _invoke_on_with(ivkbl, rcvr, args):
         direct_args = []
     else:
         direct_args = args[1].as_argument_array()
-    return rcvr.invoke(args[0], direct_args)
+    return rcvr.invoke(args[0], direct_args, meta_level)
 
 
 class PrimitivePrimitives(Primitives):

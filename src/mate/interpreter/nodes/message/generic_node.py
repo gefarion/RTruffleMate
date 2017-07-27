@@ -18,7 +18,8 @@ class MateGenericMessageNode(MateNode):
             method = self.lookup_invokable(frame, receiver)
 
         if method:
-            return method.invoke(receiver, args)
+            # ejecutar el ih para activation
+            return method.invoke(receiver, args, False)
         else:
             return self._som_node.execute_evaluated(frame, receiver, args)
 
@@ -43,8 +44,8 @@ class MateGenericMessageNode(MateNode):
         args = [self._som_node.get_selector(), receiver.get_class(self._som_node.get_universe())]
 
         # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        receiver.set_meta_object_environment(None)
-        res = method.invoke(receiver, args)
-        receiver.set_meta_object_environment(environment)
+        # receiver.set_meta_object_environment(None)
+        res = method.invoke(receiver, args, True)
+        # receiver.set_meta_object_environment(environment)
 
         return res

@@ -16,7 +16,7 @@ class UninitializedGlobalReadNode(ExpressionNode):
             return self._specialize().execute(frame)
         else:
             return frame.get_self().send_unknown_global(self._global_name,
-                                                        self._universe)
+                                                        self._universe, frame.meta_level())
 
     def _specialize(self):
         glob = self._global_name.get_string()

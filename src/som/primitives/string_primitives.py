@@ -8,21 +8,21 @@ from som.vmobjects.character import Character
 from som.vmobjects.symbol import Symbol
 
 
-def _concat(ivkbl, rcvr, args):
+def _concat(ivkbl, rcvr, args, meta_level):
     argument = args[0]
     return ivkbl.get_universe().new_string(rcvr.get_embedded_string()
                                            + argument.get_embedded_string())
 
 
-def _asSymbol(ivkbl, rcvr, args):
+def _asSymbol(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().symbol_for(rcvr.get_embedded_string())
 
 
-def _length(ivkbl, rcvr, args):
+def _length(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_integer(len(rcvr.get_embedded_string()))
 
 
-def _equals(ivkbl, rcvr, args):
+def _equals(ivkbl, rcvr, args, meta_level):
     op1 = args[0]
     op2 = rcvr
     universe = ivkbl.get_universe()
@@ -40,7 +40,7 @@ def _equals(ivkbl, rcvr, args):
     return falseObject
 
 
-def _substring(ivkbl, rcvr, args):
+def _substring(ivkbl, rcvr, args, meta_level):
     end   = args[1]
     start = args[0]
 
@@ -54,11 +54,11 @@ def _substring(ivkbl, rcvr, args):
         return ivkbl.get_universe().new_string(string[s:e])
 
 
-def _hashcode(ivkbl, rcvr, args):
+def _hashcode(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_integer(
         compute_hash(rcvr.get_embedded_string()))
 
-def _at(ivkbl, rcvr, args):
+def _at(ivkbl, rcvr, args, meta_level):
     index = args[0]
     i      = index.get_embedded_integer() - 1
     string = rcvr.get_embedded_string()
@@ -68,7 +68,7 @@ def _at(ivkbl, rcvr, args):
     else:
         return ivkbl.get_universe().new_character(string[i])
 
-def _charAt(ivkbl, rcvr, args):
+def _charAt(ivkbl, rcvr, args, meta_level):
     index = args[0]
     i      = index.get_embedded_integer() - 1
     string = rcvr.get_embedded_string()

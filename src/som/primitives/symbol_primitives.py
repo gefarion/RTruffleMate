@@ -2,7 +2,7 @@ from som.primitives.primitives import Primitives
 from som.vmobjects.primitive   import Primitive
 
 
-def _asString(ivkbl, rcvr, args):
+def _asString(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_string(rcvr.get_string())
 
 

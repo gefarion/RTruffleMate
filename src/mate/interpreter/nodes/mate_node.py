@@ -45,8 +45,8 @@ class MateNode(ExpressionNode):
         args = self.get_meta_args(frame)
 
         # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        receiver.set_meta_object_environment(None)
-        res = method.invoke(receiver, args)
-        receiver.set_meta_object_environment(environment)
+        # receiver.set_meta_object_environment(None)
+        res = method.invoke(receiver, args,  True)
+        # receiver.set_meta_object_environment(environment)
 
         return res

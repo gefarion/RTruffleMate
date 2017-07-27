@@ -36,11 +36,11 @@ class AbstractToDoNode(ExpressionNode):
         rcvr  = self._rcvr_expr.execute(frame)
         limit = self._limit_expr.execute(frame)
         body  = self._body_expr.execute(frame)
-        self._do_loop(rcvr, limit, body)
+        self._do_loop(rcvr, limit, body, frame.meta_level())
         return rcvr
 
     def execute_evaluated(self, frame, rcvr, args):
-        self._do_loop(rcvr, args[0], args[1])
+        self._do_loop(rcvr, args[0], args[1], frame.meta_level())
         return rcvr
 
 
@@ -59,14 +59,14 @@ int_driver = jit.JitDriver(
 
 class IntToIntDoNode(AbstractToDoNode):
 
-    def _do_loop(self, rcvr, limit, body_block):
+    def _do_loop(self, rcvr, limit, body_block, meta_level):
         block_method = body_block.get_method()
 
         i   = rcvr.get_embedded_integer()
         top = limit.get_embedded_integer()
         while i <= top:
             int_driver.jit_merge_point(block_method = block_method)
-            block_method.invoke(body_block, [self._universe.new_integer(i)])
+            block_method.invoke(body_block, [self._universe.new_integer(i)], meta_level)
             i += 1
 
     def get_selector(self):
@@ -96,14 +96,14 @@ double_driver = jit.JitDriver(
 
 class IntToDoubleDoNode(AbstractToDoNode):
 
-    def _do_loop(self, rcvr, limit, body_block):
+    def _do_loop(self, rcvr, limit, body_block, meta_level):
         block_method = body_block.get_method()
 
         i   = rcvr.get_embedded_integer()
         top = limit.get_embedded_double()
         while i <= top:
             double_driver.jit_merge_point(block_method = block_method)
-            block_method.invoke(body_block, [self._universe.new_integer(i)])
+            block_method.invoke(body_block, [self._universe.new_integer(i)], meta_level)
             i += 1
 
     def get_selector(self):

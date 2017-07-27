@@ -2,25 +2,25 @@ from som.primitives.primitives import Primitives
 from som.vm.globals import falseObject, trueObject
 from som.vmobjects.primitive       import Primitive
 
-def _new(ivkbl, rcvr, args):
+def _new(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_instance(rcvr)
 
 
-def _name(ivkbl, rcvr, args):
+def _name(ivkbl, rcvr, args, meta_level):
     return rcvr.get_name()
 
 
-def _super_class(ivkbl, rcvr, args):
+def _super_class(ivkbl, rcvr, args, meta_level):
     return rcvr.get_super_class()
 
 
-def _methods(ivkbl, rcvr, args):
+def _methods(ivkbl, rcvr, args, meta_level):
     return rcvr.get_instance_invokables()
 
-def _fields(ivkbl, rcvr, args):
+def _fields(ivkbl, rcvr, args, meta_level):
     return rcvr.get_instance_fields()
 
-def _has_method(ivkbl, rcvr, args):
+def _has_method(ivkbl, rcvr, args, meta_level):
     signature = args[0]
 
     invokables = rcvr.get_instance_invokables()

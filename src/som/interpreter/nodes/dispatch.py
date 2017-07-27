@@ -67,8 +67,8 @@ class UninitializedDispatchNode(_AbstractDispatchWithLookupNode):
             send_node.replace_dispatch_list_head(generic_replacement)
             return generic_replacement
 
-    def execute_dispatch(self, rcvr, args):
-        return self._specialize(rcvr).execute_dispatch(rcvr, args)
+    def execute_dispatch(self, rcvr, args, meta_level):
+        return self._specialize(rcvr).execute_dispatch(rcvr, args, meta_level)
 
     def _accept(self, visitor):
         visitor.visit_UninitializedDispatchNode(self)
@@ -79,14 +79,14 @@ class GenericDispatchNode(_AbstractDispatchWithLookupNode):
     def _lookup_method(self, rcvr):
         return rcvr.get_class(self._universe).lookup_invokable(self._selector)
 
-    def execute_dispatch(self, rcvr, args):
+    def execute_dispatch(self, rcvr, args, meta_level):
         method = self._lookup_method(rcvr)
         if method is not None:
-            return method.invoke(rcvr, args)
+            return method.invoke(rcvr, args, meta_level)
         else:
             # Won't use DNU caching here, because it's a megamorphic node
             return rcvr.send_does_not_understand(self._selector, args,
-                                                 self._universe)
+                                                 self._universe, meta_level)
     def _accept(self, visitor):
         visitor.visit_GenericDispatchNode(self)
 
@@ -112,11 +112,11 @@ class _AbstractCachedDispatchNode(_AbstractDispatchNode):
 
 class _CachedDispatchObjectCheckNode(_AbstractCachedDispatchNode):
 
-    def execute_dispatch(self, rcvr, args):
+    def execute_dispatch(self, rcvr, args, meta_level):
         if rcvr.get_class(self._universe) == self._expected_class:
-            return self._cached_method.invoke(rcvr, args)
+            return self._cached_method.invoke(rcvr, args, meta_level)
         else:
-            return self._next.execute_dispatch(rcvr, args)
+            return self._next.execute_dispatch(rcvr, args, meta_level)
 
     def _accept(self, visitor):
         visitor.visit_CachedDispatchObjectCheckNode(self)
@@ -132,13 +132,11 @@ class _CachedDnuObjectCheckNode(_AbstractCachedDispatchNode):
             next_dispatch, universe)
         self._selector = selector
 
-    def execute_dispatch(self, rcvr, args):
+    def execute_dispatch(self, rcvr, args, meta_level):
         if rcvr.get_class(self._universe) == self._expected_class:
-            return self._cached_method.invoke(
-                rcvr, [self._selector,
-                       self._universe.new_array_from_list(args)])
+            return self._cached_method.invoke(rcvr, [self._selector, self._universe.new_array_from_list(args)], meta_level)
         else:
-            return self._next.execute_dispatch(rcvr, args)
+            return self._next.execute_dispatch(rcvr, args, meta_level)
 
     def _accept(self, visitor):
         visitor.visit_CachedDnuObjectCheckNode(self)
@@ -154,8 +152,8 @@ class SuperDispatchNode(_AbstractDispatchNode):
         if self._cached_method is None:
             raise RuntimeError("#dnu support for super missing")
 
-    def execute_dispatch(self, rcvr, args):
-        return self._cached_method.invoke(rcvr, args)
+    def execute_dispatch(self, rcvr, args, meta_level):
+        return self._cached_method.invoke(rcvr, args, meta_level)
 
     def _accept(self, visitor):
         visitor.visit_SuperDispatchNode(self)

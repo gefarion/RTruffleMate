@@ -56,8 +56,14 @@ class Method(AbstractObject):
     def get_number_of_arguments(self):
         return self.get_signature().get_number_of_signature_arguments()
 
-    def invoke(self, receiver, args):
-        return self._invokable.invoke(receiver, args)
+    def invoke_from_mate_with_semantics(self, receiver, args, meta_object):
+        return self._invokable.get_som_node().invoke_with_semantics(receiver, args, False, meta_object)
+
+    def invoke_from_mate(self, receiver, args):
+        return self._invokable.get_som_node().invoke(receiver, args, False)
+
+    def invoke(self, receiver, args, meta_level):
+        return self._invokable.invoke(receiver, args, meta_level)
 
     def __str__(self):
         return ("Method(" + self.get_holder().get_name().get_string() + ">>" +

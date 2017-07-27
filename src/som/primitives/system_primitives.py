@@ -8,60 +8,60 @@ from rpython.rlib import rgc, jit
 import time
 
 
-def _load(ivkbl, rcvr, args):
+def _load(ivkbl, rcvr, args, meta_level):
     argument = args[0]
     result = ivkbl.get_universe().load_class(argument)
     return result if result else nilObject
 
 
-def _exit(ivkbl, rcvr, args):
+def _exit(ivkbl, rcvr, args, meta_level):
     error = args[0]
     return ivkbl.get_universe().exit(error.get_embedded_integer())
 
 
-def _global(ivkbl, rcvr, args):
+def _global(ivkbl, rcvr, args, meta_level):
     argument = args[0]
     result = ivkbl.get_universe().get_global(argument)
     return result if result else nilObject
 
 
-def _has_global(ivkbl, rcvr, args):
+def _has_global(ivkbl, rcvr, args, meta_level):
     if ivkbl.get_universe().has_global(args[0]):
         return trueObject
     else:
         return falseObject
 
 
-def _global_put(ivkbl, rcvr, args):
+def _global_put(ivkbl, rcvr, args, meta_level):
     value    = args[1]
     argument = args[0]
     ivkbl.get_universe().set_global(argument, value)
     return value
 
 
-def _print_string(ivkbl, rcvr, args):
+def _print_string(ivkbl, rcvr, args, meta_level):
     argument = args[0]
     std_print(argument.get_embedded_string())
     return rcvr
 
 
-def _print_newline(ivkbl, rcvr, args):
+def _print_newline(ivkbl, rcvr, args, meta_level):
     std_println()
     return rcvr
 
 
-def _time(ivkbl, rcvr, args):
+def _time(ivkbl, rcvr, args, meta_level):
     since_start = time.time() - ivkbl.get_universe().start_time
     return ivkbl.get_universe().new_integer(int(since_start * 1000))
 
 
-def _ticks(ivkbl, rcvr, args):
+def _ticks(ivkbl, rcvr, args, meta_level):
     since_start = time.time() - ivkbl.get_universe().start_time
     return ivkbl.get_universe().new_integer(int(since_start * 1000000))
 
 
 @jit.dont_look_inside
-def _fullGC(ivkbl, rcvr, args):
+def _fullGC(ivkbl, rcvr, args, meta_level):
     rgc.collect()
     return trueObject
 

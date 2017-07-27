@@ -3,18 +3,18 @@ from som.vm.globals import falseObject, trueObject
 from som.vmobjects.primitive import Primitive
 
 
-def _not(ivkbl, rcvr, args):
+def _not(ivkbl, rcvr, args, meta_level):
     return falseObject
 
 
-def _or(ivkbl, rcvr, args):
+def _or(ivkbl, rcvr, args, meta_level):
     return trueObject
 
 
-def _and(ivkbl, rcvr, args):
+def _and(ivkbl, rcvr, args, meta_level):
     block = args[0]
     block_method = block.get_method()
-    return block_method.invoke(block, [])
+    return block_method.invoke(block, [], meta_level)
 
 
 class TruePrimitives(Primitives):

@@ -51,12 +51,24 @@ class Invokable(Node):
     def get_method(self):
         return self._method
 
-    def invoke(self, receiver, arguments):
+    def invoke(self, receiver, arguments, meta_level):
         assert arguments is not None
         make_sure_not_resized(arguments)
 
         frame = Frame(receiver, arguments, self._arg_mapping,
-                      self._num_local_temps, self._num_context_temps, self._local_mapping)
+                      self._num_local_temps, self._num_context_temps, self._local_mapping, meta_level)
+        jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
+
+        return self._expr_or_sequence.execute(frame)
+
+    def invoke_with_semantics(self, receiver, arguments, meta_level, meta_object):
+        assert arguments is not None
+        make_sure_not_resized(arguments)
+
+        frame = Frame(receiver, arguments, self._arg_mapping,
+                      self._num_local_temps, self._num_context_temps, self._local_mapping, meta_level)
+        frame.set_meta_object_environment(meta_object)
+
         jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
 
         return self._expr_or_sequence.execute(frame)

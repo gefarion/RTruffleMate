@@ -20,7 +20,7 @@ _EMPTY_LIST = []
 class Frame(object):
         
     _immutable_fields_ = ['_receiver', '_arguments[*]', '_args_for_inner[*]',
-                          '_temps', '_temps_for_inner', '_on_stack', '_local_mapping[*]']
+                          '_temps', '_temps_for_inner', '_on_stack', '_local_mapping[*]', '_meta_level']
     _virtualizable_    = ['_temps[*]']
 
     def __init__(self, receiver, arguments, arg_mapping, num_local_temps,

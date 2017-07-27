@@ -24,11 +24,11 @@ class AbstractToByDoNode(AbstractToDoNode):
         limit = self._limit_expr.execute(frame)
         step  = self._step_expr.execute(frame)
         body  = self._body_expr.execute(frame)
-        self._to_by_loop(rcvr, limit, step, body)
+        self._to_by_loop(rcvr, limit, step, body, frame.meta_level())
         return rcvr
     
     def execute_evaluated(self, frame, rcvr, args):
-        self._to_by_loop(rcvr, args[0], args[1], args[2])
+        self._to_by_loop(rcvr, args[0], args[1], args[2], frame.meta_level())
         return rcvr
 
 
@@ -50,7 +50,7 @@ class IntToIntByDoNode(AbstractToByDoNode):
     def get_selector(self):
         return self._universe.symbol_for("to:by:do:")
 
-    def _to_by_loop(self, rcvr, limit, step, body_block):
+    def _to_by_loop(self, rcvr, limit, step, body_block, meta_level):
         block_method = body_block.get_method()
 
         i   = rcvr.get_embedded_integer()
@@ -58,8 +58,7 @@ class IntToIntByDoNode(AbstractToByDoNode):
         by  = step.get_embedded_integer()
         while i <= top:
             int_driver.jit_merge_point(block_method = block_method)
-            block_method.invoke(body_block,
-                                [self._universe.new_integer(i)])
+            block_method.invoke(body_block, [self._universe.new_integer(i)], meta_level)
             i += by
 
     @staticmethod
@@ -89,7 +88,7 @@ class IntToDoubleByDoNode(AbstractToByDoNode):
     def get_selector(self):
         return self._universe.symbol_for("to:by:do:")
 
-    def _to_by_loop(self, rcvr, limit, step, body_block):
+    def _to_by_loop(self, rcvr, limit, step, body_block, meta_level):
         block_method = body_block.get_method()
 
         i   = rcvr.get_embedded_integer()
@@ -97,8 +96,7 @@ class IntToDoubleByDoNode(AbstractToByDoNode):
         by  = step.get_embedded_integer()
         while i <= top:
             double_driver.jit_merge_point(block_method = block_method)
-            block_method.invoke(body_block,
-                                [self._universe.new_integer(i)])
+            block_method.invoke(body_block, [self._universe.new_integer(i)], meta_level)
             i += by
 
     @staticmethod

@@ -130,7 +130,7 @@ class Universe(object):
         invokable = clazz.get_class(self).lookup_invokable(self.symbol_for(
             selector))
 
-        return invokable.invoke(clazz, [])
+        return invokable.invoke(clazz, [], False)
     
     def interpret(self, arguments):
         # Check for command line switches
@@ -150,7 +150,7 @@ class Universe(object):
             # Lookup the initialize invokable on the system class
             initialize = self.systemClass.lookup_invokable(
                 self.symbol_for("initialize:"))
-            return initialize.invoke(system_object, [arguments_array])
+            return initialize.invoke(system_object, [arguments_array], False)
     
     def handle_arguments(self, arguments):
         got_classpath  = False

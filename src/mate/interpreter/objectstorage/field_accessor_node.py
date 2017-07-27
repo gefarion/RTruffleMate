@@ -22,9 +22,9 @@ class MateUninitializedAbstractFieldNode(MateNode):
             return None
 
         # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        obj.set_meta_object_environment(None)
-        res = method.invoke(obj, [Integer(self._som_node.field_idx() + 1), value])
-        obj.set_meta_object_environment(environment)
+        # obj.set_meta_object_environment(None)
+        res = method.invoke(obj, [Integer(self._som_node.field_idx() + 1), value], True)
+        # obj.set_meta_object_environment(environment)
 
         return res
 

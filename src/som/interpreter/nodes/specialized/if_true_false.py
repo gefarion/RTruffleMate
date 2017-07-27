@@ -35,23 +35,23 @@ class IfTrueIfFalseNode(ExpressionNode):
         true  = self._true_expr.execute(frame)
         false = self._false_expr.execute(frame)
 
-        return self._do_iftrue_iffalse(rcvr, true, false)
+        return self._do_iftrue_iffalse(rcvr, true, false, frame.meta_level())
 
     def execute_evaluated(self, frame, rcvr, args):
-        return self._do_iftrue_iffalse(rcvr, args[0], args[1])
+        return self._do_iftrue_iffalse(rcvr, args[0], args[1], frame.meta_level())
 
-    def _value_of(self, obj):
+    def _value_of(self, obj, meta_level):
         if isinstance(obj, Block):
-            return obj.get_method().invoke(obj, [])
+            return obj.get_method().invoke(obj, [], meta_level)
         else:
             return obj
 
-    def _do_iftrue_iffalse(self, rcvr, true, false):
+    def _do_iftrue_iffalse(self, rcvr, true, false, meta_level):
         if rcvr is trueObject:
-            return self._value_of(true)
+            return self._value_of(true, meta_level)
         else:
             assert rcvr is falseObject
-            return self._value_of(false)
+            return self._value_of(false, meta_level)
 
     @staticmethod
     def can_specialize(selector, rcvr, args, node):
@@ -98,20 +98,20 @@ class IfNode(ExpressionNode):
     def execute(self, frame):
         rcvr   = self._rcvr_expr.execute(frame)
         branch = self._branch_expr.execute(frame)
-        return self._do_if(rcvr, branch)
+        return self._do_if(rcvr, branch, frame.meta_level())
 
     def execute_evaluated(self, frame, rcvr, args):
-        return self._do_if(rcvr, args[0])
+        return self._do_if(rcvr, args[0], frame.meta_level())
 
-    def _value_of(self, obj):
+    def _value_of(self, obj, meta_level):
         if isinstance(obj, Block):
-            return obj.get_method().invoke(obj, [])
+            return obj.get_method().invoke(obj, [], meta_level)
         else:
             return obj
 
-    def _do_if(self, rcvr, branch):
+    def _do_if(self, rcvr, branch, meta_level):
         if rcvr is self._condition:
-            return self._value_of(branch)
+            return self._value_of(branch, meta_level)
         else:
             assert (rcvr is falseObject or rcvr is trueObject)
             return nilObject

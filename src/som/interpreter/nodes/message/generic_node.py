@@ -34,17 +34,17 @@ class GenericMessageNode(AbstractMessageNode):
         assert args is not None
         make_sure_not_resized(args)
         if we_are_jitted():
-            return self._direct_dispatch(rcvr, args)
+            return self._direct_dispatch(rcvr, args, frame.meta_level())
         else:
-            return self._dispatch.execute_dispatch(rcvr, args)
+            return self._dispatch.execute_dispatch(rcvr, args, frame.meta_level())
 
-    def _direct_dispatch(self, rcvr, args):
+    def _direct_dispatch(self, rcvr, args, meta_level):
         method = self._lookup_method(rcvr)
         if method:
-            return method.invoke(rcvr, args)
+            return method.invoke(rcvr, args, meta_level)
         else:
             return rcvr.send_does_not_understand(self._selector, args,
-                                                 self._universe)
+                                                 self._universe, meta_level)
 
     def _lookup_method(self, rcvr):
         rcvr_class = self._class_of_receiver(rcvr)

@@ -6,13 +6,13 @@ from som.vmobjects.integer import Integer
 from som.vmobjects.string import String
 from som.interpreter.frame import Frame
 
-def _method(ivkbl, rcvr, args):
+def _method(ivkbl, rcvr, args, meta_level):
     assert False
 
-def _sender(ivkbl, rcvr, args):
+def _sender(ivkbl, rcvr, args, meta_level):
     assert False
 
-def _receiver(ivkbl, rcvr, args):
+def _receiver(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -20,7 +20,7 @@ def _receiver(ivkbl, rcvr, args):
 
     return frame.get_self()
 
-def _local_at(ivkbl, rcvr, args):
+def _local_at(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -32,7 +32,7 @@ def _local_at(ivkbl, rcvr, args):
     s = name.get_embedded_string()
     return frame.get_temp_by_name(s)
 
-def _arg_at(ivkbl, rcvr, args):
+def _arg_at(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -44,7 +44,7 @@ def _arg_at(ivkbl, rcvr, args):
     i = index.get_embedded_integer()
     return frame.get_argument(i - 1)
 
-def _local_at_put(ivkbl, rcvr, args):
+def _local_at_put(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()

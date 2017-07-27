@@ -8,7 +8,7 @@ from som.vmobjects.primitive import Primitive
 from som.vmobjects.array     import Array 
 
 
-def _equals(ivkbl, rcvr, args):
+def _equals(ivkbl, rcvr, args, meta_level):
     op1 = args[0]
     op2 = rcvr
     if op1 is op2:
@@ -17,12 +17,12 @@ def _equals(ivkbl, rcvr, args):
         return falseObject
 
 
-def _hashcode(ivkbl, rcvr, args):
+def _hashcode(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_integer(
         compute_identity_hash(rcvr))
 
 
-def _objectSize(ivkbl, rcvr, args):
+def _objectSize(ivkbl, rcvr, args, meta_level):
     size = 0
     
     if isinstance(rcvr, Object):
@@ -33,61 +33,61 @@ def _objectSize(ivkbl, rcvr, args):
     return ivkbl.get_universe().new_integer(size)
 
 
-def _perform(ivkbl, rcvr, args):
+def _perform(ivkbl, rcvr, args, meta_level):
     selector = args[0]
 
     invokable = rcvr.get_class(ivkbl.get_universe()).lookup_invokable(selector)
-    return invokable.invoke(rcvr, [])
+    return invokable.invoke(rcvr, [], meta_level)
 
 
-def _performInSuperclass(ivkbl, rcvr, args):
+def _performInSuperclass(ivkbl, rcvr, args, meta_level):
     clazz    = args[1]
     selector = args[0]
 
     invokable = clazz.lookup_invokable(selector)
-    return invokable.invoke(rcvr, [])
+    return invokable.invoke(rcvr, [], meta_level)
 
 
-def _performWithArguments(ivkbl, rcvr, arguments):
-    arg_arr  = arguments[1].as_argument_array()
-    selector = arguments[0]
+def _performWithArguments(ivkbl, rcvr, args, meta_level):
+    arg_arr  = args[1].as_argument_array()
+    selector = args[0]
 
     invokable = rcvr.get_class(ivkbl.get_universe()).lookup_invokable(selector)
-    return invokable.invoke(rcvr, arg_arr)
+    return invokable.invoke(rcvr, arg_arr, meta_level)
 
 
-def _instVarAt(ivkbl, rcvr, args):
+def _instVarAt(ivkbl, rcvr, args, meta_level):
     idx  = args[0]
     return rcvr.get_field(idx.get_embedded_integer() - 1)
 
 
-def _instVarAtPut(ivkbl, rcvr, args):
+def _instVarAtPut(ivkbl, rcvr, args, meta_level):
     val  = args[1]
     idx  = args[0]
     rcvr.set_field(idx.get_embedded_integer() - 1, val)
     return val
 
-def _instVarNamedPut(ivkbl, rcvr, args):
+def _instVarNamedPut(ivkbl, rcvr, args, meta_level):
     i = rcvr.get_field_index(args[0])
     val  = args[1]
     rcvr.set_field(i, val)
     return rcvr
 
-def _instVarNamed(ivkbl, rcvr, args):
+def _instVarNamed(ivkbl, rcvr, args, meta_level):
     i = rcvr.get_field_index(args[0])
     return rcvr.get_field(i)
 
 
-def _halt(ivkbl, rcvr, args):
+def _halt(ivkbl, rcvr, args, meta_level):
     # noop
     print "BREAKPOINT"
     return rcvr
 
 
-def _class(ivkbl, rcvr, args):
+def _class(ivkbl, rcvr, args, meta_level):
     return rcvr.get_class(ivkbl.get_universe())
 
-def _set_meta_object_environment(ivkbl, rcvr, args):
+def _set_meta_object_environment(ivkbl, rcvr, args, meta_level):
     rcvr.set_meta_object_environment(args[0])
     return rcvr
 

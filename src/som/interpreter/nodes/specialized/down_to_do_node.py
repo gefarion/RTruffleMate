@@ -22,14 +22,14 @@ int_driver = jit.JitDriver(
 
 class IntDownToIntDoNode(AbstractToDoNode):
 
-    def _do_loop(self, rcvr, limit, body_block):
+    def _do_loop(self, rcvr, limit, body_block, meta_level):
         block_method = body_block.get_method()
 
         i      = rcvr.get_embedded_integer()
         bottom = limit.get_embedded_integer()
         while i >= bottom:
             int_driver.jit_merge_point(block_method = block_method)
-            block_method.invoke(body_block, [self._universe.new_integer(i)])
+            block_method.invoke(body_block, [self._universe.new_integer(i)], meta_level)
             i -= 1
 
     def get_selector(self):
@@ -62,14 +62,14 @@ class IntDownToDoubleDoNode(AbstractToDoNode):
     def get_selector(self):
         return self._universe.symbol_for("downTo:do:")
 
-    def _do_loop(self, rcvr, limit, body_block):
+    def _do_loop(self, rcvr, limit, body_block, meta_level):
         block_method = body_block.get_method()
 
         i      = rcvr.get_embedded_integer()
         bottom = limit.get_embedded_double()
         while i >= bottom:
             double_driver.jit_merge_point(block_method = block_method)
-            block_method.invoke(body_block, [self._universe.new_integer(i)])
+            block_method.invoke(body_block, [self._universe.new_integer(i)], meta_level)
             i -= 1
 
     @staticmethod

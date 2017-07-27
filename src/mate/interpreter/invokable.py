@@ -34,7 +34,7 @@ class MateInvokable(MateNode):
 
         # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
         # receiver.set_meta_object_environment(None)
-        res = method.invoke(receiver, [self._som_node.get_method(), Array.from_objects(arguments)], True)
+        res = method.invoke(receiver, [self._som_node.get_method(), Array.from_objects(arguments), environment], True)
         # receiver.set_meta_object_environment(environment)
 
         return res

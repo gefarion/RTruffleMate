@@ -12,7 +12,7 @@ jitdriver = jit.JitDriver(
     greens=['self'],
     virtualizables=['frame'],
     get_printable_location=get_printable_location,
-    reds= ['arguments', 'receiver', 'frame'],
+    reds= ['arguments', 'receiver', 'frame', 'meta_level'],
     is_recursive=True,
 
     # the next line is a workaround around a likely bug in RPython
@@ -57,8 +57,12 @@ class Invokable(Node):
 
         frame = Frame(receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, self._local_mapping, meta_level)
-        jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
 
+        return self._execute(frame, receiver, arguments, meta_level);
+
+    def _execute(self, frame, receiver, arguments, meta_level):
+
+        jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame, meta_level=meta_level)
         return self._expr_or_sequence.execute(frame)
 
     def invoke_with_semantics(self, receiver, arguments, meta_level, meta_object):
@@ -69,9 +73,7 @@ class Invokable(Node):
                       self._num_local_temps, self._num_context_temps, self._local_mapping, meta_level)
         frame.set_meta_object_environment(meta_object)
 
-        jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
-
-        return self._expr_or_sequence.execute(frame)
+        return self._execute(frame, receiver, arguments, meta_level);
 
     def _accept(self, visitor):
         visitor.visit_Invokable(self)

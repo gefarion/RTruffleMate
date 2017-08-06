@@ -16,7 +16,7 @@ class MateUninitializedReadNode(MateNode):
 class MateReadNode(MateNode):
 
     def get_meta_args(self, frame):
-        return [String(self._som_node.get_var().get_name()), Context(frame)]
+        return [Integer(self._som_node.frame_idx() + 1), Context(frame)]
 
     def reflective_op(self):
         return ReflectiveOp.ExecutorReadLocal
@@ -34,7 +34,7 @@ class MateWriteNode(MateNode):
 
     def get_meta_args(self, frame):
         value = self._som_node.get_expr().execute(frame)
-        return [String(self._som_node.get_var().get_name()), Context(frame), value]
+        return [Integer(self._som_node.frame_idx() + 1), Context(frame), value]
 
     def reflective_op(self):
         return ReflectiveOp.ExecutorWriteLocal

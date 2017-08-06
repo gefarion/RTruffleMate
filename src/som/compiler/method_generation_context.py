@@ -107,14 +107,10 @@ class MethodGenerationContext(object):
             method_body = CatchNonLocalReturnNode(method_body,
                                                   method_body.get_source_section())
 
-        local_mapping = {}
-        for i in xrange(0, len(local_tmps)):
-            local_mapping[local_tmps[i].get_name()] = i
-
         method_body = self._add_argument_initialization(method_body)
         method = Invokable(self._get_source_section_for_method(method_body),
                            method_body, arg_mapping, len(local_tmps),
-                           len(non_local_tmps), self._universe, local_mapping)
+                           len(non_local_tmps), self._universe)
         return self._universe.new_method(self._signature, method,
                                          # copy list to make it immutable for RPython
                                          self._embedded_block_methods[:])

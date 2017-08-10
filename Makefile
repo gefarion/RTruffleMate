@@ -42,10 +42,22 @@ mate-micro:
 	rebench -c benchmarks.conf mate-micro vm:MATE-interpreter
 
 somvm-micro:
-	rebench -c benchmarks.conf som-micro vm:SOM-no-jit
+	rebench -c benchmarks.conf som-micro vm:SOM-jit
 
 matevm-micro:
-	rebench -c benchmarks.conf mate-micro vm:MATE-no-jit
+	rebench -c benchmarks.conf mate-micro vm:MATE-jit
+
+som-macro:
+	rebench -c benchmarks.conf som-macro vm:SOM-interpreter
+
+mate-macro:
+	rebench -c benchmarks.conf mate-macro vm:MATE-interpreter
+
+somvm-macro:
+	rebench -c benchmarks.conf som-macro vm:SOM-jit
+
+matevm-macro:
+	rebench -c benchmarks.conf mate-macro vm:MATE-jit
 
 #make BENCH=Storage.som som-bench
 som-bench:

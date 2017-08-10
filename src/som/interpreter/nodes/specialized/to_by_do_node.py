@@ -19,6 +19,14 @@ class AbstractToByDoNode(AbstractToDoNode):
                                   universe, source_section)
         self._step_expr  = self.adopt_child(step_expr)
 
+    def evaluate_rcvr_and_args(self, frame):
+        rcvr  = self._rcvr_expr.execute(frame)
+        limit = self._limit_expr.execute(frame)
+        step  = self._step_expr.execute(frame)
+        body  = self._body_expr.execute(frame)
+
+        return rcvr, [limit, step, body]
+
     def execute(self, frame):
         rcvr  = self._rcvr_expr.execute(frame)
         limit = self._limit_expr.execute(frame)

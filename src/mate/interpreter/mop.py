@@ -1,5 +1,4 @@
 from mate.vm.constants import ReflectiveOp
-import som.vm.universe
 
 class MOPDispatcher(object):
 
@@ -8,20 +7,20 @@ class MOPDispatcher(object):
 	Message_IDX   = 2
 
 	@staticmethod
-	def lookup_invokable(reflective_op, enviroment):
+	def lookup_invokable(universe, reflective_op, enviroment):
 
 		metaclass = MOPDispatcher.meta_class_for_operation(reflective_op, enviroment)
 		if not metaclass:
 			return None
 
-		selector = MOPDispatcher.selector_for_operation(reflective_op)
+		selector = MOPDispatcher.selector_for_operation(universe, reflective_op)
 		if not selector:
 			return None
 
-		return metaclass.get_class(som.vm.universe.get_current()).lookup_invokable(selector)
+		return metaclass.get_class(universe).lookup_invokable(selector)
 
 	@staticmethod
-	def selector_for_operation(reflective_op):
+	def selector_for_operation(universe, reflective_op):
 
 		selectors = {
 			ReflectiveOp.MessageLookup:      "find:since:",
@@ -41,7 +40,7 @@ class MOPDispatcher(object):
 			ReflectiveOp.LayoutWriteField:   "write:value:",
 		}
 
-		return som.vm.universe.get_current().symbol_for(selectors[reflective_op])
+		return universe.symbol_for(selectors[reflective_op])
 
 	@staticmethod
 	def meta_class_for_operation(reflective_op, enviroment):

@@ -16,17 +16,12 @@ class MateUninitializedAbstractFieldNode(MateNode):
         if environment is None or not isinstance(environment, Object):
             return None
 
-        method = MOPDispatcher.lookup_invokable(self.reflective_op(), environment)
+        method = self._lookup_node.lookup_meta_invokable(environment)
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None
 
-        # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        # obj.set_meta_object_environment(None)
-        res = method.invoke(obj, [Integer(self._som_node.field_idx() + 1), value], True)
-        # obj.set_meta_object_environment(environment)
-
-        return res
+        return method.invoke(obj, [Integer(self._som_node.field_idx() + 1), value], True)
 
 
 class MateUninitializedReadFieldNode(MateUninitializedAbstractFieldNode):

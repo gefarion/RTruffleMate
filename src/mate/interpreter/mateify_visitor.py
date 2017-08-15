@@ -1,6 +1,5 @@
 from mate.interpreter.nodes.block_node import *
 from mate.interpreter.nodes.contextual_node import *
-from mate.interpreter.nodes.dispatch import *
 from mate.interpreter.nodes.expression_node import *
 from mate.interpreter.nodes.field_node import *
 from mate.interpreter.nodes.global_read_node import *

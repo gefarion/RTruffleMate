@@ -4,6 +4,8 @@ from som.interpreter.nodes.expression_node import ExpressionNode
 from som.vmobjects.object import Object
 from mate.interpreter.mop import MOPDispatcher
 from som.vmobjects.array         import Array
+import som.vm.universe
+from mate.interpreter.nodes.lookup import UninitializedMateLookUpNode
 
 class MateInvokable(MateNode):
 
@@ -11,6 +13,7 @@ class MateInvokable(MateNode):
         ExpressionNode.__init__(self, source_section)
         som_node.get_method().set_invokable(self)
         self._som_node = self.adopt_child(som_node)
+        self._lookup_node = self.adopt_child(UninitializedMateLookUpNode(self.reflective_op(), som.vm.universe.get_current()))
 
     def get_som_node(self):
         return self._som_node
@@ -27,17 +30,12 @@ class MateInvokable(MateNode):
         if environment is None or not isinstance(environment, Object):
             return self._som_node.invoke(receiver, arguments, meta_level)
 
-        method = MOPDispatcher.lookup_invokable(self.reflective_op(), environment)
+        method = self._lookup_node.lookup_meta_invokable(environment)
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
             return self._som_node.invoke(receiver, arguments, meta_level)
 
-        # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        # receiver.set_meta_object_environment(None)
-        res = method.invoke(receiver, [self._som_node.get_method(), Array.from_objects(arguments), environment], True)
-        # receiver.set_meta_object_environment(environment)
-
-        return res
+        return method.invoke(receiver, [self._som_node.get_method(), Array.from_objects(arguments), environment], True)
 
     def reflective_op(self):
         return ReflectiveOp.MessageActivation

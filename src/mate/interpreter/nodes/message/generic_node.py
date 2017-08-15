@@ -36,16 +36,11 @@ class MateGenericMessageNode(MateNode):
         if environment is None or not isinstance(environment, Object):
             return None
 
-        method = MOPDispatcher.lookup_invokable(self.reflective_op(), environment)
+        method = self._lookup_node.lookup_meta_invokable(environment)
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None
 
         args = [self._som_node.get_selector(), receiver.get_class(self._som_node.get_universe())]
 
-        # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        # receiver.set_meta_object_environment(None)
-        res = method.invoke(receiver, args, True)
-        # receiver.set_meta_object_environment(environment)
-
-        return res
+        return  method.invoke(receiver, args, True)

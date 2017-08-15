@@ -2,19 +2,25 @@ from som.interpreter.nodes.expression_node import ExpressionNode
 from mate.interpreter.mop import MOPDispatcher
 from mate.vm.constants import ReflectiveOp
 from som.vmobjects.object import Object
+import som.vm.universe
+from mate.interpreter.nodes.lookup import UninitializedMateLookUpNode
 
 class MateNode(ExpressionNode):
 
-    _immutable_fields_ = ["_som_node?"]
-    _child_nodes_ = ["_som_node"]
+    _immutable_fields_ = ["_som_node?", "_lookup_node?"]
+    _child_nodes_ = ["_som_node", "_lookup_node"]
 
     def __init__(self, som_node, source_section = None):
         ExpressionNode.__init__(self, source_section)
         som_node.replace(self)
         self._som_node = self.adopt_child(som_node)
+        self._lookup_node = self.adopt_child(UninitializedMateLookUpNode(self.reflective_op(), som.vm.universe.get_current()))
 
     def get_meta_args(self, frame):
         raise NotImplementedError("Subclass must implement this method")
+
+    def replace_lookup_list_head(self, node):
+        self._lookup_node.replace(node)
 
     def execute(self, frame):
 
@@ -37,16 +43,11 @@ class MateNode(ExpressionNode):
         if environment is None or not isinstance(environment, Object):
             return None
 
-        method = MOPDispatcher.lookup_invokable(self.reflective_op(), environment)
+        method = self._lookup_node.lookup_meta_invokable(environment)
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None
 
         args = self.get_meta_args(frame)
 
-        # Tengo que desactivar mate para evitar recursion infinita, ver como implementar una solucion con niveles de contexto
-        # receiver.set_meta_object_environment(None)
-        res = method.invoke(receiver, args,  True)
-        # receiver.set_meta_object_environment(environment)
-
-        return res
+        return method.invoke(receiver, args,  True)

@@ -21,6 +21,7 @@ class ObjectLayout(object):
         self._storage_types = known_types or [None] * number_of_fields
         self._total_locations = number_of_fields
         self._storage_locations = [None] * number_of_fields
+        self._meta_object_environment = None
 
         next_free_prim_idx = 0
         next_free_ptr_idx  = 0
@@ -46,6 +47,12 @@ class ObjectLayout(object):
 
         self._prim_locations_used = next_free_prim_idx
         self._ptr_locations_used  = next_free_ptr_idx
+
+    def get_meta_object_environment(self):
+        return self._meta_object_environment
+
+    def set_meta_object_environment(self, environment):
+        self._meta_object_environment = environment
 
     def is_for_same_class(self, other):
         return self._for_class is other

@@ -60,6 +60,12 @@ class Object(ObjectWithoutFields):
         else:
             self._fields = None  ## for some reason _EMPTY_LIST doesn't typecheck here
 
+    def get_meta_object_environment(self):
+        return self._object_layout.get_meta_object_environment()
+
+    def set_meta_object_environment(self, environment):
+        return self._object_layout.get_meta_object_environment()
+
     def get_object_layout(self):
         return promote(self._object_layout)
 

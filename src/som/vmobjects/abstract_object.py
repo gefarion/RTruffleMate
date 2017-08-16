@@ -2,16 +2,12 @@ from rpython.rlib import jit
 
 
 class AbstractObject(object):
-    
-    def __init__(self):
-        # field to store meta object
-        self._meta_object_environment = None
 
     def get_meta_object_environment(self):
-        return self._meta_object_environment
+        return None
 
     def set_meta_object_environment(self, environment):
-        self._meta_object_environment = environment
+        return None
 
     def send(self, selector_string, arguments, universe, meta_level):
         selector = universe.symbol_for(selector_string)

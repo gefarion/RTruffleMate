@@ -7,7 +7,7 @@ class AbstractObject(object):
         return None
 
     def set_meta_object_environment(self, environment):
-        return None
+        pass
 
     def send(self, selector_string, arguments, universe, meta_level):
         selector = universe.symbol_for(selector_string)

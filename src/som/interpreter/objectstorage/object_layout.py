@@ -48,7 +48,7 @@ class ObjectLayout(object):
         self._ptr_locations_used  = next_free_ptr_idx
 
     def clone(self):
-        return ObjectLayout(self._total_locations, self._for_class);
+        return ObjectLayout(self._total_locations, self._for_class, self._storage_types);
 
     def get_meta_object_environment(self):
         return self._meta_object_environment

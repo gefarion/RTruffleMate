@@ -19,10 +19,25 @@ def _coerce_to_double(obj, universe):
 def _asString(ivkbl, rcvr, args, meta_level):
     return rcvr.prim_as_string(ivkbl.get_universe())
 
+def _asInteger(ivkbl, rcvr, args, meta_level):
+    int_value = int(rcvr.get_embedded_double())
+    return ivkbl.get_universe().new_integer(int_value)
 
 def _sqrt(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_double(
         math.sqrt(rcvr.get_embedded_double()))
+
+def _sin(ivkbl, rcvr, args, meta_level):
+    return ivkbl.get_universe().new_double(
+        math.sin(rcvr.get_embedded_double()))
+
+def _cos(ivkbl, rcvr, args, meta_level):
+    return ivkbl.get_universe().new_double(
+        math.cos(rcvr.get_embedded_double()))
+
+def _floor(ivkbl, rcvr, args, meta_level):
+    int_value = int(math.floor(rcvr.get_embedded_double()))
+    return ivkbl.get_universe().new_integer(int_value)
 
 
 def _plus(ivkbl, rcvr, args, meta_level):
@@ -78,8 +93,12 @@ class DoublePrimitives(Primitives):
 
     def install_primitives(self):        
         self._install_instance_primitive(Primitive("asString", self._universe, _asString))
+        self._install_instance_primitive(Primitive("asInteger", self._universe, _asInteger))
         self._install_instance_primitive(Primitive("round",    self._universe, _round))
         self._install_instance_primitive(Primitive("sqrt",     self._universe, _sqrt))
+        self._install_instance_primitive(Primitive("cos",     self._universe, _cos))
+        self._install_instance_primitive(Primitive("sin",     self._universe, _sin))
+        self._install_instance_primitive(Primitive("floor",     self._universe, _floor))
         self._install_instance_primitive(Primitive("+",        self._universe, _plus))
         self._install_instance_primitive(Primitive("-",        self._universe, _minus))
         self._install_instance_primitive(Primitive("*",        self._universe, _mult))

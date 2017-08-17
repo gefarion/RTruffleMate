@@ -17,19 +17,19 @@ all: compile
 compile: core-lib/.git
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) $(RPYTHON) --batch $(JIT_ARGS) $(TARGET)
 
-somtest: core-lib/.git
+som-test: core-lib/.git
 	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/TestHarness.som
 
-matetest: core-lib/.git
+mate-test: core-lib/.git
 	$(COMMAND) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate TestSuite/TestHarness.som
 
 test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
 
-somvmtest:
+somvm-test:
 	$(BIN) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/TestHarness.som;
 
-matevmtest:
+matevm-test:
 	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/TestHarness.som;
 
 matevmmatetestsuite:
@@ -61,19 +61,19 @@ matevm-macro:
 
 #make BENCH=Storage.som som-bench
 som-bench:
-	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	$(BIN) -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 clean:
 	@rm -f RTruffleMATE-no-jit

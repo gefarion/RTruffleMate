@@ -6,7 +6,6 @@ from som.interpreter.objectstorage.storage_location import \
 from som.vmobjects.double  import Double
 from som.vmobjects.integer import Integer
 
-
 class ObjectLayout(object):
 
     _immutable_fields_ = ["_for_class", "_prim_locations_used",
@@ -47,6 +46,9 @@ class ObjectLayout(object):
 
         self._prim_locations_used = next_free_prim_idx
         self._ptr_locations_used  = next_free_ptr_idx
+
+    def clone(self):
+        return ObjectLayout(self._total_locations, self._for_class);
 
     def get_meta_object_environment(self):
         return self._meta_object_environment

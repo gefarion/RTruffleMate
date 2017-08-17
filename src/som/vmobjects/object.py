@@ -64,7 +64,8 @@ class Object(ObjectWithoutFields):
         return self._object_layout.get_meta_object_environment()
 
     def set_meta_object_environment(self, environment):
-        return self._object_layout.get_meta_object_environment()
+        self._object_layout = self._object_layout.clone()
+        self._object_layout.set_meta_object_environment(environment)
 
     def get_object_layout(self):
         return promote(self._object_layout)

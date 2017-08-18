@@ -24,7 +24,7 @@ class Object(ObjectWithoutFields):
         if obj_class is not None:
             self._object_layout = obj_class.get_layout_for_instances()
         else:
-            self._object_layout = ObjectLayout(number_of_fields)
+            self._object_layout = ObjectLayout.get_or_create(number_of_fields)
 
         # IMPORTANT: when changing the number of preallocated fields,
         # you'll also need to update storage_location.py's constants:
@@ -64,8 +64,10 @@ class Object(ObjectWithoutFields):
         return self._object_layout.get_meta_object_environment()
 
     def set_meta_object_environment(self, environment):
-        self._object_layout = self._object_layout.clone()
-        self._object_layout.set_meta_object_environment(environment)
+        if environment is None or not isinstance(environment, Object):
+            self.update_layout_to_match_class()
+        else:
+            self._set_layout_and_transfer_fields(self._object_layout.clone_with_environment(environment))
 
     def get_object_layout(self):
         return promote(self._object_layout)
@@ -124,19 +126,27 @@ class Object(ObjectWithoutFields):
 
     def _update_layout_with_initialized_field(self, idx, field_type):
         assert not we_are_jitted()
-        layout = self._class.update_instance_layout_with_initialized_field(
-            idx, field_type)
 
-        assert layout is not self._object_layout
-
-        self._set_layout_and_transfer_fields(layout)
+        if self._object_layout is not self._class.get_layout_for_instances():
+            layout = self._object_layout.with_initialized_field(idx, field_type)
+            if layout is not self._object_layout:
+                self._set_layout_and_transfer_fields(layout)
+        else:
+            layout = self._class.update_instance_layout_with_initialized_field(idx, field_type)
+            assert layout is not self._object_layout
+            self._set_layout_and_transfer_fields(layout)
 
     def _update_layout_with_generalized_field(self, idx):
         assert not we_are_jitted()
-        layout = self._class.update_instance_layout_with_generalized_field(idx)
 
-        assert layout is not self._object_layout
-        self._set_layout_and_transfer_fields(layout)
+        if self._object_layout is not self._class.get_layout_for_instances():
+            layout = self._object_layout.with_generalized_field(idx)
+            if layout is not self._object_layout:
+                self._set_layout_and_transfer_fields(layout)
+        else:
+            layout = self._class.update_instance_layout_with_generalized_field(idx)
+            assert layout is not self._object_layout
+            self._set_layout_and_transfer_fields(layout)
 
     def get_field_name(self, index):
         # Get the name of the field with the given index

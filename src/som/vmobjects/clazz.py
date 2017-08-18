@@ -24,7 +24,7 @@ class Class(Object):
         self._invokables_table = {}
         self._universe = universe
         if number_of_fields >= 0:
-            self._layout_for_instances = ObjectLayout(number_of_fields, self)
+            self._layout_for_instances = ObjectLayout.get_or_create(number_of_fields, self)
         else:
             self._layout_for_instances = None
         
@@ -52,7 +52,7 @@ class Class(Object):
         if (self._layout_for_instances is None or
                 value.get_number_of_indexable_fields() !=
                 self._layout_for_instances.get_number_of_fields()):
-            self._layout_for_instances = ObjectLayout(
+            self._layout_for_instances = ObjectLayout.get_or_create(
                 value.get_number_of_indexable_fields(), self)
   
     def get_instance_invokables(self):

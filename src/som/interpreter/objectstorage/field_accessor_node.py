@@ -38,7 +38,9 @@ class _AbstractReadFieldNode(_AbstractFieldAccessorNode):
 
     def _specialize(self, obj, reason, next_read_node):
         assert isinstance(obj, Object)
-        obj.update_layout_to_match_class()
+
+        if obj.get_meta_object_environment() is None:
+            obj.update_layout_to_match_class()
 
         layout = obj.get_object_layout()
         location = layout.get_storage_location(self._field_idx)
@@ -86,7 +88,7 @@ class _SpecializedReadFieldNode(_AbstractReadFieldNode):
             return self._respecialize_or_next(obj).read(frame, obj)
 
     def _respecialize_or_next(self, obj):
-        if self._layout.is_for_same_class(obj.get_class(None)):
+        if self._layout.is_for_same_class(obj.get_class(None)) and self._layout.get_meta_object_environment() is None:
             return self._specialize(obj, "update outdated node", self._next)
         else:
             return self._next

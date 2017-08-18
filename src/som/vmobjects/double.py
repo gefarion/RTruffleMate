@@ -1,4 +1,5 @@
-from rpython.rlib.rfloat import formatd, DTSF_ADD_DOT_0, DTSF_STR_PRECISION
+from rpython.rlib.rfloat import formatd, DTSF_ADD_DOT_0, DTSF_STR_PRECISION, INFINITY
+
 from som.vm.globals import trueObject
 from som.vm.globals import falseObject
 
@@ -15,7 +16,10 @@ class Double(AbstractObject):
         AbstractObject.__init__(self)
         assert isinstance(value, float)
         self._embedded_double = value
-    
+
+    def __str__(self):
+        return str(self._embedded_double)
+
     def get_embedded_double(self):
         return self._embedded_double
 
@@ -52,7 +56,15 @@ class Double(AbstractObject):
 
     def prim_double_div(self, right, universe):
         r = self._get_float(right)
-        return universe.new_double(self._embedded_double / r)
+
+        # Work around to support division by zero
+        if (r == 0):
+            if (self._embedded_double < 0):
+                return universe.new_double(-INFINITY)
+            else:
+                return universe.new_double(INFINITY)
+        else:
+            return universe.new_double(self._embedded_double / r)
 
     def prim_int_div(self, right, universe):
         r = self._get_float(right)

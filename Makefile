@@ -8,8 +8,10 @@ TARGET    = src/targetsomstandalone.py
 ifdef JIT
 	JIT_ARGS = -Ojit
 	BIN = ./RTruffleSOM-jit
+	VM = 'jit'
 else
 	BIN = ./RTruffleSOM-no-jit
+	VM = 'no-jit'
 endif
 
 all: compile
@@ -42,10 +44,10 @@ mate-micro:
 	rebench -c benchmarks.conf mate-micro vm:MATE-interpreter
 
 somvm-micro:
-	rebench -c benchmarks.conf som-micro vm:SOM-jit
+	rebench -c benchmarks.conf som-micro vm:SOM-$(VM)
 
 matevm-micro:
-	rebench -c benchmarks.conf mate-micro vm:MATE-jit
+	rebench -c benchmarks.conf mate-micro vm:MATE-$(VM)
 
 som-macro:
 	rebench -c benchmarks.conf som-macro vm:SOM-interpreter
@@ -54,10 +56,10 @@ mate-macro:
 	rebench -c benchmarks.conf mate-macro vm:MATE-interpreter
 
 somvm-macro:
-	rebench -c benchmarks.conf som-macro vm:SOM-jit
+	rebench -c benchmarks.conf som-macro vm:SOM-$(VM)
 
 matevm-macro:
-	rebench -c benchmarks.conf mate-macro vm:MATE-jit
+	rebench -c benchmarks.conf mate-macro vm:MATE-$(VM)
 
 #make BENCH=Storage.som som-bench
 som-bench:

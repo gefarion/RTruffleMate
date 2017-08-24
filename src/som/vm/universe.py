@@ -16,6 +16,7 @@ from som.vmobjects.block         import Block, block_evaluation_primitive
 from som.vmobjects.biginteger    import BigInteger
 from som.vmobjects.double        import Double
 from som.vmobjects.context       import Context
+from som.vmobjects.shape         import Shape
 
 from mate.interpreter.mateify_visitor import MateifyVisitor
 
@@ -66,6 +67,7 @@ class Universe(object):
             "blockClasses[*]",
             "stringClass",
             "contextClass",
+            "shapeClass",
             "characterClass",
             "doubleClass",
             "environmentMOClass",
@@ -95,6 +97,7 @@ class Universe(object):
         self.blockClasses   = None
         self.stringClass    = None
         self.contextClass   = None
+        self.shapeClass     = None
         self.characterClass = None
         self.doubleClass    = None
 
@@ -233,6 +236,7 @@ class Universe(object):
         self.primitiveClass = self.new_system_class()
         self.stringClass    = self.new_system_class()
         self.contextClass   = self.new_system_class()
+        self.shapeClass     = self.new_system_class()
         self.characterClass = self.new_system_class()
         self.doubleClass    = self.new_system_class()
 
@@ -255,6 +259,7 @@ class Universe(object):
         self._initialize_system_class(self.primitiveClass, self.objectClass, "Primitive")
         self._initialize_system_class(self.stringClass,    self.objectClass, "String")
         self._initialize_system_class(self.contextClass,   self.objectClass, "Context")
+        self._initialize_system_class(self.shapeClass,     self.objectClass, "Shape")
         self._initialize_system_class(self.characterClass, self.objectClass, "Character")
         self._initialize_system_class(self.symbolClass,    self.stringClass, "Symbol")
         self._initialize_system_class(self.doubleClass,    self.objectClass, "Double")
@@ -275,6 +280,7 @@ class Universe(object):
         self._load_system_class(self.primitiveClass)
         self._load_system_class(self.stringClass)
         self._load_system_class(self.contextClass)
+        self._load_system_class(self.shapeClass)
         self._load_system_class(self.characterClass)
         self._load_system_class(self.doubleClass)
         self._load_system_class(self.environmentMOClass)

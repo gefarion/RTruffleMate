@@ -1,5 +1,5 @@
 from som.vmobjects.abstract_object import AbstractObject
-from som.interpreter.object_layout import ObjectLayout
+from som.interpreter.objectstorage.object_layout import ObjectLayout
 
 class Shape(AbstractObject):
     _immutable_fields_ = ["_object_layout"]

@@ -1,9 +1,10 @@
 from rpython.rlib.objectmodel import compute_hash
 
 from som.primitives.primitives import Primitives
-from som.vm.globals import falseObject, trueObject
+from som.vm.globals import falseObject, trueObject, nilObject
 from som.vmobjects.primitive import Primitive
 from som.vmobjects.string import String
+from som.vmobjects.integer import Integer
 from som.vmobjects.character import Character
 from som.vmobjects.symbol import Symbol
 
@@ -65,6 +66,17 @@ def _equals(ivkbl, rcvr, args, meta_level):
 
     return falseObject
 
+def _new(ivkbl, rcvr, args, meta_level):
+    arg = args[0]
+    if not isinstance(arg, Integer):
+        return nilObject
+
+    value = arg.get_embedded_integer()
+    if value < 0 or value > 255:
+        return nilObject
+
+    return ivkbl.get_universe().new_character(chr(value))
+
 class CharacterPrimitives(Primitives):
     
     def install_primitives(self):
@@ -78,4 +90,4 @@ class CharacterPrimitives(Primitives):
         self._install_instance_primitive(Primitive("isUppercase", self._universe, _is_upper_case))
         self._install_instance_primitive(Primitive("isLowercase", self._universe, _is_lower_case))
         self._install_instance_primitive(Primitive("=", self._universe, _equals))
-
+        self._install_class_primitive(Primitive("new:", self._universe, _new))

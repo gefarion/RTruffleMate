@@ -4,14 +4,15 @@ PYPY_DIR ?= pypy
 RPYTHON  ?= $(PYPY_DIR)/rpython/bin/rpython
 COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
+BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
 
 ifdef JIT
 	JIT_ARGS = -Ojit
 	BIN = ./RTruffleSOM-jit
-	VM = 'jit'
+	VM = jit
 else
 	BIN = ./RTruffleSOM-no-jit
-	VM = 'no-jit'
+	VM = no-jit
 endif
 
 all: compile
@@ -63,23 +64,23 @@ matevm-macro:
 
 #make BENCH=Storage.som som-bench
 som-bench:
-	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	$(BIN) -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:Examples/Benchmarks/LanguageFeatures:Examples/Benchmarks/Richards:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/CD Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 clean:
-	@rm -f RTruffleMATE-no-jit
-	@rm -f RTruffleMATE-jit
+	@rm -f RTruffleSOM-no-jit
+	@rm -f RTruffleSOM-jit
 
 core-lib/.git:
 	git submodule update --init --recursive --remote

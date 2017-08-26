@@ -43,14 +43,14 @@ def _as_lower_case(ivkbl, rcvr, args, meta_level):
 
 def _is_upper_case(ivkbl, rcvr, args, meta_level):
     code = ord(rcvr.get_embedded_character())
-    if code >= 65 and code <= 90: 
+    if code >= 65 and code <= 90:
         return trueObject
     else:
         return falseObject
 
 def _is_lower_case(ivkbl, rcvr, args, meta_level):
     code = ord(rcvr.get_embedded_character())
-    if code >= 97 and code <= 122: 
+    if code >= 97 and code <= 122:
         return trueObject
     else:
         return falseObject
@@ -60,6 +60,12 @@ def _equals(ivkbl, rcvr, args, meta_level):
 
     if isinstance(other, Character):
         if rcvr.get_embedded_character() == other.get_embedded_character():
+            return trueObject
+        else:
+            return falseObject
+
+    if isinstance(other, String):
+        if rcvr.get_embedded_character() == other.get_embedded_string():
             return trueObject
         else:
             return falseObject

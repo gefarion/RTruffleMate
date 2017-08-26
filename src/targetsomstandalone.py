@@ -21,9 +21,9 @@ def entry_point(argv):
 
 def target(driver, args):
     if driver.config.translation.jit:
-        driver.exe_name = 'RTruffleSOM-jit'
+        driver.exe_name = 'RTruffleMate-jit'
     else:
-        driver.exe_name = 'RTruffleSOM-no-jit'
+        driver.exe_name = 'RTruffleMate-no-jit'
     return entry_point, None
 
 

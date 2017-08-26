@@ -8,10 +8,10 @@ BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
 
 ifdef JIT
 	JIT_ARGS = -Ojit
-	BIN = ./RTruffleSOM-jit
+	BIN = ./RTruffleMate-jit
 	VM = jit
 else
-	BIN = ./RTruffleSOM-no-jit
+	BIN = ./RTruffleMate-no-jit
 	VM = no-jit
 endif
 
@@ -79,8 +79,8 @@ matevm-bench:
 	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 clean:
-	@rm -f RTruffleSOM-no-jit
-	@rm -f RTruffleSOM-jit
+	@rm -f RTruffleMate-no-jit
+	@rm -f RTruffleMate-jit
 
 core-lib/.git:
 	git submodule update --init --recursive --remote

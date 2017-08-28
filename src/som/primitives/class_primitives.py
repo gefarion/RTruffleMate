@@ -1,6 +1,7 @@
 from som.primitives.primitives import Primitives
 from som.vm.globals import falseObject, trueObject
 from som.vmobjects.primitive       import Primitive
+from som.vmobjects.shape import Shape
 
 def _new(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_instance(rcvr)
@@ -33,6 +34,16 @@ def _has_method(ivkbl, rcvr, args, meta_level):
 
     return falseObject
 
+def _get_shape_for_instances(ivkbl, rcvr, args, meta_level):
+    return ivkbl.get_universe().new_shape(rcvr.get_layout_for_instances())
+
+def _update_shape_for_instances_with(ivkbl, rcvr, args, meta_level):
+    shape = args[0]
+    assert isinstance(shape, Shape)
+
+    rcvr.update_instance_layout(shape.get_embedded_object_layout())
+    return rcvr
+
 class ClassPrimitives(Primitives):
     def install_primitives(self):
         self._install_instance_primitive(Primitive("basicNew",   self._universe, _new))
@@ -41,3 +52,5 @@ class ClassPrimitives(Primitives):
         self._install_instance_primitive(Primitive("methods",    self._universe, _methods))
         self._install_instance_primitive(Primitive("fields",     self._universe, _fields))
         self._install_instance_primitive(Primitive("hasMethod",  self._universe, _has_method))
+        self._install_instance_primitive(Primitive("updateShapeForInstancesWith:",  self._universe, _update_shape_for_instances_with))
+        self._install_instance_primitive(Primitive("getShapeForInstances",  self._universe, _get_shape_for_instances))

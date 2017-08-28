@@ -22,7 +22,8 @@ class MateifyVisitor(object):
         MateGenericMessageNode(node)
 
     def visit_Invokable(self, node):
-        MateInvokable(node)
+        if (not node.get_method().isSPECIAL()):
+            MateInvokable(node)
 
     # Semantics MOP
 

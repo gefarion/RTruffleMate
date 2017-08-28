@@ -39,8 +39,8 @@ class _AbstractReadFieldNode(_AbstractFieldAccessorNode):
     def _specialize(self, obj, reason, next_read_node):
         assert isinstance(obj, Object)
 
-        if obj.get_meta_object_environment() is None:
-            obj.update_layout_to_match_class()
+        # Desactivo que el objeto se actualize a la especializacion de su clase
+        # obj.update_layout_to_match_class()
 
         layout = obj.get_object_layout()
         location = layout.get_storage_location(self._field_idx)

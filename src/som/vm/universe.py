@@ -402,6 +402,10 @@ class Universe(object):
     def new_character(embedded_char):
         return Character(embedded_char)
 
+    @staticmethod
+    def new_shape(object_layout):
+        return Shape(object_layout)
+
     def _new_symbol(self, string):
         result = Symbol(string)
 

@@ -12,8 +12,11 @@ class Shape(AbstractObject):
     def get_embedded_object_layout(self):
         return self._object_layout
 
-    def __str__(self):
-        return "\"" + self._frame + "\""
-
     def get_class(self, universe):
         return universe.shapeClass
+
+    # def clone_with_enviroment(self, environment):
+        # return Shape(self._object_layout.clone_with_enviroment(environment))
+
+    # def clone_with_class(self, clazz):
+        # return Shape(self._object_layout.clone_with_class(clazz))

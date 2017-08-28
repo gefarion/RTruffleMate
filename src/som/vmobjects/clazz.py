@@ -188,3 +188,7 @@ class Class(Object):
         if updated is not self._layout_for_instances:
             self._layout_for_instances = updated
         return self._layout_for_instances
+
+    def update_instance_layout(self, object_layout):
+        self._layout_for_instances = object_layout
+        return self._layout_for_instances

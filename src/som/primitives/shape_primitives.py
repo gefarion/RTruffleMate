@@ -12,17 +12,14 @@ def _fields_count(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_integer(layout.get_number_of_fields())
 
 def _install_environment(ivkbl, rcvr, args, meta_level):
-    # GENERAR UN NUEVA SHAPE
     environment = args[0]
-    rcvr.set_meta_object_environment(environment)
-    return rcvr
+    return Shape(rcvr.get_embedded_object_layout().clone_with_environment(environment))
 
 def _install_class(ivkbl, rcvr, args, meta_level):
-    # GENERAR UN NUEVA SHAPE
     clazz = args[0]
     assert isinstance(clazz, Class)
 
-    rcvr.set_class(clazz)
+    return Shape(rcvr.get_embedded_object_layout().clone_with_class(clazz))
 
 def _new_with_fields_count(ivkbl, rcvr, args, meta_level):
 
@@ -38,6 +35,3 @@ class ShapePrimitives(Primitives):
         self._install_instance_primitive(Primitive("installEnvironment:", self._universe, _install_environment))
         self._install_instance_primitive(Primitive("installClass:", self._universe, _install_class))
         self._install_class_primitive(Primitive("newWithFieldsCount:", self._universe, _new_with_fields_count))
-
-        #TODO:
-        #self._install_instance_primitive(Primitive("define:final:hidden:", self._universe, TODO))

@@ -23,6 +23,9 @@ class Method(AbstractObject):
 
         self._invokable.set_method(self)
 
+    def isSPECIAL(self):
+        return self._signature.get_string().find('SPECIAL') >= 0
+
     def get_invokable(self):
         return self._invokable
 

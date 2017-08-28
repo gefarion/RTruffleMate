@@ -49,6 +49,12 @@ class ObjectLayout(object):
         self._prim_locations_used = next_free_prim_idx
         self._ptr_locations_used  = next_free_ptr_idx
 
+    def set_meta_object_environment(self, environment):
+        self._meta_object_environment = environment
+
+    def set_class(self, clazz):
+        self._for_class = clazz
+
     @staticmethod
     def get_or_create(number_of_fields, for_class = None,
                  known_types = None, meta_object_environment = None):
@@ -87,6 +93,10 @@ class ObjectLayout(object):
         assert environment is not None and isinstance(environment, Object)
 
         return ObjectLayout.get_or_create(self._total_locations, self._for_class, self._storage_types, environment)
+
+    def clone_with_class(self, clazz):
+
+        return ObjectLayout.get_or_create(self._total_locations, clazz, self._storage_types, self._meta_object_environment)
 
     def has_meta_object_environment(self):
         return environment is not None

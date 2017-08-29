@@ -26,7 +26,7 @@ def _new_with_fields_count(ivkbl, rcvr, args, meta_level):
     number_of_fields = args[0]
     assert isinstance(number_of_fields, Integer)
 
-    return ivkbl.get_universe().new_shape(ObjectLayout(number_of_fields.get_embedded_integer()))
+    return ivkbl.get_universe().new_shape(ObjectLayout.get_or_create(number_of_fields.get_embedded_integer()))
 
 class ShapePrimitives(Primitives):
 

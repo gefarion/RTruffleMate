@@ -37,6 +37,7 @@ class AbstractWhileMessageNode(ExpressionNode):
         return rcvr_value, [body_block]
 
     def execute(self, frame):
+
         rcvr_value = self._rcvr_expr.execute(frame)
         body_block = self._body_expr.execute(frame)
 

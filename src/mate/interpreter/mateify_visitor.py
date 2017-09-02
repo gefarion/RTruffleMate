@@ -24,6 +24,12 @@ class MateifyVisitor(object):
     def visit_Invokable(self, node):
         MateInvokable(node)
 
+    def visit_BlockNode(self, node):
+        node.get_value().get_invokable().accept(self)
+
+    def visit_BlockNodeWithContext(self, node):
+        node.get_value().get_invokable().accept(self)
+
     # Semantics MOP
 
     def visit_LocalArgumentReadNode(self, node):
@@ -137,13 +143,7 @@ class MateifyVisitor(object):
     def visit_NonLocalSuperReadNode(self, node):
         pass
 
-    def visit_BlockNodeWithContext(self, node):
-        pass
-
     def visit_NonLocalSelfReadNode(self, node):
-        pass
-
-    def visit_BlockNode(self, node):
         pass
 
     def visit_LocalSuperReadNode(self, node):

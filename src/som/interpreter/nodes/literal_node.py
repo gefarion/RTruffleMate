@@ -9,6 +9,9 @@ class LiteralNode(ExpressionNode):
         ExpressionNode.__init__(self, source_section)
         self._value = value
 
+    def get_value(self):
+    	return self._value
+
     def execute(self, frame):
         return self._value
 

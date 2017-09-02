@@ -81,6 +81,7 @@ def _instVarNamed(ivkbl, rcvr, args, meta_level):
 def _halt(ivkbl, rcvr, args, meta_level):
     # noop
     print "BREAKPOINT"
+    import pdb; pdb.set_trace()
     return rcvr
 
 
@@ -91,6 +92,20 @@ def _set_meta_object_environment(ivkbl, rcvr, args, meta_level):
     rcvr.set_meta_object_environment(args[0])
     return rcvr
 
+def _has_meta_object_environment(ivkbl, rcvr, args, meta_level):
+    environment = rcvr.get_meta_object_environment()
+
+    # No esta definido o es Nil
+    if environment is None or not isinstance(environment, Object):
+        return falseObject
+    else:
+        return trueObject
+
+def _in_meta(ivkbl, rcvr, args, meta_level):
+    if meta_level:
+        return trueObject
+    else:
+        return falseObject
 
 class ObjectPrimitives(Primitives):
     
@@ -110,4 +125,7 @@ class ObjectPrimitives(Primitives):
         self._install_instance_primitive(Primitive("class", self._universe, _class))
 
         self._install_instance_primitive(Primitive("installEnvironment:",  self._universe, _set_meta_object_environment))
+        self._install_instance_primitive(Primitive("hasMetaObjectEnvironment",  self._universe, _has_meta_object_environment))
+        self._install_instance_primitive(Primitive("inMeta",  self._universe, _in_meta))
+
 

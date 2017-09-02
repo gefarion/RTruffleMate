@@ -1,4 +1,5 @@
 from rpython.rlib.objectmodel import compute_identity_hash
+from rpython.rlib.debug import attach_gdb
 
 from som.primitives.primitives import Primitives
 from som.vm.globals import nilObject, falseObject, trueObject
@@ -81,7 +82,7 @@ def _instVarNamed(ivkbl, rcvr, args, meta_level):
 def _halt(ivkbl, rcvr, args, meta_level):
     # noop
     print "BREAKPOINT"
-    import pdb; pdb.set_trace()
+    attach_gdb()
     return rcvr
 
 

@@ -5,6 +5,8 @@ from som.vmobjects.shape import Shape
 from som.vmobjects.integer import Integer
 from som.vmobjects.clazz import Class
 from som.interpreter.objectstorage.object_layout import ObjectLayout
+from som.vmobjects.object import Object
+from som.vm.globals import falseObject, trueObject
 
 def _fields_count(ivkbl, rcvr, args, meta_level):
 
@@ -14,6 +16,13 @@ def _fields_count(ivkbl, rcvr, args, meta_level):
 def _install_environment(ivkbl, rcvr, args, meta_level):
     environment = args[0]
     return Shape(rcvr.get_embedded_object_layout().clone_with_environment(environment))
+
+def _has_meta_object_environment(ivkbl, rcvr, args, meta_level):
+    environment = rcvr.get_embedded_object_layout().get_meta_object_environment()
+    if environment is None or not isinstance(environment, Object):
+        return falseObject
+    else:
+        return trueObject
 
 def _install_class(ivkbl, rcvr, args, meta_level):
     clazz = args[0]
@@ -35,3 +44,5 @@ class ShapePrimitives(Primitives):
         self._install_instance_primitive(Primitive("installEnvironment:", self._universe, _install_environment))
         self._install_instance_primitive(Primitive("installClass:", self._universe, _install_class))
         self._install_class_primitive(Primitive("newWithFieldsCount:", self._universe, _new_with_fields_count))
+        self._install_instance_primitive(Primitive("hasMetaObjectEnvironment", self._universe, _has_meta_object_environment))
+

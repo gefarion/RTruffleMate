@@ -133,7 +133,7 @@ class Object(ObjectWithoutFields):
                 self._set_layout_and_transfer_fields(layout)
         else:
             # Actualizo su especializacion y la clase
-            # self._class.update_instance_layout_with_initialized_field(idx, field_type)
+            self._class.update_instance_layout_with_initialized_field(idx, field_type)
             layout = self._object_layout.with_initialized_field(idx, field_type)
             if layout is not self._object_layout:
                 self._set_layout_and_transfer_fields(layout)
@@ -151,7 +151,7 @@ class Object(ObjectWithoutFields):
                 self._set_layout_and_transfer_fields(layout)
         else:
             # Actualizo su especializacion y la clase
-            # self._class.update_instance_layout_with_generalized_field(idx)
+            self._class.update_instance_layout_with_generalized_field(idx)
             layout = self._object_layout.with_generalized_field(idx)
             if layout is not self._object_layout:
                 self._set_layout_and_transfer_fields(layout)

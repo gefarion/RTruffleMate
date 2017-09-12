@@ -98,6 +98,7 @@ class Universe(object):
         self.stringClass    = None
         self.contextClass   = None
         self.shapeClass     = None
+        self.fileClass      = None
         self.characterClass = None
         self.doubleClass    = None
 
@@ -237,6 +238,7 @@ class Universe(object):
         self.stringClass    = self.new_system_class()
         self.contextClass   = self.new_system_class()
         self.shapeClass     = self.new_system_class()
+        self.fileClass      = self.new_system_class()
         self.characterClass = self.new_system_class()
         self.doubleClass    = self.new_system_class()
 
@@ -260,6 +262,7 @@ class Universe(object):
         self._initialize_system_class(self.stringClass,    self.objectClass, "String")
         self._initialize_system_class(self.contextClass,   self.objectClass, "Context")
         self._initialize_system_class(self.shapeClass,     self.objectClass, "Shape")
+        self._initialize_system_class(self.fileClass,      self.objectClass, "File")
         self._initialize_system_class(self.characterClass, self.objectClass, "Character")
         self._initialize_system_class(self.symbolClass,    self.stringClass, "Symbol")
         self._initialize_system_class(self.doubleClass,    self.objectClass, "Double")
@@ -318,7 +321,7 @@ class Universe(object):
         self.set_global(falseClassName, falseClass)
 
         self.blockClasses = [self.blockClass] + \
-                [self._make_block_class(i) for i in [1, 2, 3]]
+                [self._make_block_class(i) for i in [1, 2, 3, 4]]
 
         self._object_system_initialized = True
         return system_object
@@ -401,6 +404,22 @@ class Universe(object):
     @staticmethod
     def new_character(embedded_char):
         return Character(embedded_char)
+
+    @staticmethod
+    def new_true():
+        return trueObject
+
+    @staticmethod
+    def new_false():
+        return falseObject
+
+    @staticmethod
+    def new_nil():
+        return nilObject
+
+    @staticmethod
+    def new_file(file):
+        return File(file)
 
     def _new_symbol(self, string):
         result = Symbol(string)

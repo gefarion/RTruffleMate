@@ -60,7 +60,7 @@ def _prim_read_into_starting_at_count(ivkbl, rcvr, args, meta_level):
         if byte == "":
             break
 
-        collection.set_indexable_field(i, ivkbl.get_universe().new_character(byte))
+        collection.set_indexable_field(i, ivkbl.get_universe().new_character(chr(int(byte))))
         c = c + 1
 
     return ivkbl.get_universe().new_integer(c)

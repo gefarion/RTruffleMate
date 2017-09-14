@@ -541,14 +541,26 @@ class Parser(object):
     def _negative_decimal(self):
         self._expect(Symbol.Minus)
         return self._literal_decimal(True)
- 
+
     def _literal_integer(self, negate_value):
         try:
-            i = int(self._text)
+            if 'r' in self._text:
+                a = self._text.split('r')
+                i = int(a[1], int(a[0]))
+            else:
+                i = int(self._text)
+
             if negate_value:
                 i = 0 - i
             result = self._universe.new_integer(i)
+
         except ParseStringOverflowError:
+            if 'r' in self._text:
+                a = self._text.split('r')
+                bigint = rbigint.fromstr(a[1], int(a[0]))
+            else:
+                bigint = rbigint.fromstr(self._text)
+
             bigint = rbigint.fromstr(self._text)
             if negate_value:
                 bigint.sign = -1
@@ -612,9 +624,18 @@ class Parser(object):
             return self._literal_integer(self._is_negative_number())
         elif self._sym == Symbol.Double:
             return self._literal_double(self._is_negative_number())
+        elif self._sym_is_identifier():
+            identifier = self._identifier()
+            if identifier == 'true':
+                return self._universe.new_true()
+            elif identifier == 'false':
+                return self._universe.new_false()
+            elif identifier == 'nil':
+                return self._universe.new_nil()
+            else:
+                return self._universe.new_string(identifier)
         else:
-            raise ParseError("Could not parse literal array value",
-                             Symbol.NONE, self)
+            raise ParseError("Could not parse literal array value", Symbol.NONE, self)
 
     def _selector(self):
         if (self._sym == Symbol.OperatorSequence or

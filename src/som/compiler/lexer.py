@@ -32,10 +32,17 @@ class Lexer(object):
         self._text = ''
 
         saw_decimal_mark = False
+        saw_base_mark = False
 
         while self._current_char().isdigit():
             self._text += self._current_char()
             self._bufp += 1
+
+            if (not saw_base_mark and 'r' == self._current_char() and
+                self._bufchar(self._bufp + 1).isdigit()):
+                saw_base_mark = True
+                self._text += self._current_char()
+                self._bufp += 1
 
             if (not saw_decimal_mark and '.' == self._current_char() and
                     self._bufchar(self._bufp + 1).isdigit()):

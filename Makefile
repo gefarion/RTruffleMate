@@ -4,7 +4,10 @@ PYPY_DIR ?= pypy
 RPYTHON  ?= $(PYPY_DIR)/rpython/bin/rpython
 COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
+
 BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
+FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
+BASE_INCLUDES = Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP
 
 ifdef JIT
 	JIT_ARGS = -Ojit
@@ -68,19 +71,45 @@ matevm-macro:
 
 #make BENCH=Storage.som som-bench
 som-bench:
-	./som.sh -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	./som.sh -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP:$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+
+mate-iop:
+	make BENCH=ArgumentRead.som mate-bench
+	make BENCH=FieldRead.som mate-bench
+	make BENCH=FieldWrite.som mate-bench
+	make BENCH=LocalVariableRead.som mate-bench
+	make BENCH=LocalVariableWrite.som mate-bench
+	make BENCH=MessageSend.som mate-bench
+	make BENCH=SeveralObjectsFieldRead2.som mate-bench
+	make BENCH=SeveralObjectsFieldRead.som mate-bench
+
+matevm-iop:
+	make BENCH=ArgumentRead.som matevm-bench
+	make BENCH=FieldRead.som matevm-bench
+	make BENCH=FieldWrite.som matevm-bench
+	make BENCH=LocalVariableRead.som matevm-bench
+	make BENCH=LocalVariableWrite.som matevm-bench
+	make BENCH=MessageSend.som matevm-bench
+	make BENCH=SeveralObjectsFieldRead2.som matevm-bench
+	make BENCH=SeveralObjectsFieldRead.som matevm-bench
+
+mate-aiop:
+	make BENCH=AllOperations.som mate-bench
+
+matevm-aiop:
+	make BENCH=AllOperations.som matevm-bench
 
 clean:
 	@rm -f RTruffleMate-no-jit

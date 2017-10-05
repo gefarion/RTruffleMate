@@ -26,7 +26,7 @@ def _invoke_on_with(ivkbl, rcvr, args, meta_level):
         direct_args = args[1].as_argument_array()
     return rcvr.invoke(args[0], direct_args, meta_level)
 
-def _invoke_on_with_semantics(ivkbl, rcvr, args, meta_level):
+def _invoke_mate_on_with_semantics(ivkbl, rcvr, args, meta_level):
     assert isinstance(rcvr,    Method)
     assert isinstance(args[0], AbstractObject)
     assert isinstance(args[1], Array) or args[1] is nilObject
@@ -60,5 +60,5 @@ class MethodPrimitives(Primitives):
                                                    self._universe, _invoke_on_with))
         self._install_instance_primitive(Primitive("invokeMateOn:with:",
                                                    self._universe, _invoke_mate_on_with))
-        self._install_instance_primitive(Primitive("invokeOn:with:withSemantics:",
-                                                   self._universe, _invoke_on_with_semantics))
+        self._install_instance_primitive(Primitive("invokeMateOn:with:withSemantics:",
+                                                   self._universe, _invoke_mate_on_with_semantics))

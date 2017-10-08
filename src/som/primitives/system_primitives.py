@@ -7,6 +7,8 @@ from som.vm.universe import std_print, std_println
 from rpython.rlib import rgc, jit
 import time
 
+def _in_truffle(ivkbl, rcvr, args, meta_level):
+    return falseObject
 
 def _load(ivkbl, rcvr, args, meta_level):
     argument = args[0]
@@ -79,3 +81,4 @@ class SystemPrimitives(Primitives):
         self._install_instance_primitive(Primitive("time", self._universe, _time))
         self._install_instance_primitive(Primitive("ticks", self._universe, _ticks))
         self._install_instance_primitive(Primitive("fullGC", self._universe, _fullGC))
+        self._install_instance_primitive(Primitive("inTruffle", self._universe, _in_truffle))

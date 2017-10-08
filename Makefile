@@ -31,9 +31,9 @@ som-test: core-lib/.git
 som-file-test: core-lib/.git
 	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams:TestSuite/FileSystem:TestSuite TestSuite/FileSystem/FilesTestHarness.som
 
-mate-test: core-lib/.git
-	$(COMMAND) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate TestSuite/Mate/MateTestHarness.som
 
+mate-test: core-lib/.git
+	$(COMMAND) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate:Examples/Benchmarks/Mate/Layout:Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks TestSuite/Mate/MateTestHarness.som
 test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
 
@@ -42,7 +42,7 @@ somvm-test:
 	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/TestHarness.som;
 
 matevm-test:
-	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/Mate/MateTestHarness.som;
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate:Examples/Benchmarks/Mate/Layout:Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks TestSuite/Mate/MateTestHarness.som;
 
 som-micro:
 	rebench -c benchmarks.conf som-micro vm:SOM-interpreter
@@ -87,7 +87,6 @@ matevm-bench:
 mate-iop:
 	make BENCH=VMReflectiveArgumentRead.som mate-bench
 	make BENCH=VMReflectiveFieldRead.som mate-bench
-	# make BENCH=VMReflectiveFieldReadWithMetavariability.som mate-bench
 	make BENCH=VMReflectiveFieldWrite.som mate-bench
 	make BENCH=VMReflectiveLayoutFieldRead.som mate-bench
 	make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
@@ -104,7 +103,6 @@ mate-iop:
 matevm-iop:
 	make BENCH=VMReflectiveArgumentRead.som matevm-bench
 	make BENCH=VMReflectiveFieldRead.som matevm-bench
-	# make BENCH=VMReflectiveFieldReadWithMetavariability.som matevm-bench
 	make BENCH=VMReflectiveFieldWrite.som matevm-bench
 	make BENCH=VMReflectiveLayoutFieldRead.som matevm-bench
 	make BENCH=VMReflectiveLayoutFieldWrite.som matevm-bench

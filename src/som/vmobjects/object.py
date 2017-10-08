@@ -138,10 +138,6 @@ class Object(ObjectWithoutFields):
             if layout is not self._object_layout:
                 self._set_layout_and_transfer_fields(layout)
 
-            # layout = self._class.update_instance_layout_with_initialized_field(idx, field_type)
-            # assert layout is not self._object_layout
-            # self._set_layout_and_transfer_fields(layout)
-
     def _update_layout_with_generalized_field(self, idx):
         assert not we_are_jitted()
 
@@ -155,10 +151,6 @@ class Object(ObjectWithoutFields):
             layout = self._object_layout.with_generalized_field(idx)
             if layout is not self._object_layout:
                 self._set_layout_and_transfer_fields(layout)
-
-            # layout = self._class.update_instance_layout_with_generalized_field(idx)
-            # assert layout is not self._object_layout
-            # self._set_layout_and_transfer_fields(layout)
 
     def get_field_name(self, index):
         # Get the name of the field with the given index

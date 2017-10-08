@@ -6,7 +6,8 @@ from som.vm.globals import nilObject, falseObject, trueObject
 
 from som.vmobjects.object    import Object  
 from som.vmobjects.primitive import Primitive
-from som.vmobjects.array     import Array 
+from som.vmobjects.array     import Array
+from som.vmobjects.shape import Shape
 
 
 def _equals(ivkbl, rcvr, args, meta_level):
@@ -108,6 +109,17 @@ def _in_meta(ivkbl, rcvr, args, meta_level):
     else:
         return falseObject
 
+def _shape(ivkbl, rcvr, args, meta_level):
+    return Shape(rcvr.get_object_layout())
+
+
+def _change_shape(ivkbl, rcvr, args, meta_level):
+    shape = args[0]
+    assert isinstance(shape, Shape)
+
+    rcvr._set_layout_and_transfer_fields(shape.get_embedded_object_layout())
+    return rcvr
+
 class ObjectPrimitives(Primitives):
     
     def install_primitives(self):
@@ -124,6 +136,8 @@ class ObjectPrimitives(Primitives):
         
         self._install_instance_primitive(Primitive("halt",  self._universe, _halt))
         self._install_instance_primitive(Primitive("class", self._universe, _class))
+        self._install_instance_primitive(Primitive("shape", self._universe, _shape))
+        self._install_instance_primitive(Primitive("changeShape:", self._universe, _change_shape))
 
         self._install_instance_primitive(Primitive("installEnvironment:",  self._universe, _set_meta_object_environment))
         self._install_instance_primitive(Primitive("hasMetaObjectEnvironment",  self._universe, _has_meta_object_environment))

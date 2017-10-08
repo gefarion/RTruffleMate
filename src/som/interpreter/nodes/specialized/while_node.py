@@ -41,7 +41,7 @@ class AbstractWhileMessageNode(ExpressionNode):
         rcvr_value = self._rcvr_expr.execute(frame)
         body_block = self._body_expr.execute(frame)
 
-        self._do_while(rcvr_value, body_block, frame.meta_level())
+        self._do_while(rcvr_value, body_block, frame)
         return nilObject
 
 # def get_printable_location_while_value(body_method, node):
@@ -63,7 +63,7 @@ class AbstractWhileMessageNode(ExpressionNode):
 #         while True:
 #             while_value_driver.jit_merge_point(body_method = body_method,
 #                                                node        = self)
-#             body_method.invoke(body_block, None, meta_level)
+#             body_method.invoke(body_block, None, call_frame)
 
 
 def get_printable_location_while(body_method, condition_method, while_type):
@@ -84,10 +84,10 @@ while_driver = jit.JitDriver(
 class WhileMessageNode(AbstractWhileMessageNode):
 
     def execute_evaluated(self, frame, rcvr, args):
-        self._do_while(rcvr, args[0], frame.meta_level())
+        self._do_while(rcvr, args[0], frame)
         return nilObject
 
-    def _do_while(self, rcvr_block, body_block, meta_level):
+    def _do_while(self, rcvr_block, body_block, call_frame):
         condition_method = rcvr_block.get_method()
         body_method      = body_block.get_method()
 
@@ -103,10 +103,10 @@ class WhileMessageNode(AbstractWhileMessageNode):
             if rcvr_block is body_block:
                 rcvr_block = body_block
 
-            condition_value = condition_method.invoke(rcvr_block, [], meta_level)
+            condition_value = condition_method.invoke(rcvr_block, [], call_frame)
             if condition_value is not self._predicate_bool:
                 break
-            body_method.invoke(body_block, [], meta_level)
+            body_method.invoke(body_block, [], call_frame)
 
     @staticmethod
     def can_specialize(selector, rcvr, args, node):

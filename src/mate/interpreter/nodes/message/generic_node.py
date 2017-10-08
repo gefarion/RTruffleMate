@@ -18,8 +18,7 @@ class MateGenericMessageNode(MateNode):
             method = self.lookup_invokable(frame, receiver)
 
         if method:
-            # ejecutar el ih para activation
-            return method.invoke(receiver, args, False)
+            return method.invoke(receiver, args, frame)
         else:
             return self._som_node.execute_evaluated(frame, receiver, args)
 
@@ -43,4 +42,4 @@ class MateGenericMessageNode(MateNode):
 
         args = [self._som_node.get_selector(), receiver.get_class(self._som_node.get_universe())]
 
-        return  method.invoke(receiver, args, True)
+        return  method.invoke_to_mate(receiver, args, frame)

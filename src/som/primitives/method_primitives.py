@@ -7,15 +7,15 @@ from som.vmobjects.method          import Method
 from som.vmobjects.primitive       import Primitive
 
 
-def _holder(ivkbl, rcvr, args, meta_level):
+def _holder(ivkbl, rcvr, args, call_frame):
     return rcvr.get_holder()
 
 
-def _signature(ivkbl, rcvr, args, meta_level):
+def _signature(ivkbl, rcvr, args, call_frame):
     return rcvr.get_signature()
 
 
-def _invoke_on_with(ivkbl, rcvr, args, meta_level):
+def _invoke_on_with(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr,    Method)
     assert isinstance(args[0], AbstractObject)
     assert isinstance(args[1], Array) or args[1] is nilObject
@@ -24,9 +24,10 @@ def _invoke_on_with(ivkbl, rcvr, args, meta_level):
         direct_args = []
     else:
         direct_args = args[1].as_argument_array()
-    return rcvr.invoke(args[0], direct_args, meta_level)
 
-def _invoke_mate_on_with_semantics(ivkbl, rcvr, args, meta_level):
+    return rcvr.invoke(args[0], direct_args, call_frame)
+
+def _invoke_mate_on_with_semantics(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr,    Method)
     assert isinstance(args[0], AbstractObject)
     assert isinstance(args[1], Array) or args[1] is nilObject
@@ -36,9 +37,9 @@ def _invoke_mate_on_with_semantics(ivkbl, rcvr, args, meta_level):
         direct_args = []
     else:
         direct_args = args[1].as_argument_array()
-    return rcvr.invoke_from_mate_with_semantics(args[0], direct_args, args[2])
+    return rcvr.invoke_from_mate(args[0], direct_args, call_frame, args[2])
 
-def _invoke_mate_on_with(ivkbl, rcvr, args, meta_level):
+def _invoke_mate_on_with(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr,    Method)
     assert isinstance(args[0], AbstractObject)
     assert isinstance(args[1], Array) or args[1] is nilObject
@@ -48,7 +49,7 @@ def _invoke_mate_on_with(ivkbl, rcvr, args, meta_level):
     else:
         direct_args = args[1].as_argument_array()
 
-    return rcvr.invoke_from_mate(args[0], direct_args)
+    return rcvr.invoke_from_mate(args[0], direct_args, call_frame)
 
 class MethodPrimitives(Primitives):
     def install_primitives(self):

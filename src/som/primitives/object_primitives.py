@@ -9,7 +9,7 @@ from som.vmobjects.primitive import Primitive
 from som.vmobjects.array     import Array 
 
 
-def _equals(ivkbl, rcvr, args, meta_level):
+def _equals(ivkbl, rcvr, args, call_frame):
     op1 = args[0]
     op2 = rcvr
     if op1 is op2:
@@ -18,12 +18,12 @@ def _equals(ivkbl, rcvr, args, meta_level):
         return falseObject
 
 
-def _hashcode(ivkbl, rcvr, args, meta_level):
+def _hashcode(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_integer(
         compute_identity_hash(rcvr))
 
 
-def _objectSize(ivkbl, rcvr, args, meta_level):
+def _objectSize(ivkbl, rcvr, args, call_frame):
     size = 0
     
     if isinstance(rcvr, Object):
@@ -34,66 +34,66 @@ def _objectSize(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_integer(size)
 
 
-def _perform(ivkbl, rcvr, args, meta_level):
+def _perform(ivkbl, rcvr, args, call_frame):
     selector = args[0]
 
     invokable = rcvr.get_class(ivkbl.get_universe()).lookup_invokable(selector)
-    return invokable.invoke(rcvr, [], meta_level)
+    return invokable.invoke(rcvr, [], call_frame)
 
 
-def _performInSuperclass(ivkbl, rcvr, args, meta_level):
+def _performInSuperclass(ivkbl, rcvr, args, call_frame):
     clazz    = args[1]
     selector = args[0]
 
     invokable = clazz.lookup_invokable(selector)
-    return invokable.invoke(rcvr, [], meta_level)
+    return invokable.invoke(rcvr, [], call_frame)
 
 
-def _performWithArguments(ivkbl, rcvr, args, meta_level):
+def _performWithArguments(ivkbl, rcvr, args, call_frame):
     arg_arr  = args[1].as_argument_array()
     selector = args[0]
 
     invokable = rcvr.get_class(ivkbl.get_universe()).lookup_invokable(selector)
-    return invokable.invoke(rcvr, arg_arr, meta_level)
+    return invokable.invoke(rcvr, arg_arr, call_frame)
 
 
-def _instVarAt(ivkbl, rcvr, args, meta_level):
+def _instVarAt(ivkbl, rcvr, args, call_frame):
     idx  = args[0]
     return rcvr.get_field(idx.get_embedded_integer() - 1)
 
 
-def _instVarAtPut(ivkbl, rcvr, args, meta_level):
+def _instVarAtPut(ivkbl, rcvr, args, call_frame):
     val  = args[1]
     idx  = args[0]
     rcvr.set_field(idx.get_embedded_integer() - 1, val)
     return val
 
-def _instVarNamedPut(ivkbl, rcvr, args, meta_level):
+def _instVarNamedPut(ivkbl, rcvr, args, call_frame):
     i = rcvr.get_field_index(args[0])
     val  = args[1]
     rcvr.set_field(i, val)
     return rcvr
 
-def _instVarNamed(ivkbl, rcvr, args, meta_level):
+def _instVarNamed(ivkbl, rcvr, args, call_frame):
     i = rcvr.get_field_index(args[0])
     return rcvr.get_field(i)
 
 
-def _halt(ivkbl, rcvr, args, meta_level):
+def _halt(ivkbl, rcvr, args, call_frame):
     # noop
     print "BREAKPOINT"
     attach_gdb()
     return rcvr
 
 
-def _class(ivkbl, rcvr, args, meta_level):
+def _class(ivkbl, rcvr, args, call_frame):
     return rcvr.get_class(ivkbl.get_universe())
 
-def _set_meta_object_environment(ivkbl, rcvr, args, meta_level):
+def _set_meta_object_environment(ivkbl, rcvr, args, call_frame):
     rcvr.set_meta_object_environment(args[0])
     return rcvr
 
-def _has_meta_object_environment(ivkbl, rcvr, args, meta_level):
+def _has_meta_object_environment(ivkbl, rcvr, args, call_frame):
     environment = rcvr.get_meta_object_environment()
 
     # No esta definido o es Nil
@@ -102,8 +102,8 @@ def _has_meta_object_environment(ivkbl, rcvr, args, meta_level):
     else:
         return trueObject
 
-def _in_meta(ivkbl, rcvr, args, meta_level):
-    if meta_level:
+def _in_meta(ivkbl, rcvr, args, call_frame):
+    if call_frame.meta_level():
         return trueObject
     else:
         return falseObject

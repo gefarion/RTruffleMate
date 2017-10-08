@@ -5,12 +5,12 @@ from som.vmobjects.primitive   import Primitive
 from som.primitives.primitives import Primitives
 
 
-def _at(ivkbl, rcvr, args, meta_level):
+def _at(ivkbl, rcvr, args, call_frame):
     i    = args[0]
     return  rcvr.get_indexable_field(i.get_embedded_integer() - 1)
 
 
-def _atPut(ivkbl, rcvr, args, meta_level):
+def _atPut(ivkbl, rcvr, args, call_frame):
     value = args[1]
     index = args[0]
 
@@ -18,12 +18,12 @@ def _atPut(ivkbl, rcvr, args, meta_level):
     return value
 
 
-def _length(ivkbl, rcvr, args, meta_level):
+def _length(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_integer(
         rcvr.get_number_of_indexable_fields())
 
 
-def _new(ivkbl, rcvr, args, meta_level):
+def _new(ivkbl, rcvr, args, call_frame):
     length = args[0]
 
     return ivkbl.get_universe().new_array_with_length(
@@ -40,7 +40,7 @@ do_index_driver = jit.JitDriver(
     get_printable_location=get_do_index_printable_location)
 
 
-def _doIndexes(ivkbl, rcvr, args, meta_level):
+def _doIndexes(ivkbl, rcvr, args, call_frame):
     block = args[0]
     block_method = block.get_method()
     universe = ivkbl.get_universe()
@@ -49,7 +49,7 @@ def _doIndexes(ivkbl, rcvr, args, meta_level):
     length = rcvr.get_number_of_indexable_fields()
     while i <= length:  # the i is propagated to Smalltalk, so, start with 1
         do_index_driver.jit_merge_point(block_method = block_method)
-        block_method.invoke(block, [universe.new_integer(i)], meta_level)
+        block_method.invoke(block, [universe.new_integer(i)], call_frame)
         i += 1
 
 
@@ -61,7 +61,7 @@ do_driver = jit.JitDriver(greens=['block_method'], reds='auto',
                           get_printable_location=get_do_printable_location)
 
 
-def _do(ivkbl, rcvr, args, meta_level):
+def _do(ivkbl, rcvr, args, call_frame):
     block = args[0]
     block_method = block.get_method()
 
@@ -69,18 +69,18 @@ def _do(ivkbl, rcvr, args, meta_level):
     length = rcvr.get_number_of_indexable_fields()
     while i < length:  # the array itself is zero indexed
         do_driver.jit_merge_point(block_method = block_method)
-        block_method.invoke(block, [rcvr.get_indexable_field(i)], meta_level)
+        block_method.invoke(block, [rcvr.get_indexable_field(i)], call_frame)
         i += 1
 
 
-def _copy(ivkbl, rcvr, args, meta_level):
+def _copy(ivkbl, rcvr, args, call_frame):
     return rcvr.copy()
 
 
-def _putAll(ivkbl, rcvr, args, meta_level):
+def _putAll(ivkbl, rcvr, args, call_frame):
     arg = args[0]
     if isinstance(arg, Block):
-        rcvr.set_all_with_block(arg, meta_level)
+        rcvr.set_all_with_block(arg, call_frame)
         return rcvr
 
     ## It is a simple value, just put it into the array

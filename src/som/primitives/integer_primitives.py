@@ -13,11 +13,11 @@ from som.vmobjects.string      import String
 import math
 
 
-def _asString(ivkbl, rcvr, args, meta_level):
+def _asString(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_as_string(ivkbl.get_universe())
 
 
-def _sqrt(ivkbl, rcvr, args, meta_level):
+def _sqrt(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Integer)
     res = math.sqrt(rcvr.get_embedded_integer())
     if res == float(int(res)):
@@ -26,65 +26,65 @@ def _sqrt(ivkbl, rcvr, args, meta_level):
         return ivkbl.get_universe().new_double(res)
 
 
-def _atRandom(ivkbl, rcvr, args, meta_level):
+def _atRandom(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Integer)
     return ivkbl.get_universe().new_integer(int(
         rcvr.get_embedded_integer() * ivkbl.get_universe().random.random()))
 
 
-def _plus(ivkbl, rcvr, args, meta_level):
+def _plus(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_add(args[0], ivkbl.get_universe())
 
 
-def _minus(ivkbl, rcvr, args, meta_level):
+def _minus(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_subtract(args[0], ivkbl.get_universe())
 
 
-def _mult(ivkbl, rcvr, args, meta_level):
+def _mult(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_multiply(args[0], ivkbl.get_universe())
 
 
-def _doubleDiv(ivkbl, rcvr, args, meta_level):
+def _doubleDiv(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_double_div(args[0], ivkbl.get_universe())
 
 
-def _intDiv(ivkbl, rcvr, args, meta_level):
+def _intDiv(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_int_div(args[0], ivkbl.get_universe())
 
 
-def _mod(ivkbl, rcvr, args, meta_level):
+def _mod(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_modulo(args[0], ivkbl.get_universe())
 
 
-def _remainder(ivkbl, rcvr, args, meta_level):
+def _remainder(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_remainder(args[0], ivkbl.get_universe())
 
 
-def _and(ivkbl, rcvr, args, meta_level):
+def _and(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_and(args[0], ivkbl.get_universe())
 
 
-def _equals(ivkbl, rcvr, args, meta_level):
+def _equals(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_equals(args[0], ivkbl.get_universe())
 
 
-def _unequals(ivkbl, rcvr, args, meta_level):
+def _unequals(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_unequals(args[0], ivkbl.get_universe())
 
 
-def _lessThan(ivkbl, rcvr, args, meta_level):
+def _lessThan(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_less_than(args[0], ivkbl.get_universe())
 
 
-def _lessThanOrEqual(ivkbl, rcvr, args, meta_level):
+def _lessThanOrEqual(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_less_than_or_equal(args[0], ivkbl.get_universe())
 
 
-def _greaterThan(ivkbl, rcvr, args, meta_level):
+def _greaterThan(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_greater_than(args[0], ivkbl.get_universe())
 
 
-def _fromString(ivkbl, rcvr, args, meta_level):
+def _fromString(ivkbl, rcvr, args, call_frame):
     param = args[0]
     
     if not isinstance(param, String):
@@ -94,7 +94,7 @@ def _fromString(ivkbl, rcvr, args, meta_level):
     return ivkbl.get_universe().new_integer(int_value)
 
 
-def _leftShift(ivkbl, rcvr, args, meta_level):
+def _leftShift(ivkbl, rcvr, args, call_frame):
     right_obj = args[0]
     left      = rcvr
     universe  = ivkbl.get_universe()
@@ -117,7 +117,7 @@ def _leftShift(ivkbl, rcvr, args, meta_level):
             rbigint.fromint(l).lshift(r))
 
 
-def _unsignedRightShift(ivkbl, rcvr, args, meta_level):
+def _unsignedRightShift(ivkbl, rcvr, args, call_frame):
     right_obj = args[0]
     left      = rcvr
     universe  = ivkbl.get_universe()
@@ -133,7 +133,7 @@ def _unsignedRightShift(ivkbl, rcvr, args, meta_level):
     return universe.new_integer(rffi.cast(lltype.Signed, u_l >> u_r))
 
 
-def _bitXor(ivkbl, rcvr, args, meta_level):
+def _bitXor(ivkbl, rcvr, args, call_frame):
     right    = args[0]
     left     = rcvr
     universe = ivkbl.get_universe()
@@ -143,23 +143,23 @@ def _bitXor(ivkbl, rcvr, args, meta_level):
                                 ^ right.get_embedded_integer())
 
 
-def _abs(ivkbl, rcvr, args, meta_level):
+def _abs(ivkbl, rcvr, args, call_frame):
     left     = rcvr
     universe = ivkbl.get_universe()
     return universe.new_integer(abs(left.get_embedded_integer()))
 
 
-def _as32BitSignedValue(ivkbl, rcvr, args, meta_level):
+def _as32BitSignedValue(ivkbl, rcvr, args, call_frame):
     val = rffi.cast(lltype.Signed, rffi.cast(rffi.INT, rcvr.get_embedded_integer()))
     return ivkbl.get_universe().new_integer(val)
 
 
-def _as32BitUnsignedValue(ivkbl, rcvr, args, meta_level):
+def _as32BitUnsignedValue(ivkbl, rcvr, args, call_frame):
     val = rffi.cast(lltype.Signed, rffi.cast(rffi.UINT, rcvr.get_embedded_integer()))
     return ivkbl.get_universe().new_integer(val)
 
 
-def _equalsequals(ivkbl, rcvr, args, meta_level):
+def _equalsequals(ivkbl, rcvr, args, call_frame):
     op2 = args[0]
     universe = ivkbl.get_universe()
     if isinstance(op2, Integer) or isinstance(op2, BigInteger):
@@ -168,7 +168,7 @@ def _equalsequals(ivkbl, rcvr, args, meta_level):
         return falseObject
 
 
-def _to(ivkbl, rcvr, args, meta_level):
+def _to(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Integer)
     arg = args[0]
     assert isinstance(arg, Integer)
@@ -176,7 +176,7 @@ def _to(ivkbl, rcvr, args, meta_level):
         arg.get_embedded_integer() + 1))
 
 
-def _max(ivkbl, rcvr, args, meta_level):
+def _max(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Integer)
     arg = args[0]
     assert isinstance(arg, Integer)

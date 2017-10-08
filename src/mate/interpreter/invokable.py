@@ -18,24 +18,29 @@ class MateInvokable(MateNode):
     def get_som_node(self):
         return self._som_node
 
-    def invoke(self, receiver, arguments, meta_level):
+    def invoke_to_mate(self, receiver, arguments, call_frame):
+        return self._som_node.invoke_to_mate(receiver, arguments, call_frame)
 
-        if meta_level:
-            return self._som_node.invoke(receiver, arguments, meta_level)
+    def invoke_from_mate(self, receiver, arguments, call_frame, meta_object):
+        return self._som_node.invoke_from_mate(receiver, arguments, call_frame, meta_object)
 
-        # Falta hacer llegar el frame
-        environment = receiver.get_meta_object_environment()
+    def invoke(self, receiver, arguments, call_frame):
+
+        if call_frame is None or call_frame.meta_level():
+            return self._som_node.invoke(receiver, arguments, call_frame)
+
+        environment = call_frame.get_meta_object_environment() or receiver.get_meta_object_environment()
 
         # No esta definido o es Nil
         if environment is None or not isinstance(environment, Object):
-            return self._som_node.invoke(receiver, arguments, meta_level)
+            return self._som_node.invoke(receiver, arguments, call_frame)
 
         method = self._lookup_node.lookup_meta_invokable(environment)
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
-            return self._som_node.invoke(receiver, arguments, meta_level)
+            return self._som_node.invoke(receiver, arguments, call_frame)
 
-        return method.invoke(receiver, [self._som_node.get_method(), Array.from_objects(arguments), environment], True)
+        return method.invoke_to_mate(receiver, [self._som_node.get_method(), Array.from_objects(arguments), environment], call_frame)
 
     def reflective_op(self):
         return ReflectiveOp.MessageActivation

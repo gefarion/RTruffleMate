@@ -1,6 +1,7 @@
 from som.primitives.primitives import Primitives
 from som.vm.globals import nilObject, falseObject, trueObject
 from som.vmobjects.primitive   import Primitive
+from som.vmobjects.context   import Context
 
 from som.vm.universe import std_print, std_println
 
@@ -67,6 +68,8 @@ def _fullGC(ivkbl, rcvr, args, call_frame):
     rgc.collect()
     return trueObject
 
+def _get_context(ivkbl, rcvr, args, call_frame):
+    return Context(call_frame)
 
 class SystemPrimitives(Primitives):
 
@@ -82,3 +85,4 @@ class SystemPrimitives(Primitives):
         self._install_instance_primitive(Primitive("ticks", self._universe, _ticks))
         self._install_instance_primitive(Primitive("fullGC", self._universe, _fullGC))
         self._install_instance_primitive(Primitive("inTruffle", self._universe, _in_truffle))
+        self._install_instance_primitive(Primitive("getContext", self._universe, _get_context))

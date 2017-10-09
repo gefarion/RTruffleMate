@@ -37,6 +37,7 @@ def _invoke_mate_on_with_semantics(ivkbl, rcvr, args, call_frame):
         direct_args = []
     else:
         direct_args = args[1].as_argument_array()
+
     return rcvr.invoke_from_mate(args[0], direct_args, call_frame, args[2])
 
 def _invoke_mate_on_with(ivkbl, rcvr, args, call_frame):

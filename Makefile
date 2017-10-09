@@ -6,7 +6,7 @@ COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
 
 # BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
-BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations
+BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody
 FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
 BASE_INCLUDES = Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP
 
@@ -87,7 +87,6 @@ matevm-bench:
 mate-iop:
 	make BENCH=VMReflectiveArgumentRead.som mate-bench
 	make BENCH=VMReflectiveFieldRead.som mate-bench
-	# make BENCH=VMReflectiveFieldReadWithMetavariability.som mate-bench
 	make BENCH=VMReflectiveFieldWrite.som mate-bench
 	make BENCH=VMReflectiveLayoutFieldRead.som mate-bench
 	make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
@@ -104,7 +103,6 @@ mate-iop:
 matevm-iop:
 	make BENCH=VMReflectiveArgumentRead.som matevm-bench
 	make BENCH=VMReflectiveFieldRead.som matevm-bench
-	# make BENCH=VMReflectiveFieldReadWithMetavariability.som matevm-bench
 	make BENCH=VMReflectiveFieldWrite.som matevm-bench
 	make BENCH=VMReflectiveLayoutFieldRead.som matevm-bench
 	make BENCH=VMReflectiveLayoutFieldWrite.som matevm-bench

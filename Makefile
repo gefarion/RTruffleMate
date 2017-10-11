@@ -6,8 +6,10 @@ COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
 
 # BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
-BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations
+BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
+
 FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
+
 BASE_INCLUDES = Smalltalk:Smalltalk/Mate/:Smalltalk/Mate/MOP
 
 ifdef JIT
@@ -42,7 +44,7 @@ somvm-test:
 	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite/Mate TestSuite/TestHarness.som;
 
 matevm-test:
-	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate:Examples/Benchmarks/Mate/Layout:Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks TestSuite/Mate/MateTestHarness.som;
+	$(BIN) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate TestSuite/Mate/MateTestHarness.som
 
 som-micro:
 	rebench -c benchmarks.conf som-micro vm:SOM-interpreter

@@ -21,7 +21,7 @@ class MateUninitializedAbstractFieldNode(MateNode):
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None
 
-        return method.invoke(obj, [Integer(self._som_node.field_idx() + 1), value], True)
+        return method.invoke_to_mate(obj, [Integer(self._som_node.field_idx() + 1), value], frame)
 
 
 class MateUninitializedReadFieldNode(MateUninitializedAbstractFieldNode):

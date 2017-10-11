@@ -8,54 +8,54 @@ from som.vmobjects.integer import Integer
 from som.vmobjects.character import Character
 from som.vmobjects.symbol import Symbol
 
-def _as_integer(ivkbl, rcvr, args, meta_level):
+def _as_integer(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_integer(ord(rcvr.get_embedded_character()))
 
-def _as_string(ivkbl, rcvr, args, meta_level):
+def _as_string(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_string(rcvr.get_embedded_character())
 
-def _is_digit(ivkbl, rcvr, args, meta_level):
+def _is_digit(ivkbl, rcvr, args, call_frame):
     code = ord(rcvr.get_embedded_character())
     if code >= 48 and code <= 57:
         return trueObject
     else:
         return falseObject
 
-def _is_letter(ivkbl, rcvr, args, meta_level):
+def _is_letter(ivkbl, rcvr, args, call_frame):
     code = ord(rcvr.get_embedded_character())
     if (code >= 65 and code <= 90) or (code >= 97 and code <= 122): 
         return trueObject
     else:
         return falseObject
 
-def _is_alphanumeric(ivkbl, rcvr, args, meta_level):
+def _is_alphanumeric(ivkbl, rcvr, args, call_frame):
     code = ord(rcvr.get_embedded_character())
     if (code >= 48 and code <= 57) or (code >= 65 and code <= 90) or (code >= 97 and code <= 122): 
         return trueObject
     else:
         return falseObject
 
-def _as_upper_case(ivkbl, rcvr, args, meta_level):
+def _as_upper_case(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_character(rcvr.get_embedded_character().upper())
 
-def _as_lower_case(ivkbl, rcvr, args, meta_level):
+def _as_lower_case(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_character(rcvr.get_embedded_character().lower())
 
-def _is_upper_case(ivkbl, rcvr, args, meta_level):
+def _is_upper_case(ivkbl, rcvr, args, call_frame):
     code = ord(rcvr.get_embedded_character())
     if code >= 65 and code <= 90:
         return trueObject
     else:
         return falseObject
 
-def _is_lower_case(ivkbl, rcvr, args, meta_level):
+def _is_lower_case(ivkbl, rcvr, args, call_frame):
     code = ord(rcvr.get_embedded_character())
     if code >= 97 and code <= 122:
         return trueObject
     else:
         return falseObject
 
-def _equals(ivkbl, rcvr, args, meta_level):
+def _equals(ivkbl, rcvr, args, call_frame):
     other = args[0]
 
     if isinstance(other, Character):
@@ -72,7 +72,7 @@ def _equals(ivkbl, rcvr, args, meta_level):
 
     return falseObject
 
-def _new(ivkbl, rcvr, args, meta_level):
+def _new(ivkbl, rcvr, args, call_frame):
     arg = args[0]
     if not isinstance(arg, Integer):
         return nilObject

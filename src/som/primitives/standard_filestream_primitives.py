@@ -7,7 +7,7 @@ from som.vmobjects.integer import Integer
 from som.vmobjects.array import Array
 import os
 
-def _prim_open_writable(ivkbl, rcvr, args, meta_level):
+def _prim_open_writable(ivkbl, rcvr, args, call_frame):
     filename = args[0]
     writable = args[1]
 
@@ -25,21 +25,21 @@ def _prim_open_writable(ivkbl, rcvr, args, meta_level):
     except:
         return nilObject
 
-def _prim_get_position(ivkbl, rcvr, args, meta_level):
+def _prim_get_position(ivkbl, rcvr, args, call_frame):
     file = args[0]
     return ivkbl.get_universe().new_integer(int(file.get_position()))
 
-def _prim_set_position_to(ivkbl, rcvr, args, meta_level):
+def _prim_set_position_to(ivkbl, rcvr, args, call_frame):
     file = args[0]
     position = args[1]
     file.set_position(position.get_embedded_integer())
     return rcvr
 
-def _prim_size(ivkbl, rcvr, args, meta_level):
+def _prim_size(ivkbl, rcvr, args, call_frame):
     file = args[0]
     return ivkbl.get_universe().new_integer(int(file.get_size()))
 
-def _prim_read_into_starting_at_count(ivkbl, rcvr, args, meta_level):
+def _prim_read_into_starting_at_count(ivkbl, rcvr, args, call_frame):
     file       = args[0]
     collection = args[1]
     start      = args[2]
@@ -53,19 +53,16 @@ def _prim_read_into_starting_at_count(ivkbl, rcvr, args, meta_level):
     stream = file.get_embedded_stream()
     stream.seek(start.get_embedded_integer(), os.SEEK_SET)
 
-    # Slow implementation (one byte at time)
-    c = 0
-    for i in xrange(0, count.get_embedded_integer()):
-        byte = stream.read(1)
-        if byte == "":
-            break
+    content = stream.read(count.get_embedded_integer());
 
-        collection.set_indexable_field(i, ivkbl.get_universe().new_character(chr(int(byte))))
-        c = c + 1
+    i = 0
+    for c in content:
+        collection.set_indexable_field(i, ivkbl.get_universe().new_character(c))
+        i = i + 1
 
-    return ivkbl.get_universe().new_integer(c)
+    return ivkbl.get_universe().new_integer(i)
 
-def _prim_at_end(ivkbl, rcvr, args, meta_level):
+def _prim_at_end(ivkbl, rcvr, args, call_frame):
     file = args[0]
     if file.at_end():
         return trueObject

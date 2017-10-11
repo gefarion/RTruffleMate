@@ -9,10 +9,10 @@ class AbstractObject(object):
     def set_meta_object_environment(self, environment):
         pass
 
-    def send(self, selector_string, arguments, universe, meta_level):
+    def send(self, selector_string, arguments, universe, call_frame):
         selector = universe.symbol_for(selector_string)
         invokable = self.get_class(universe).lookup_invokable(selector)
-        return invokable.invoke(self, arguments, meta_level)
+        return invokable.invoke(self, arguments, call_frame)
 
     @staticmethod
     # @jit.unroll_safe
@@ -29,17 +29,17 @@ class AbstractObject(object):
         args = [selector, arguments_array]
         return args
 
-    def send_does_not_understand(self, selector, arguments, universe, meta_level):
+    def send_does_not_understand(self, selector, arguments, universe, call_frame):
         args = self._prepare_dnu_arguments(arguments, selector, universe)
-        return self.send("doesNotUnderstand:arguments:", args, universe, meta_level)
+        return self.send("doesNotUnderstand:arguments:", args, universe, call_frame)
 
-    def send_unknown_global(self, global_name, universe, meta_level):
+    def send_unknown_global(self, global_name, universe, call_frame):
         arguments = [global_name]
-        return self.send("unknownGlobal:", arguments, universe, meta_level)
+        return self.send("unknownGlobal:", arguments, universe, call_frame)
 
-    def send_escaped_block(self, block, universe, meta_level):
+    def send_escaped_block(self, block, universe, call_frame):
         arguments = [block]
-        return self.send("escapedBlock:", arguments, universe, meta_level)
+        return self.send("escapedBlock:", arguments, universe, call_frame)
 
     def get_class(self, universe):
         raise NotImplementedError("Subclasses need to implement get_class(universe).")

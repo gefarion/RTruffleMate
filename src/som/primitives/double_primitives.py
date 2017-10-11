@@ -16,76 +16,76 @@ def _coerce_to_double(obj, universe):
     raise ValueError("Cannot coerce %s to Double!" % obj)
 
 
-def _asString(ivkbl, rcvr, args, meta_level):
+def _asString(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_as_string(ivkbl.get_universe())
 
-def _asInteger(ivkbl, rcvr, args, meta_level):
+def _asInteger(ivkbl, rcvr, args, call_frame):
     int_value = int(rcvr.get_embedded_double())
     return ivkbl.get_universe().new_integer(int_value)
 
-def _sqrt(ivkbl, rcvr, args, meta_level):
+def _sqrt(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_double(
         math.sqrt(rcvr.get_embedded_double()))
 
-def _sin(ivkbl, rcvr, args, meta_level):
+def _sin(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_double(
         math.sin(rcvr.get_embedded_double()))
 
-def _cos(ivkbl, rcvr, args, meta_level):
+def _cos(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_double(
         math.cos(rcvr.get_embedded_double()))
 
-def _floor(ivkbl, rcvr, args, meta_level):
+def _floor(ivkbl, rcvr, args, call_frame):
     int_value = int(math.floor(rcvr.get_embedded_double()))
     return ivkbl.get_universe().new_integer(int_value)
 
 
-def _plus(ivkbl, rcvr, args, meta_level):
+def _plus(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_add(args[0], ivkbl.get_universe())
 
 
-def _minus(ivkbl, rcvr, args, meta_level):
+def _minus(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_subtract(args[0], ivkbl.get_universe())
 
 
-def _mult(ivkbl, rcvr, args, meta_level):
+def _mult(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_multiply(args[0], ivkbl.get_universe())
 
 
-def _doubleDiv(ivkbl, rcvr, args, meta_level):
+def _doubleDiv(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_double_div(args[0], ivkbl.get_universe())
 
 
-def _mod(ivkbl, rcvr, args, meta_level):
+def _mod(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_modulo(args[0], ivkbl.get_universe())
 
 
-def _equals(ivkbl, rcvr, args, meta_level):
+def _equals(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_equals(args[0], ivkbl.get_universe())
 
 
-def _unequals(ivkbl, rcvr, args, meta_level):
+def _unequals(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_unequals(args[0], ivkbl.get_universe())
 
 
-def _lessThan(ivkbl, rcvr, args, meta_level):
+def _lessThan(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_less_than(args[0], ivkbl.get_universe())
 
 
-def _lessThanOrEqual(ivkbl, rcvr, args, meta_level):
+def _lessThanOrEqual(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_less_than_or_equal(args[0], ivkbl.get_universe())
 
 
-def _greaterThan(ivkbl, rcvr, args, meta_level):
+def _greaterThan(ivkbl, rcvr, args, call_frame):
     return rcvr.prim_greater_than(args[0], ivkbl.get_universe())
 
 
-def _round(ivkbl, rcvr, args, meta_level):
+def _round(ivkbl, rcvr, args, call_frame):
     int_value = int(round_double(rcvr.get_embedded_double(), 0))
     return ivkbl.get_universe().new_integer(int_value)
 
 
-def _positive_infinity(ivkbl, rcvr, args, meta_level):
+def _positive_infinity(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_double(INFINITY)
 
 

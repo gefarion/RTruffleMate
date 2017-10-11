@@ -5,14 +5,17 @@ from som.vmobjects.context import Context
 from som.vmobjects.integer import Integer
 from som.vmobjects.string import String
 from som.interpreter.frame import Frame
+from som.vm.globals import nilObject, falseObject, trueObject
+from som.vmobjects.object    import Object
 
-def _method(ivkbl, rcvr, args, meta_level):
+
+def _method(ivkbl, rcvr, args, call_frame):
     assert False
 
-def _sender(ivkbl, rcvr, args, meta_level):
+def _sender(ivkbl, rcvr, args, call_frame):
     assert False
 
-def _receiver(ivkbl, rcvr, args, meta_level):
+def _receiver(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -20,7 +23,7 @@ def _receiver(ivkbl, rcvr, args, meta_level):
 
     return frame.get_self()
 
-def _local_at(ivkbl, rcvr, args, meta_level):
+def _local_at(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -33,7 +36,7 @@ def _local_at(ivkbl, rcvr, args, meta_level):
 
     return frame.get_temp(i - 1)
 
-def _arg_at(ivkbl, rcvr, args, meta_level):
+def _arg_at(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -45,7 +48,7 @@ def _arg_at(ivkbl, rcvr, args, meta_level):
     i = index.get_embedded_integer()
     return frame.get_argument(i - 1)
 
-def _local_at_put(ivkbl, rcvr, args, meta_level):
+def _local_at_put(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Context)
 
     frame = rcvr.get_embedded_frame()
@@ -62,6 +65,25 @@ def _local_at_put(ivkbl, rcvr, args, meta_level):
 
     return rcvr
 
+def _has_meta_object_environment(ivkbl, rcvr, args, call_frame):
+    environment = call_frame.get_meta_object_environment()
+
+    # No esta definido o es Nil
+    if environment is None or not isinstance(environment, Object):
+        return falseObject
+    else:
+        return trueObject
+
+def _get_meta_object_environment(ivkbl, rcvr, args, call_frame):
+    return call_frame.get_meta_object_environment()
+
+
+def _in_meta(ivkbl, rcvr, args, call_frame):
+    if call_frame.meta_level():
+        return trueObject
+    else:
+        return falseObject
+
 class ContextPrimitives(Primitives):
 
     def install_primitives(self):
@@ -71,4 +93,8 @@ class ContextPrimitives(Primitives):
         self._install_instance_primitive(Primitive("localAt:", self._universe, _local_at))
         self._install_instance_primitive(Primitive("argAt:", self._universe, _arg_at))
         self._install_instance_primitive(Primitive("localAt:put:", self._universe, _local_at_put))
+        self._install_instance_primitive(Primitive("hasMetaObjectEnvironment",  self._universe, _has_meta_object_environment))
+        self._install_instance_primitive(Primitive("getMetaObjectEnvironment",  self._universe, _get_meta_object_environment))
+        self._install_instance_primitive(Primitive("inMeta",  self._universe, _in_meta))
+
 

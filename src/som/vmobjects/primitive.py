@@ -17,9 +17,9 @@ class Primitive(AbstractObject):
     def get_universe(self):
         return self._universe
 
-    def invoke(self, rcvr, args, meta_level):
+    def invoke(self, rcvr, args, call_frame):
         inv = self._prim_fun
-        return inv(self, rcvr, args, meta_level)
+        return inv(self, rcvr, args, call_frame)
 
     @staticmethod
     def is_primitive():
@@ -56,6 +56,6 @@ def empty_primitive(signature_string, universe):
     return Primitive(signature_string, universe, _invoke, True)
 
 
-def _invoke(ivkbl, rcvr, args, meta_level):
+def _invoke(ivkbl, rcvr, args, call_frame):
     """ Write a warning to the screen """
     print "Warning: undefined primitive %s called" % str(ivkbl.get_signature())

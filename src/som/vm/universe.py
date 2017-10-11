@@ -134,7 +134,7 @@ class Universe(object):
         invokable = clazz.get_class(self).lookup_invokable(self.symbol_for(
             selector))
 
-        return invokable.invoke(clazz, [], False)
+        return invokable.invoke(clazz, [], None)
     
     def interpret(self, arguments):
         # Check for command line switches
@@ -154,7 +154,7 @@ class Universe(object):
             # Lookup the initialize invokable on the system class
             initialize = self.systemClass.lookup_invokable(
                 self.symbol_for("initialize:"))
-            return initialize.invoke(system_object, [arguments_array], False)
+            return initialize.invoke(system_object, [arguments_array], None)
     
     def handle_arguments(self, arguments):
         got_classpath  = False
@@ -596,7 +596,15 @@ class Universe(object):
     def mateify(self, clazz):
         visitor = MateifyVisitor()
 
+        # Metodos de instancia
         invokables = clazz.get_instance_invokables()
+        for i in xrange(0 , invokables.get_number_of_indexable_fields()):
+            invokable = invokables.get_indexable_field(i)
+            if not invokable.is_primitive() and not invokable.isSPECIAL():
+                invokable.get_invokable().accept(visitor)
+
+        # Metodos de clase
+        invokables = clazz.get_class(_current).get_instance_invokables()
         for i in xrange(0 , invokables.get_number_of_indexable_fields()):
             invokable = invokables.get_indexable_field(i)
             if not invokable.is_primitive() and not invokable.isSPECIAL():

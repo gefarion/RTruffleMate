@@ -77,7 +77,7 @@ class _ArrayStrategy(object):
             array._strategy = _obj_strategy
 
     @staticmethod
-    def _set_all_with_block(array, block, size, meta_level):
+    def _set_all_with_block(array, block, size, call_frame):
         # Handle first the empty case
         if size == 0:
             array._storage  = _empty_strategy.new_storage_for(0)
@@ -91,39 +91,39 @@ class _ArrayStrategy(object):
 
         # we do the first iteration separately to determine our strategy
         assert i < size
-        first = block_method.invoke(block, [], meta_level)
+        first = block_method.invoke(block, [], call_frame)
         if first is nilObject:
             _ArrayStrategy._set_remaining_with_block_as_nil(array, block, size,
-                                                            1, meta_level)
+                                                            1, call_frame)
         elif isinstance(first, Integer):
             long_store = [0] * size
             long_store[0] = first.get_embedded_integer()
             _ArrayStrategy._set_remaining_with_block_as_long(array, block, size,
-                                                             1, long_store, meta_level)
+                                                             1, long_store, call_frame)
         elif isinstance(first, Double):
             double_store = [0.0] * size
             double_store[0] = first.get_embedded_double()
             _ArrayStrategy._set_remaining_with_block_as_double(array, block,
                                                                size, 1,
-                                                               double_store, meta_level)
+                                                               double_store, call_frame)
         elif first is trueObject or first is falseObject:
             bool_store = [first is trueObject] * size
             _ArrayStrategy._set_remaining_with_block_as_double(array, block,
                                                                size, 1,
-                                                               bool_store, meta_level)
+                                                               bool_store, call_frame)
         else:
             obj_store = [None] * size
             obj_store[0] = first
             _ArrayStrategy._set_remaining_with_block_as_obj(array, block, size,
-                                                            1, obj_store, meta_level)
+                                                            1, obj_store, call_frame)
 
 
     @staticmethod
-    def _set_remaining_with_block_as_nil(array, block, size, next_i, meta_level):
+    def _set_remaining_with_block_as_nil(array, block, size, next_i, call_frame):
         block_method = block.get_method()
         while next_i < size:
             put_all_nil_driver.jit_merge_point(block_method = block_method)
-            result = block_method.invoke(block, [], meta_level)
+            result = block_method.invoke(block, [], call_frame)
             if result is not nilObject:
                 # ok, fall back, let's go straight to obj strategy
                 # todo: perhaps, partially empty would be better?
@@ -132,18 +132,18 @@ class _ArrayStrategy(object):
                 _ArrayStrategy._set_remaining_with_block_as_obj(array, block,
                                                                 size,
                                                                 next_i + 1,
-                                                                new_storage, meta_level)
+                                                                new_storage, call_frame)
                 return
             next_i += 1
         array._strategy = _empty_strategy
         array._storage  = _empty_strategy.new_storage_for(size)
 
     @staticmethod
-    def _set_remaining_with_block_as_long(array, block, size, next_i, storage, meta_level):
+    def _set_remaining_with_block_as_long(array, block, size, next_i, storage, call_frame):
         block_method = block.get_method()
         while next_i < size:
             put_all_long_driver.jit_merge_point(block_method = block_method)
-            result = block_method.invoke(block, [], meta_level)
+            result = block_method.invoke(block, [], call_frame)
             if isinstance(result, Integer):
                 storage[next_i] = result.get_embedded_integer()
             else:
@@ -154,18 +154,18 @@ class _ArrayStrategy(object):
                 _ArrayStrategy._set_remaining_with_block_as_obj(array, block,
                                                                 size,
                                                                 next_i + 1,
-                                                                new_storage, meta_level)
+                                                                new_storage, call_frame)
                 return
             next_i += 1
         array._strategy = _long_strategy
         array._storage  = _long_strategy._erase(storage)
 
     @staticmethod
-    def _set_remaining_with_block_as_double(array, block, size, next_i, storage, meta_level):
+    def _set_remaining_with_block_as_double(array, block, size, next_i, storage, call_frame):
         block_method = block.get_method()
         while next_i < size:
             put_all_double_driver.jit_merge_point(block_method = block_method)
-            result = block_method.invoke(block, [], meta_level)
+            result = block_method.invoke(block, [], call_frame)
             if isinstance(result, Double):
                 storage[next_i] = result.get_embedded_double()
             else:
@@ -176,18 +176,18 @@ class _ArrayStrategy(object):
                 _ArrayStrategy._set_remaining_with_block_as_obj(array, block,
                                                                 size,
                                                                 next_i + 1,
-                                                                new_storage, meta_level)
+                                                                new_storage, call_frame)
                 return
             next_i += 1
         array._strategy = _double_strategy
         array._storage  = _double_strategy._erase(storage)
 
     @staticmethod
-    def _set_remaining_with_block_as_bool(array, block, size, next_i, storage, meta_level):
+    def _set_remaining_with_block_as_bool(array, block, size, next_i, storage, call_frame):
         block_method = block.get_method()
         while next_i < size:
             put_all_bool_driver.jit_merge_point(block_method = block_method)
-            result = block_method.invoke(block, [], meta_level)
+            result = block_method.invoke(block, [], call_frame)
             if result is trueObject or result is falseObject:
                 storage[next_i] = result is trueObject
             else:
@@ -198,7 +198,7 @@ class _ArrayStrategy(object):
                 _ArrayStrategy._set_remaining_with_block_as_obj(array, block,
                                                                 size,
                                                                 next_i + 1,
-                                                                new_storage, meta_level)
+                                                                new_storage, call_frame)
                 return
             next_i += 1
         array._strategy = _bool_strategy
@@ -206,12 +206,12 @@ class _ArrayStrategy(object):
 
 
     @staticmethod
-    def _set_remaining_with_block_as_obj(array, block, size, next_i, storage, meta_level):
+    def _set_remaining_with_block_as_obj(array, block, size, next_i, storage, call_frame):
         block_method = block.get_method()
 
         while next_i < size:
             put_all_obj_driver.jit_merge_point(block_method = block_method)
-            storage[next_i] = block_method.invoke(block, [], meta_level)
+            storage[next_i] = block_method.invoke(block, [], call_frame)
             next_i += 1
 
         array._strategy = _obj_strategy
@@ -241,12 +241,12 @@ class _ObjectStrategy(_ArrayStrategy):
         # TODO: we could avoid an allocation here if value isn't something to specialize for...
         self._set_all_with_value(array, value, len(store))
 
-    def set_all_with_block(self, array, block, meta_level):
+    def set_all_with_block(self, array, block, call_frame):
         assert isinstance(array, Array)
         store = self._unerase(array._storage)
 
         # TODO: perhaps we can sometimes avoid the extra allocation of the underlying storage
-        self._set_all_with_block(array, block, len(store), meta_level)
+        self._set_all_with_block(array, block, len(store), call_frame)
 
     def as_arguments_array(self, storage):
         return self._unerase(storage)
@@ -323,12 +323,12 @@ class _LongStrategy(_ArrayStrategy):
         # for i, _ in enumerate(store):
         #     store[i] = value.get_embedded_integer()
 
-    def set_all_with_block(self, array, block, meta_level):
+    def set_all_with_block(self, array, block, call_frame):
         assert isinstance(array, Array)
         store = self._unerase(array._storage)
 
         # TODO: perhaps we can sometimes avoid the extra allocation of the underlying storage
-        self._set_all_with_block(array, block, len(store), meta_level)
+        self._set_all_with_block(array, block, len(store), call_frame)
 
     def as_arguments_array(self, storage):
         store = self._unerase(storage)
@@ -397,12 +397,12 @@ class _DoubleStrategy(_ArrayStrategy):
         # for i, _ in enumerate(store):
         #     store[i] = value.get_embedded_integer()
 
-    def set_all_with_block(self, array, block, meta_level):
+    def set_all_with_block(self, array, block, call_frame):
         assert isinstance(array, Array)
         store = self._unerase(array._storage)
 
         # TODO: perhaps we can sometimes avoid the extra allocation of the underlying storage
-        self._set_all_with_block(array, block, len(store), meta_level)
+        self._set_all_with_block(array, block, len(store), call_frame)
 
     def as_arguments_array(self, storage):
         store = self._unerase(storage)
@@ -473,12 +473,12 @@ class _BoolStrategy(_ArrayStrategy):
         # for i, _ in enumerate(store):
         #     store[i] = value.get_embedded_integer()
 
-    def set_all_with_block(self, array, block, meta_level):
+    def set_all_with_block(self, array, block, call_frame):
         assert isinstance(array, Array)
         store = self._unerase(array._storage)
 
         # TODO: perhaps we can sometimes avoid the extra allocation of the underlying storage
-        self._set_all_with_block(array, block, len(store), meta_level)
+        self._set_all_with_block(array, block, len(store), call_frame)
 
     def as_arguments_array(self, storage):
         store = self._unerase(storage)
@@ -567,9 +567,9 @@ class _EmptyStrategy(_ArrayStrategy):
         if size > 0:
             self._set_all_with_value(array, value, size)
 
-    def set_all_with_block(self, array, block, meta_level):
+    def set_all_with_block(self, array, block, call_frame):
         size = self._unerase(array._storage)
-        self._set_all_with_block(array, block, size, meta_level)
+        self._set_all_with_block(array, block, size, call_frame)
 
     def as_arguments_array(self, storage):
         size = self._unerase(storage)
@@ -688,12 +688,12 @@ class _PartiallyEmptyStrategy(_ArrayStrategy):
         store = self._unerase(array._storage)
         self._set_all_with_value(array, value, store.size)
 
-    def set_all_with_block(self, array, block, meta_level):
+    def set_all_with_block(self, array, block, call_frame):
         assert isinstance(array, Array)
         store = self._unerase(array._storage)
 
         # TODO: perhaps we can sometimes avoid the extra allocation of the underlying storage
-        self._set_all_with_block(array, block, store.size, meta_level)
+        self._set_all_with_block(array, block, store.size, call_frame)
 
     def as_arguments_array(self, storage):
         return self._unerase(storage).storage
@@ -839,8 +839,8 @@ class Array(AbstractObject):
     def set_all(self, value):
         self._strategy.set_all(self, value)
 
-    def set_all_with_block(self, block, meta_level):
-        self._strategy.set_all_with_block(self, block, meta_level)
+    def set_all_with_block(self, block, call_frame):
+        self._strategy.set_all_with_block(self, block, call_frame)
 
     def as_argument_array(self):
         return self._strategy.as_arguments_array(self._storage)

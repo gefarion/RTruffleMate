@@ -7,7 +7,7 @@ from som.vmobjects.integer import Integer
 from som.vmobjects.array import Array
 import os
 
-def _stdio_handles(ivkbl, rcvr, args, meta_level):
+def _stdio_handles(ivkbl, rcvr, args, call_frame):
     # TODo
     return nilObject
 

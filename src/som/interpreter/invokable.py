@@ -50,12 +50,34 @@ class Invokable(Node):
     def get_method(self):
         return self._method
 
-    def invoke(self, receiver, arguments, meta_level):
+    def invoke(self, receiver, arguments, call_frame):
+        assert arguments is not None
+        make_sure_not_resized(arguments)
+
+        meta_level = (call_frame is not None) and call_frame.meta_level()
+        frame = Frame(receiver, arguments, self._arg_mapping,
+                      self._num_local_temps, self._num_context_temps, meta_level)
+
+        return self._execute(frame, receiver, arguments);
+
+    def invoke_to_mate(self, receiver, arguments, call_frame):
         assert arguments is not None
         make_sure_not_resized(arguments)
 
         frame = Frame(receiver, arguments, self._arg_mapping,
-                      self._num_local_temps, self._num_context_temps, meta_level)
+                      self._num_local_temps, self._num_context_temps, True)
+
+        return self._execute(frame, receiver, arguments);
+
+    def invoke_from_mate(self, receiver, arguments, call_frame, meta_object):
+        assert arguments is not None
+        make_sure_not_resized(arguments)
+
+        frame = Frame(receiver, arguments, self._arg_mapping,
+                      self._num_local_temps, self._num_context_temps, False)
+
+        if meta_object:
+            frame.set_meta_object_environment(meta_object)
 
         return self._execute(frame, receiver, arguments);
 
@@ -63,16 +85,6 @@ class Invokable(Node):
 
         jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
         return self._expr_or_sequence.execute(frame)
-
-    def invoke_with_semantics(self, receiver, arguments, meta_level, meta_object):
-        assert arguments is not None
-        make_sure_not_resized(arguments)
-
-        frame = Frame(receiver, arguments, self._arg_mapping,
-                      self._num_local_temps, self._num_context_temps, meta_level)
-        frame.set_meta_object_environment(meta_object)
-
-        return self._execute(frame, receiver, arguments);
 
     def _accept(self, visitor):
         visitor.visit_Invokable(self)

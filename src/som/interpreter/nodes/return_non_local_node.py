@@ -48,7 +48,7 @@ class ReturnNonLocalNode(ContextualNode):
         else:
             block      = frame.get_self()
             outer_self = block.get_outer_self()
-            return outer_self.send_escaped_block(block, self._universe, frame.meta_level())
+            return outer_self.send_escaped_block(block, self._universe, frame)
 
     def _accept(self, visitor):
         visitor.visit_ReturnNonLocalNode(self)

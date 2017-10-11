@@ -4,7 +4,7 @@ from som.vmobjects.primitive import Primitive
 import os
 
 
-def _image_file(ivkbl, rcvr, args, meta_level):
+def _image_file(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_string(os.getcwd() + "/RTruffleMate")
 
 class FilePluginPrimsPrimitives(Primitives):

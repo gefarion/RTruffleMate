@@ -50,4 +50,4 @@ class MateNode(ExpressionNode):
 
         args = self.get_meta_args(frame)
 
-        return method.invoke(receiver, args,  True)
+        return method.invoke_to_mate(receiver, args,  frame)

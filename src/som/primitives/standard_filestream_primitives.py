@@ -53,17 +53,14 @@ def _prim_read_into_starting_at_count(ivkbl, rcvr, args, call_frame):
     stream = file.get_embedded_stream()
     stream.seek(start.get_embedded_integer(), os.SEEK_SET)
 
-    # Slow implementation (one byte at time)
-    c = 0
-    for i in xrange(0, count.get_embedded_integer()):
-        byte = stream.read(1)
-        if byte == "":
-            break
+    content = stream.read(count.get_embedded_integer());
 
-        collection.set_indexable_field(i, ivkbl.get_universe().new_character(chr(int(byte))))
-        c = c + 1
+    i = 0
+    for c in content:
+        collection.set_indexable_field(i, ivkbl.get_universe().new_character(c))
+        i = i + 1
 
-    return ivkbl.get_universe().new_integer(c)
+    return ivkbl.get_universe().new_integer(i)
 
 def _prim_at_end(ivkbl, rcvr, args, call_frame):
     file = args[0]

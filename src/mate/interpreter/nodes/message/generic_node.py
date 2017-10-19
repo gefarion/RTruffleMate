@@ -2,9 +2,22 @@ from mate.interpreter.nodes.mate_node import MateNode
 from mate.vm.constants import ReflectiveOp
 from som.vmobjects.symbol import Symbol
 from som.vmobjects.object import Object
-from mate.interpreter.mop import MOPDispatcher
+from rpython.rlib import jit
+from rpython.rlib.jit import we_are_jitted
+from rpython.rlib.debug import make_sure_not_resized
+import som.vm.universe
+
 
 class MateGenericMessageNode(MateNode):
+
+    CACHE_SIZE = 10
+
+    def __init__(self, som_node, source_section = None):
+        MateNode.__init__(self, som_node, source_section)
+
+        self._cache_key = [None] * MateGenericMessageNode.CACHE_SIZE
+        self._cache_method = [None] * MateGenericMessageNode.CACHE_SIZE
+        self._cache_count = 0
 
     def execute(self, frame):
 
@@ -36,10 +49,29 @@ class MateGenericMessageNode(MateNode):
             return None
 
         method = self._lookup_node.lookup_meta_invokable(environment)
+
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None
 
-        args = [self._som_node.get_selector(), receiver.get_class(self._som_node.get_universe())]
+        args = [self._som_node.get_selector(), receiver.get_class(som.vm.universe.get_current())]
 
-        return  method.invoke_to_mate(receiver, args, frame)
+        if self._cache_count > MateGenericMessageNode.CACHE_SIZE:
+            return self._invoke_to_mate(method, receiver, args, frame)
+
+        cache_key = str(args[1])+ '>>' + str(args[0])
+        for i in xrange(0, self._cache_count):
+            if self._cache_key[i] == cache_key:
+                return self._cache_method[i]
+
+        target_method = self._invoke_to_mate(method, receiver, args, frame)
+
+        self._cache_key[self._cache_count] = cache_key
+        self._cache_method[self._cache_count] = target_method
+        self._cache_count = self._cache_count + 1
+
+        return target_method
+
+    # @jit.elidable
+    def _invoke_to_mate(self, method, receiver, args, frame):
+        return method.invoke_to_mate(receiver, args, frame);

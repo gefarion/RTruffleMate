@@ -3,7 +3,7 @@ from mate.interpreter.mop import MOPDispatcher
 
 class _AbstractMateLookUpNode(Node):
 
-    INLINE_CACHE_SIZE = 6
+    INLINE_CACHE_SIZE = 10
 
     _immutable_fields_ = ['_universe']
 

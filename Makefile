@@ -76,53 +76,73 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 160
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 30
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 1 80
 
 mate-iop:
-	make BENCH=VMReflectiveArgumentRead.som mate-bench
-	make BENCH=VMReflectiveFieldRead.som mate-bench
-	make BENCH=VMReflectiveFieldWrite.som mate-bench
-	make BENCH=VMReflectiveLayoutFieldRead.som mate-bench
-	make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
-	make BENCH=VMReflectiveLocalVariableRead.som mate-bench
-	make BENCH=VMReflectiveLocalVariableWrite.som mate-bench
+	# make BENCH=VMReflectiveArgumentRead.som mate-bench
+	# make BENCH=VMReflectiveFieldRead.som mate-bench
+	# make BENCH=VMReflectiveFieldWrite.som mate-bench
+	# make BENCH=VMReflectiveLayoutFieldRead.som mate-bench
+	# make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
+	# make BENCH=VMReflectiveLocalVariableRead.som mate-bench
+	# make BENCH=VMReflectiveLocalVariableWrite.som mate-bench
 	make BENCH=VMReflectiveMessageSend.som mate-bench
-	make BENCH=VMReflectiveMethodActivation.som mate-bench
-	make BENCH=VMReflectiveReturn.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldRead2.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldRead.som mate-bench
+	make BENCH=MessageSend.som mate-bench
+	# make BENCH=MessageSend.som som-bench
+	# make BENCH=VMReflectiveMethodActivation.som mate-bench
+	# make BENCH=VMReflectiveReturn.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldRead2.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldRead.som mate-bench
 
 matevm-iop:
-	make BENCH=VMReflectiveArgumentRead.som matevm-bench
-	make BENCH=VMReflectiveFieldRead.som matevm-bench
-	make BENCH=VMReflectiveFieldWrite.som matevm-bench
-	make BENCH=VMReflectiveLayoutFieldRead.som matevm-bench
-	make BENCH=VMReflectiveLayoutFieldWrite.som matevm-bench
-	make BENCH=VMReflectiveLocalVariableRead.som matevm-bench
-	make BENCH=VMReflectiveLocalVariableWrite.som matevm-bench
+	# make BENCH=VMReflectiveArgumentRead.som matevm-bench
+	# make BENCH=ArgumentRead.som matevm-bench
+	# make BENCH=VMReflectiveFieldRead.som matevm-bench
+	# make BENCH=FieldRead.som matevm-bench
+	# make BENCH=VMReflectiveFieldWrite.som matevm-bench
+	# make BENCH=FieldWrite.som matevm-bench
+	# make BENCH=VMReflectiveLayoutFieldRead.som matevm-bench
+	# make BENCH=LayoutFieldRead.som matevm-bench
+	# make BENCH=VMReflectiveLayoutFieldWrite.som matevm-bench
+	# make BENCH=LayoutFieldWrite.som matevm-bench
+	# make BENCH=VMReflectiveLocalVariableRead.som matevm-bench
+	# make BENCH=LocalVariableRead.som matevm-bench
+	# make BENCH=VMReflectiveLocalVariableWrite.som matevm-bench
+	# make BENCH=LocalVariableWrite.som matevm-bench
 	make BENCH=VMReflectiveMessageSend.som matevm-bench
-	make BENCH=VMReflectiveMethodActivation.som matevm-bench
-	make BENCH=VMReflectiveReturn.som matevm-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldRead2.som matevm-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som matevm-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som matevm-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldRead.som matevm-bench
+	make BENCH=MessageSend.som matevm-bench
+	# make BENCH=VMReflectiveMethodActivation.som matevm-bench
+	# make BENCH=MethodActivation.som matevm-bench
+	# make BENCH=VMReflectiveReturn.som matevm-bench
+	# make BENCH=Return.som matevm-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldRead2.som matevm-bench
+	# make BENCH=SeveralObjectsFieldRead2.som matevm-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som matevm-bench
+	# make BENCH=SeveralObjectsFieldReadOneMO2.som matevm-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som matevm-bench
+	# make BENCH=SeveralObjectsFieldReadOneMO.som matevm-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldRead.som matevm-bench
+	# make BENCH=SeveralObjectsFieldRead.som matevm-bench
 
 mate-aiop:
 	make BENCH=VMReflectiveAllOperations.som mate-bench
 
 matevm-aiop:
 	make BENCH=VMReflectiveAllOperations.som matevm-bench
+	make BENCH=AllOperations.som matevm-bench
+
+somvm-aiop:
+	make BENCH=VMReflectiveAllOperations.som somvm-bench
 
 clean:
 	@rm -f RTruffleMate-no-jit

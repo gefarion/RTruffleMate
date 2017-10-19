@@ -5,6 +5,10 @@ from som.vmobjects.primitive       import Primitive
 def _new(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_instance(rcvr)
 
+def _new_with_environment(ivkbl, rcvr, args, call_frame):
+    obj = ivkbl.get_universe().new_instance(rcvr)
+    obj.set_meta_object_environment(args[0])
+    return obj
 
 def _name(ivkbl, rcvr, args, call_frame):
     return rcvr.get_name()
@@ -36,6 +40,7 @@ def _has_method(ivkbl, rcvr, args, call_frame):
 class ClassPrimitives(Primitives):
     def install_primitives(self):
         self._install_instance_primitive(Primitive("basicNew",   self._universe, _new))
+        self._install_instance_primitive(Primitive("basicNew:",   self._universe, _new_with_environment))
         self._install_instance_primitive(Primitive("name",       self._universe, _name))
         self._install_instance_primitive(Primitive("superclass", self._universe, _super_class))
         self._install_instance_primitive(Primitive("methods",    self._universe, _methods))

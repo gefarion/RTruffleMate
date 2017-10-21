@@ -1,58 +1,63 @@
 from mate.vm.constants import ReflectiveOp
+from rpython.rlib import jit
+from rpython.rlib.debug import make_sure_not_resized
 
-class MOPDispatcher(object):
+SEMANTICS_IDX = 0
+LAYOUT_IDX    = 1
+MESSAGE_IDX   = 2
 
-	Semantics_IDX = 0
-	Layout_IDX    = 1
-	Message_IDX   = 2
+SELECTORS = [
+	None, # Unused
+	"read:", # ExecutorReadField
+	"write:value:", # ExecutorWriteField
+	"readLocal:inFrame:", # ExecutorReadLocal
+	"writeLocal:inFrame:value:", # ExecutorWriteLocal
+	"readLocalArgument:inFrame:", # ExecutorLocalArg
+	None, # ExecutorNonLocalArg
+	None, # ExecutorLocalSuperArg
+	None, # ExecutorNonLocalSuperArg
+	None, # ExecutorReadNonLocalTemp
+	None, # ExecutorWriteNonLocalTemp
+	None, # ExecutorNonLocalSelf
+	None, # ExecutorLocalSelf
+	None, # ExecutorLocalSuper
+	"return:", # ExecutorReturn
+	"find:since:", # MessageLookup
+	"activate:withArguments:withSemantics:", # MessageActivation
+	"read:", # LayoutReadField
+	"write:value:" # LayoutWriteField
+]
 
-	@staticmethod
-	def lookup_invokable(universe, reflective_op, enviroment):
+make_sure_not_resized(SELECTORS)
 
-		metaclass = MOPDispatcher.meta_class_for_operation(reflective_op, enviroment)
-		if not metaclass:
-			return None
+@jit.elidable
+def lookup_invokable(universe, reflective_op, enviroment):
 
-		selector = MOPDispatcher.selector_for_operation(universe, reflective_op)
-		if not selector:
-			return None
+	metaclass = meta_class_for_operation(reflective_op, enviroment)
+	if not metaclass:
+		return None
 
-		return metaclass.get_class(universe).lookup_invokable(selector)
+	selector = get_selector(universe, reflective_op)
+	if not selector:
+		return None
 
-	@staticmethod
-	def selector_for_operation(universe, reflective_op):
+	return metaclass.get_class(universe).lookup_invokable(selector)
 
-		selectors = {
-			ReflectiveOp.MessageLookup:      "find:since:",
-			ReflectiveOp.MessageActivation:  "activate:withArguments:withSemantics:",
+@jit.elidable
+def get_selector(universe, reflective_op):
+	return universe.symbol_for(SELECTORS[reflective_op])
 
-			ReflectiveOp.ExecutorReadField:  "read:",
-			ReflectiveOp.ExecutorWriteField: "write:value:",
+@jit.elidable
+def meta_class_for_operation(reflective_op, enviroment):
 
-			ReflectiveOp.ExecutorReturn:     "return:",
+	field_idx = None
+	if reflective_op <= ReflectiveOp.ExecutorReturn:
+		field_idx = SEMANTICS_IDX
+	elif reflective_op <= ReflectiveOp.MessageActivation:
+		field_idx = MESSAGE_IDX
+	elif reflective_op <= ReflectiveOp.LayoutWriteField:
+		field_idx = LAYOUT_IDX
+	else:
+		raise ValueError("reflective op unknown")
 
-			ReflectiveOp.ExecutorLocalArg:   "readLocalArgument:inFrame:",
-
-			ReflectiveOp.ExecutorReadLocal:  "readLocal:inFrame:",
-			ReflectiveOp.ExecutorWriteLocal: "writeLocal:inFrame:value:",
-
-			ReflectiveOp.LayoutReadField:    "read:",
-			ReflectiveOp.LayoutWriteField:   "write:value:",
-		}
-
-		return universe.symbol_for(selectors[reflective_op])
-
-	@staticmethod
-	def meta_class_for_operation(reflective_op, enviroment):
-
-		field_idx = None
-		if reflective_op <= ReflectiveOp.ExecutorReturn:
-			field_idx = MOPDispatcher.Semantics_IDX
-		elif reflective_op <= ReflectiveOp.MessageActivation:
-			field_idx = MOPDispatcher.Message_IDX
-		elif reflective_op <= ReflectiveOp.LayoutWriteField:
-			field_idx = MOPDispatcher.Layout_IDX
-		else:
-			raise ValueError("reflective op unknown")
-
-		return enviroment.get_field(field_idx)
+	return enviroment.get_field(field_idx)

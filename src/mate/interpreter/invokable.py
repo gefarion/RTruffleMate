@@ -2,10 +2,11 @@ from mate.interpreter.nodes.mate_node import MateNode
 from mate.vm.constants import ReflectiveOp
 from som.interpreter.nodes.expression_node import ExpressionNode
 from som.vmobjects.object import Object
-from mate.interpreter.mop import MOPDispatcher
 from som.vmobjects.array         import Array
 import som.vm.universe
 from mate.interpreter.nodes.lookup import UninitializedMateLookUpNode
+from rpython.rlib.jit import we_are_jitted
+
 
 class MateInvokable(MateNode):
 

@@ -76,7 +76,7 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 5 0 200000
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 20 2000000
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
@@ -84,7 +84,7 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 5 0 200000
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 20 2000000
 
 mate-iop:
 	make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -104,8 +104,11 @@ mate-iop:
 
 matevm-iop:
 	# make BENCH=VMReflectiveArgumentRead.som matevm-bench
+	# make BENCH=ArgumentRead.som matevm-bench
 	# make BENCH=VMReflectiveFieldRead.som matevm-bench
+	# make BENCH=FieldRead.som matevm-bench
 	# make BENCH=VMReflectiveFieldWrite.som matevm-bench
+	# make BENCH=FieldWrite.som matevm-bench
 	# make BENCH=VMReflectiveLayoutFieldRead.som matevm-bench
 	# make BENCH=VMReflectiveLayoutFieldWrite.som matevm-bench
 	# make BENCH=VMReflectiveLocalVariableRead.som matevm-bench
@@ -125,6 +128,8 @@ mate-aiop:
 
 matevm-aiop:
 	make BENCH=VMReflectiveAllOperations.som matevm-bench
+	# make BENCH=AllOperations.som matevm-bench
+	# make BENCH=AllOperations.som somvm-bench
 
 clean:
 	@rm -f RTruffleMate-no-jit

@@ -1,5 +1,5 @@
 from rtruffle.node import Node
-from mate.interpreter.mop import MOPDispatcher
+import mate.interpreter.mop
 
 class _AbstractMateLookUpNode(Node):
 
@@ -37,7 +37,7 @@ class UninitializedMateLookUpNode(_AbstractMateLookUpWithReflectiveOp):
 
         if chain_depth < _AbstractMateLookUpNode.INLINE_CACHE_SIZE:
 
-            method = MOPDispatcher.lookup_invokable(self._universe, self._reflective_op, environment)
+            method = mate.interpreter.mop.lookup_invokable(self._universe, self._reflective_op, environment)
             new_chain_end = UninitializedMateLookUpNode(self._reflective_op, self._universe)
 
             node = _CachedMateLookUpObjectCheckNode(environment, method, new_chain_end, self._universe)
@@ -56,7 +56,7 @@ class UninitializedMateLookUpNode(_AbstractMateLookUpWithReflectiveOp):
 class _GenericMateLookUpNode(_AbstractMateLookUpWithReflectiveOp):
 
     def lookup_meta_invokable(self, environment):
-    	return MOPDispatcher.lookup_invokable(self._universe, self._reflective_op, environment)
+    	return mate.interpreter.mop.lookup_invokable(self._universe, self._reflective_op, environment)
 
 
 class _CachedMateLookUpObjectCheckNode(_AbstractMateLookUpNode):

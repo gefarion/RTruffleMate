@@ -35,6 +35,9 @@ class Method(AbstractObject):
     def get_universe(self):
         return self._universe
 
+    def isSPECIAL(self):
+        return self._signature.get_string().find('SPECIAL') >= 0
+
     @staticmethod
     def is_primitive():
         return False

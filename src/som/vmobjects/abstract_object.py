@@ -2,6 +2,11 @@ from rpython.rlib import jit
 
 
 class AbstractObject(object):
+    _immutable_fields_ = ['_meta_object_environment?']
+
+    def __init__(self):
+        # field to store meta object
+        self._meta_object_environment = None
 
     def get_meta_object_environment(self):
         return None

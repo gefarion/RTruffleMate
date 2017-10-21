@@ -6,7 +6,8 @@ COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
 
 # BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
-BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
+#BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
+BENCHS_INCLUDES = Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json/
 
 FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
 
@@ -76,7 +77,7 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 160
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 200 20 200
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
@@ -84,7 +85,7 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 1 80
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 200 20 200
 
 mate-iop:
 	# make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -139,7 +140,16 @@ mate-aiop:
 
 matevm-aiop:
 	make BENCH=VMReflectiveAllOperations.som matevm-bench
-	make BENCH=AllOperations.som matevm-bench
+	# make BENCH=AllOperations.som matevm-bench
+
+matevm-d:
+	make BENCH=DelegationProxiesSumKeys.som matevm-bench
+
+matevm-s:
+	make BENCH=SumKeys.som matevm-bench
+
+matevm-r:
+	make BENCH=ReadonlySumKeys.som matevm-bench
 
 somvm-aiop:
 	make BENCH=VMReflectiveAllOperations.som somvm-bench

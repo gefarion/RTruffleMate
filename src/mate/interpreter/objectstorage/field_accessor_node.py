@@ -1,8 +1,7 @@
 from mate.interpreter.nodes.mate_node import MateNode
 from mate.vm.constants import ReflectiveOp
 from som.vmobjects.integer import Integer
-from mate.interpreter.mop import MOPDispatcher
-
+from rpython.rlib.jit import we_are_jitted
 from som.vmobjects.object import Object
 
 class MateUninitializedAbstractFieldNode(MateNode):

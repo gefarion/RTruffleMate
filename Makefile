@@ -76,7 +76,7 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 20 2000000
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 20 20 200
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
@@ -84,7 +84,7 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 20 2000000
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 20 0 200
 
 mate-iop:
 	make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -128,8 +128,8 @@ mate-aiop:
 
 matevm-aiop:
 	make BENCH=VMReflectiveAllOperations.som matevm-bench
-	# make BENCH=AllOperations.som matevm-bench
-	# make BENCH=AllOperations.som somvm-bench
+	make BENCH=AllOperations.som matevm-bench
+	make BENCH=AllOperations.som somvm-bench
 
 clean:
 	@rm -f RTruffleMate-no-jit

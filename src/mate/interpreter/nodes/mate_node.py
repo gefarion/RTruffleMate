@@ -15,7 +15,6 @@ class MateNode(ExpressionNode):
         ExpressionNode.__init__(self, source_section)
         som_node.replace(self)
         self._som_node = self.adopt_child(som_node)
-        self._universe = som.vm.universe.get_current()
         self._lookup_node = self.adopt_child(UninitializedMateLookUpNode(self.reflective_op(), som.vm.universe.get_current()))
 
     def get_meta_args(self, frame):
@@ -35,9 +34,8 @@ class MateNode(ExpressionNode):
         else:
             return value
 
-    # @jit.elidable
-    # def _lookup_meta_invokable(self, environment):
-    #     return self._lookup_node.lookup_meta_invokable(environment)
+    def _lookup_meta_invokable(self, environment):
+        return self._lookup_node.lookup_meta_invokable(environment)
 
     def do_mate_semantics(self, frame):
         assert frame is not None
@@ -49,7 +47,7 @@ class MateNode(ExpressionNode):
         if environment is None or not isinstance(environment, Object):
             return None
 
-        method = self._lookup_node.lookup_meta_invokable(environment)
+        method = self._lookup_meta_invokable(environment)
         if method is None:
             # El mate enviroment no define el methodo correspondiente a este nodo
             return None

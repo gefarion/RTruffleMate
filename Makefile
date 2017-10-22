@@ -6,6 +6,7 @@ COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
 
 # BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
+#BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
 BENCHS_INCLUDES = Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json/
 
 FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
@@ -33,9 +34,9 @@ som-test: core-lib/.git
 som-file-test: core-lib/.git
 	$(COMMAND) -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams:TestSuite/FileSystem:TestSuite TestSuite/FileSystem/FilesTestHarness.som
 
-mate-test: core-lib/.git
-	$(COMMAND) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate TestSuite/Mate/MateTestHarness.som
 
+mate-test: core-lib/.git
+	$(COMMAND) --mate -cp Smalltalk:Smalltalk/Mate/MOP:Smalltalk/Mate:TestSuite:TestSuite/Mate:Examples/Benchmarks/Mate/Layout:Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks TestSuite/Mate/MateTestHarness.som
 test:
 	PYTHONPATH=$(PYTHONPATH):$(PYPY_DIR) nosetests
 
@@ -76,31 +77,33 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 20 20 200
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 2 1
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 20 0 200
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
 
 mate-iop:
-	make BENCH=VMReflectiveArgumentRead.som mate-bench
-	make BENCH=VMReflectiveFieldRead.som mate-bench
-	make BENCH=VMReflectiveFieldWrite.som mate-bench
-	make BENCH=VMReflectiveLayoutFieldRead.som mate-bench
-	make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
-	make BENCH=VMReflectiveLocalVariableRead.som mate-bench
-	make BENCH=VMReflectiveLocalVariableWrite.som mate-bench
+	# make BENCH=VMReflectiveArgumentRead.som mate-bench
+	# make BENCH=VMReflectiveFieldRead.som mate-bench
+	# make BENCH=VMReflectiveFieldWrite.som mate-bench
+	# make BENCH=VMReflectiveLayoutFieldRead.som mate-bench
+	# make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
+	# make BENCH=VMReflectiveLocalVariableRead.som mate-bench
+	# make BENCH=VMReflectiveLocalVariableWrite.som mate-bench
 	make BENCH=VMReflectiveMessageSend.som mate-bench
-	make BENCH=VMReflectiveMethodActivation.som mate-bench
-	make BENCH=VMReflectiveReturn.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldRead2.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som mate-bench
-	make BENCH=VMReflectiveSeveralObjectsFieldRead.som mate-bench
+	make BENCH=MessageSend.som mate-bench
+	# make BENCH=MessageSend.som som-bench
+	# make BENCH=VMReflectiveMethodActivation.som mate-bench
+	# make BENCH=VMReflectiveReturn.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldRead2.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som mate-bench
+	# make BENCH=VMReflectiveSeveralObjectsFieldRead.som mate-bench
 
 matevm-iop:
 	# make BENCH=VMReflectiveArgumentRead.som matevm-bench
@@ -110,26 +113,49 @@ matevm-iop:
 	# make BENCH=VMReflectiveFieldWrite.som matevm-bench
 	# make BENCH=FieldWrite.som matevm-bench
 	# make BENCH=VMReflectiveLayoutFieldRead.som matevm-bench
+	# make BENCH=LayoutFieldRead.som matevm-bench
 	# make BENCH=VMReflectiveLayoutFieldWrite.som matevm-bench
+	# make BENCH=LayoutFieldWrite.som matevm-bench
 	# make BENCH=VMReflectiveLocalVariableRead.som matevm-bench
+	# make BENCH=LocalVariableRead.som matevm-bench
 	# make BENCH=VMReflectiveLocalVariableWrite.som matevm-bench
+	# make BENCH=LocalVariableWrite.som matevm-bench
 	make BENCH=VMReflectiveMessageSend.som matevm-bench
 	make BENCH=MessageSend.som matevm-bench
-	make BENCH=MessageSend.som somvm-bench
 	# make BENCH=VMReflectiveMethodActivation.som matevm-bench
+	# make BENCH=MethodActivation.som matevm-bench
 	# make BENCH=VMReflectiveReturn.som matevm-bench
+	# make BENCH=Return.som matevm-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldRead2.som matevm-bench
+	# make BENCH=SeveralObjectsFieldRead2.som matevm-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som matevm-bench
+	# make BENCH=SeveralObjectsFieldReadOneMO2.som matevm-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO.som matevm-bench
+	# make BENCH=SeveralObjectsFieldReadOneMO.som matevm-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldRead.som matevm-bench
+	# make BENCH=SeveralObjectsFieldRead.som matevm-bench
 
 mate-aiop:
 	make BENCH=VMReflectiveAllOperations.som mate-bench
 
 matevm-aiop:
 	make BENCH=VMReflectiveAllOperations.som matevm-bench
-	make BENCH=AllOperations.som matevm-bench
-	make BENCH=AllOperations.som somvm-bench
+	# make BENCH=AllOperations.som matevm-bench
+
+matevm-d:
+	make BENCH=DelegationProxiesSumKeys.som matevm-bench
+
+matevm-s:
+	make BENCH=SumKeys.som matevm-bench
+
+matevm-ss:
+	make BENCH=SumKeys.som somvm-bench
+
+matevm-r:
+	make BENCH=ReadonlySumKeysEnvInObj.som matevm-bench
+
+somvm-aiop:
+	make BENCH=VMReflectiveAllOperations.som somvm-bench
 
 clean:
 	@rm -f RTruffleMate-no-jit

@@ -30,7 +30,7 @@ SELECTORS = [
 
 make_sure_not_resized(SELECTORS)
 
-@jit.elidable
+# @jit.elidable
 def lookup_invokable(universe, reflective_op, enviroment):
 
 	metaclass = meta_class_for_operation(reflective_op, enviroment)
@@ -43,11 +43,11 @@ def lookup_invokable(universe, reflective_op, enviroment):
 
 	return metaclass.get_class(universe).lookup_invokable(selector)
 
-@jit.elidable
+# @jit.elidable
 def get_selector(universe, reflective_op):
 	return universe.symbol_for(SELECTORS[reflective_op])
 
-@jit.elidable
+# @jit.elidable
 def meta_class_for_operation(reflective_op, enviroment):
 
 	field_idx = None

@@ -61,7 +61,6 @@ def _instVarAt(ivkbl, rcvr, args, call_frame):
     idx  = args[0]
     return rcvr.get_field(idx.get_embedded_integer() - 1)
 
-
 def _instVarAtPut(ivkbl, rcvr, args, call_frame):
     val  = args[1]
     idx  = args[0]

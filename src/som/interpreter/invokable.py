@@ -12,7 +12,7 @@ jitdriver = jit.JitDriver(
     greens=['self'],
     virtualizables=['frame'],
     get_printable_location=get_printable_location,
-    reds= ['arguments', 'receiver', 'frame', 'call_frame'],
+    reds= ['arguments', 'receiver', 'frame'],
     is_recursive=True,
 
     # the next line is a workaround around a likely bug in RPython
@@ -58,7 +58,7 @@ class Invokable(Node):
         frame = Frame(receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, meta_level)
 
-        return self._execute(frame, receiver, arguments, call_frame);
+        return self._execute(frame, receiver, arguments);
 
     def invoke_to_mate(self, receiver, arguments, call_frame):
         assert arguments is not None
@@ -67,7 +67,7 @@ class Invokable(Node):
         frame = Frame(receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, True)
 
-        return self._execute(frame, receiver, arguments, call_frame);
+        return self._execute(frame, receiver, arguments);
 
     def invoke_from_mate(self, receiver, arguments, call_frame, meta_object):
         assert arguments is not None
@@ -76,11 +76,13 @@ class Invokable(Node):
         frame = Frame(receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, False, meta_object)
 
-        return self._execute(frame, receiver, arguments, call_frame);
+        return self._execute(frame, receiver, arguments);
 
-    def _execute(self, frame, receiver, arguments, call_frame):
+    def _execute(self, frame, receiver, arguments):
+        assert arguments is not None
+        make_sure_not_resized(arguments)
 
-        jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame, call_frame=call_frame)
+        jitdriver.jit_merge_point(self=self, receiver=receiver, arguments=arguments, frame=frame)
         return self._expr_or_sequence.execute(frame)
 
     def _accept(self, visitor):

@@ -19,7 +19,10 @@ class MateifyVisitor(object):
     # Message MOP
 
     def visit_UninitializedMessageNode(self, node):
-        MateGenericMessageNode(node)
+
+        selectors = ["downTo:do:", "ifTrue:ifFalse:", "ifTrue:", "ifFalse", "to:by:do:", "to:do:", "whileTrue:", "whileFalse:"]
+        if not node.get_selector().get_string() in selectors:
+            MateGenericMessageNode(node)
 
     def visit_Invokable(self, node):
         MateInvokable(node)
@@ -57,11 +60,9 @@ class MateifyVisitor(object):
 
     def visit_UninitializedReadFieldNode(self, node):
         MateUninitializedReadFieldNode(node)
-        pass
 
     def visit_UninitializedWriteFieldNode(self, node):
         MateUninitializedWriteFieldNode(node)
-        pass
 
     # Otros nodos
 

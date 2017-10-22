@@ -7,15 +7,18 @@ from rpython.rlib.jit import we_are_jitted
 from rpython.rlib.debug import make_sure_not_resized
 import som.vm.universe
 from mate.interpreter.nodes.dispatch import UninitializedMateDispatchNode
+from som.interpreter.nodes.message.abstract_node import AbstractMessageNode
 
 class MateGenericMessageNode(MateNode):
 
-    _immutable_fields_ = ['_mate_dispatch?']
+    _immutable_fields_ = ['_mate_dispatch?', '_universe']
     _child_nodes_ = ['_mate_dispatch']
 
     def __init__(self, som_node, source_section = None):
+
         MateNode.__init__(self, som_node, source_section)
         self._mate_dispatch = self.adopt_child(UninitializedMateDispatchNode(self._som_node.get_selector(), som.vm.universe.get_current()))
+        self._universe = som.vm.universe.get_current()
 
     def replace_mate_dispatch_list_head(self, node):
         self._mate_dispatch.replace(node)
@@ -26,6 +29,11 @@ class MateGenericMessageNode(MateNode):
         return self.execute_evaluated(frame, receiver, args)
 
     def execute_evaluated(self, frame, receiver, args):
+
+        # if not isinstance(self._som_node, AbstractMessageNode):
+        #     return self.replace(self._som_node).execute_evaluated(frame, receiver, args)
+            # No proceso los nodos especializados (if, while, etc)
+            # return self._som_node
 
         value = None
         if not frame.meta_level():
@@ -63,41 +71,3 @@ class MateGenericMessageNode(MateNode):
             return None
         else:
             return method.invoke(rcvr, args, frame)
-
-    ################
-
-    # def lookup_invokable(self, frame, receiver):
-    #     assert frame is not None
-
-
-    #     else:
-    #         return self._invoke_lookup_method(frame, receiver, method, clazz)
-
-    # @jit.elidable
-    # def _get_method_from_cache(self, environment, clazz):
-    #     i = 0
-    #     while i < self._cache_count:
-    #         if self._cache_key[i] == clazz:
-    #             return self._cache_method[i]
-    #         i = i + 1
-
-    # def _invoke_lookup_method(self, frame, receiver, method, clazz):
-
-    #     args = [self._som_node.get_selector(), clazz]
-
-    #     if self._cache_count > MateGenericMessageNode.CACHE_SIZE:
-    #         # return clazz.lookup_invokable(args[0])
-    #         return method.invoke_to_mate(receiver, args, frame);
-
-    #     # target_method = clazz.lookup_invokable(args[0])
-    #     target_method = method.invoke_to_mate(receiver, args, frame);
-
-    #     self._cache_key[self._cache_count] = clazz
-    #     self._cache_method[self._cache_count] = target_method
-    #     self._cache_count = self._cache_count + 1
-
-    #     return target_method
-
-    # @jit.elidable
-    # def _invoke_to_mate(self, method, receiver, args, frame):
-        # return method.invoke_to_mate(receiver, args, frame);

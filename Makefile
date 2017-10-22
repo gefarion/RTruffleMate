@@ -77,15 +77,15 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 200 20 200
+	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 30
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 200 20 200
+	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
 
 mate-iop:
 	# make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -147,6 +147,9 @@ matevm-d:
 
 matevm-s:
 	make BENCH=SumKeys.som matevm-bench
+
+matevm-ss:
+	make BENCH=SumKeys.som somvm-bench
 
 matevm-r:
 	make BENCH=ReadonlySumKeys.som matevm-bench

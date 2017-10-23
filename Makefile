@@ -77,7 +77,7 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
+	sudo nice -n-20 $(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 50 50 200
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
@@ -85,7 +85,7 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
+	sudo nice -n-20 $(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 10 10
 
 mate-iop:
 	# make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -153,6 +153,9 @@ matevm-ss:
 
 matevm-r:
 	make BENCH=ReadonlySumKeysEnvInObj.som matevm-bench
+
+mate-r:
+	make BENCH=ReadonlySumKeysEnvInObj.som mate-bench
 
 somvm-aiop:
 	make BENCH=VMReflectiveAllOperations.som somvm-bench

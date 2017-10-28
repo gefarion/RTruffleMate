@@ -65,8 +65,8 @@ def _local_at_put(ivkbl, rcvr, args, call_frame):
 
     return rcvr
 
-def _has_meta_object_environment(ivkbl, rcvr, args, call_frame):
-    environment = call_frame.get_meta_object_environment()
+def _has_environment(ivkbl, rcvr, args, call_frame):
+    environment = rcvr.get_meta_object_environment()
 
     # No esta definido o es Nil
     if environment is None or not isinstance(environment, Object):
@@ -74,15 +74,12 @@ def _has_meta_object_environment(ivkbl, rcvr, args, call_frame):
     else:
         return trueObject
 
-def _get_meta_object_environment(ivkbl, rcvr, args, call_frame):
-    return call_frame.get_meta_object_environment()
+def _get_environment(ivkbl, rcvr, args, call_frame):
+    return rcvr.get_meta_object_environment()
 
-
-def _in_meta(ivkbl, rcvr, args, call_frame):
-    if call_frame.meta_level():
-        return trueObject
-    else:
-        return falseObject
+def _install_environment(ivkbl, rcvr, args, call_frame):
+    rcvr.set_meta_object_environment(args[0])
+    return rcvr
 
 class ContextPrimitives(Primitives):
 
@@ -93,8 +90,7 @@ class ContextPrimitives(Primitives):
         self._install_instance_primitive(Primitive("localAt:", self._universe, _local_at))
         self._install_instance_primitive(Primitive("argAt:", self._universe, _arg_at))
         self._install_instance_primitive(Primitive("localAt:put:", self._universe, _local_at_put))
-        self._install_instance_primitive(Primitive("hasMetaObjectEnvironment",  self._universe, _has_meta_object_environment))
-        self._install_instance_primitive(Primitive("getMetaObjectEnvironment",  self._universe, _get_meta_object_environment))
-        self._install_instance_primitive(Primitive("inMeta",  self._universe, _in_meta))
 
-
+        self._install_instance_primitive(Primitive("getEnvironment",  self._universe, _get_environment))
+        self._install_instance_primitive(Primitive("installEnvironment:",  self._universe, _install_environment))
+        self._install_instance_primitive(Primitive("hasEnvironment",  self._universe, _has_environment))

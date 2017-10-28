@@ -88,11 +88,8 @@ def _halt(ivkbl, rcvr, args, call_frame):
 def _class(ivkbl, rcvr, args, call_frame):
     return rcvr.get_class(ivkbl.get_universe())
 
-def _set_meta_object_environment(ivkbl, rcvr, args, call_frame):
-    rcvr.set_meta_object_environment(args[0])
-    return rcvr
 
-def _has_meta_object_environment(ivkbl, rcvr, args, call_frame):
+def _has_environment(ivkbl, rcvr, args, call_frame):
     environment = rcvr.get_meta_object_environment()
 
     # No esta definido o es Nil
@@ -101,14 +98,15 @@ def _has_meta_object_environment(ivkbl, rcvr, args, call_frame):
     else:
         return trueObject
 
-def _in_meta(ivkbl, rcvr, args, call_frame):
-    if call_frame.meta_level():
-        return trueObject
-    else:
-        return falseObject
+def _get_environment(ivkbl, rcvr, args, call_frame):
+    return rcvr.get_meta_object_environment()
+
+def _install_environment(ivkbl, rcvr, args, call_frame):
+    rcvr.set_meta_object_environment(args[0])
+    return rcvr
 
 class ObjectPrimitives(Primitives):
-    
+
     def install_primitives(self):
         self._install_instance_primitive(Primitive("==", self._universe, _equals))
         self._install_instance_primitive(Primitive("hashcode", self._universe, _hashcode))
@@ -120,12 +118,12 @@ class ObjectPrimitives(Primitives):
         self._install_instance_primitive(Primitive("instVarAt:put:", self._universe, _instVarAtPut))
         self._install_instance_primitive(Primitive("instVarNamed:",  self._universe, _instVarNamed))
         self._install_instance_primitive(Primitive("instVarNamed:put:",  self._universe, _instVarNamedPut))
-        
+
         self._install_instance_primitive(Primitive("halt",  self._universe, _halt))
         self._install_instance_primitive(Primitive("class", self._universe, _class))
 
-        self._install_instance_primitive(Primitive("installEnvironment:",  self._universe, _set_meta_object_environment))
-        self._install_instance_primitive(Primitive("hasMetaObjectEnvironment",  self._universe, _has_meta_object_environment))
-        self._install_instance_primitive(Primitive("inMeta",  self._universe, _in_meta))
+        self._install_instance_primitive(Primitive("getEnvironment",  self._universe, _get_environment))
+        self._install_instance_primitive(Primitive("installEnvironment:",  self._universe, _install_environment))
+        self._install_instance_primitive(Primitive("hasEnvironment",  self._universe, _has_environment))
 
 

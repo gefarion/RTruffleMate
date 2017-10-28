@@ -23,7 +23,7 @@ SELECTORS = [
 	None, # ExecutorLocalSuper
 	"return:", # ExecutorReturn
 	"find:since:", # MessageLookup
-	"activate:withArguments:withSemantics:", # MessageActivation
+	"activate:withArguments:", # MessageActivation
 	"read:", # LayoutReadField
 	"write:value:" # LayoutWriteField
 ]

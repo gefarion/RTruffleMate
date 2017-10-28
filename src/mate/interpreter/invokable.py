@@ -6,7 +6,7 @@ from som.vmobjects.array         import Array
 import som.vm.universe
 from mate.interpreter.nodes.lookup import UninitializedMateLookUpNode
 from rpython.rlib.jit import we_are_jitted
-
+from som.vmobjects.context       import Context
 
 class MateInvokable(MateNode):
 
@@ -41,7 +41,11 @@ class MateInvokable(MateNode):
             # El mate enviroment no define el methodo correspondiente a este nodo
             return self._som_node.invoke(receiver, arguments, call_frame)
 
-        return method.invoke_to_mate(receiver, [self._som_node.get_method(), Array.from_objects(arguments), environment], call_frame)
+        sm_args = method.invoke_to_mate(receiver, [self._som_node.get_method(), Array.from_objects([Context(call_frame), environment] + arguments)], call_frame)
+        assert(isinstance(sm_args, Array))
+        new_args = sm_args.as_argument_array()
+
+        return self._som_node.invoke_from_mate(receiver, new_args[2:], call_frame, new_args[0])
 
     def reflective_op(self):
         return ReflectiveOp.MessageActivation

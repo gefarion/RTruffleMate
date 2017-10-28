@@ -77,7 +77,7 @@ som-bench:
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	$(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
+	sudo nice -n-20 $(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 50 10 1000
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
@@ -85,7 +85,7 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	$(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 100 0 200
+	sudo nice -n-20 $(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 50 10 100
 
 mate-iop:
 	# make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -95,10 +95,10 @@ mate-iop:
 	# make BENCH=VMReflectiveLayoutFieldWrite.som mate-bench
 	# make BENCH=VMReflectiveLocalVariableRead.som mate-bench
 	# make BENCH=VMReflectiveLocalVariableWrite.som mate-bench
-	make BENCH=VMReflectiveMessageSend.som mate-bench
-	make BENCH=MessageSend.som mate-bench
+	# make BENCH=VMReflectiveMessageSend.som mate-bench
+	# make BENCH=MessageSend.som mate-bench
 	# make BENCH=MessageSend.som som-bench
-	# make BENCH=VMReflectiveMethodActivation.som mate-bench
+	make BENCH=VMReflectiveMethodActivation.som mate-bench
 	# make BENCH=VMReflectiveReturn.som mate-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldRead2.som mate-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldReadOneMO2.som mate-bench
@@ -122,7 +122,7 @@ matevm-iop:
 	# make BENCH=LocalVariableWrite.som matevm-bench
 	make BENCH=VMReflectiveMessageSend.som matevm-bench
 	make BENCH=MessageSend.som matevm-bench
-	# make BENCH=VMReflectiveMethodActivation.som matevm-bench
+	make BENCH=VMReflectiveMethodActivation.som matevm-bench
 	# make BENCH=MethodActivation.som matevm-bench
 	# make BENCH=VMReflectiveReturn.som matevm-bench
 	# make BENCH=Return.som matevm-bench
@@ -153,6 +153,9 @@ matevm-ss:
 
 matevm-r:
 	make BENCH=ReadonlySumKeys.som matevm-bench
+
+mate-r:
+	make BENCH=ReadonlySumKeysEnvInObj.som mate-bench
 
 somvm-aiop:
 	make BENCH=VMReflectiveAllOperations.som somvm-bench

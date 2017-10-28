@@ -9,7 +9,7 @@ from rpython.rlib import rgc, jit
 import time
 
 def _in_truffle(ivkbl, rcvr, args, call_frame):
-    return falseObject
+    return trueObject
 
 def _load(ivkbl, rcvr, args, call_frame):
     argument = args[0]
@@ -71,6 +71,12 @@ def _fullGC(ivkbl, rcvr, args, call_frame):
 def _get_context(ivkbl, rcvr, args, call_frame):
     return Context(call_frame)
 
+def _in_meta(ivkbl, rcvr, args, call_frame):
+    if call_frame.meta_level():
+        return trueObject
+    else:
+        return falseObject
+
 class SystemPrimitives(Primitives):
 
     def install_primitives(self):
@@ -86,3 +92,33 @@ class SystemPrimitives(Primitives):
         self._install_instance_primitive(Primitive("fullGC", self._universe, _fullGC))
         self._install_instance_primitive(Primitive("inTruffle", self._universe, _in_truffle))
         self._install_instance_primitive(Primitive("getContext", self._universe, _get_context))
+        self._install_instance_primitive(Primitive("inMeta",  self._universe, _in_meta))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

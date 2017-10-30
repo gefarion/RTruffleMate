@@ -60,6 +60,9 @@ class Frame(object):
     def get_meta_object_environment(self):
         return self._meta_object_environment
 
+    def set_meta_object_environment(self, environment):
+        self._meta_object_environment = environment
+
     def get_argument(self, index):
         jit.promote(index)
         return self._arguments[index]

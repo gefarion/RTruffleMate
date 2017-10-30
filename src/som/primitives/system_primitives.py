@@ -77,6 +77,9 @@ def _in_meta(ivkbl, rcvr, args, call_frame):
     else:
         return falseObject
 
+def _base_execution_level(ivkbl, rcvr, args, call_frame):
+    return falseObject
+
 class SystemPrimitives(Primitives):
 
     def install_primitives(self):
@@ -93,6 +96,7 @@ class SystemPrimitives(Primitives):
         self._install_instance_primitive(Primitive("inTruffle", self._universe, _in_truffle))
         self._install_instance_primitive(Primitive("getContext", self._universe, _get_context))
         self._install_instance_primitive(Primitive("inMeta",  self._universe, _in_meta))
+        self._install_instance_primitive(Primitive("baseExecutionLevel",  self._universe, _base_execution_level))
 
 
 

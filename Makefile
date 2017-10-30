@@ -85,7 +85,7 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	sudo nice -n-20 $(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 50 10 100
+	sudo nice -n-20 $(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 5 10 100
 
 mate-iop:
 	# make BENCH=VMReflectiveArgumentRead.som mate-bench
@@ -120,8 +120,8 @@ matevm-iop:
 	# make BENCH=LocalVariableRead.som matevm-bench
 	# make BENCH=VMReflectiveLocalVariableWrite.som matevm-bench
 	# make BENCH=LocalVariableWrite.som matevm-bench
-	make BENCH=VMReflectiveMessageSend.som matevm-bench
-	make BENCH=MessageSend.som matevm-bench
+	#make BENCH=VMReflectiveMessageSend.som matevm-bench
+	#make BENCH=MessageSend.som matevm-bench
 	make BENCH=VMReflectiveMethodActivation.som matevm-bench
 	# make BENCH=MethodActivation.som matevm-bench
 	# make BENCH=VMReflectiveReturn.som matevm-bench
@@ -134,6 +134,10 @@ matevm-iop:
 	# make BENCH=SeveralObjectsFieldReadOneMO.som matevm-bench
 	# make BENCH=VMReflectiveSeveralObjectsFieldRead.som matevm-bench
 	# make BENCH=SeveralObjectsFieldRead.som matevm-bench
+
+mate-t:
+	make BENCH=MessageSend.som matevm-bench
+	make BENCH=VMReflectiveMethodActivation.som matevm-bench
 
 mate-aiop:
 	make BENCH=VMReflectiveAllOperations.som mate-bench

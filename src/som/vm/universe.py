@@ -600,14 +600,19 @@ class Universe(object):
         invokables = clazz.get_instance_invokables()
         for i in xrange(0 , invokables.get_number_of_indexable_fields()):
             invokable = invokables.get_indexable_field(i)
-            if not invokable.is_primitive() and not invokable.isSPECIAL():
+            if invokable.is_primitive():
+                clazz.add_instance_invokable(invokable.mateify())
+            elif not invokable.isSPECIAL():
                 invokable.get_invokable().accept(visitor)
 
         # Metodos de clase
-        invokables = clazz.get_class(_current).get_instance_invokables()
+        metaclass = clazz.get_class(_current)
+        invokables = metaclass.get_instance_invokables()
         for i in xrange(0 , invokables.get_number_of_indexable_fields()):
             invokable = invokables.get_indexable_field(i)
-            if not invokable.is_primitive() and not invokable.isSPECIAL():
+            if invokable.is_primitive():
+                metaclass.add_instance_invokable(invokable.mateify())
+            elif not invokable.isSPECIAL():
                 invokable.get_invokable().accept(visitor)
 
     def mateify_method(method):

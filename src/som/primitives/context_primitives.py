@@ -78,7 +78,7 @@ def _get_environment(ivkbl, rcvr, args, call_frame):
     return rcvr.get_meta_object_environment()
 
 def _install_environment(ivkbl, rcvr, args, call_frame):
-    rcvr.set_meta_object_environment(args[0])
+    rcvr.get_embedded_frame().set_meta_object_environment(args[0])
     return rcvr
 
 class ContextPrimitives(Primitives):

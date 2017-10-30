@@ -7,6 +7,23 @@ import som.vm.universe
 from mate.interpreter.nodes.lookup import UninitializedMateLookUpNode
 from rpython.rlib.jit import we_are_jitted
 from som.vmobjects.context       import Context
+from som.vm.globals import trueObject
+
+class MateInvokablePrimitive(ExpressionNode):
+    _immutable_fields_ = ["_lookup_node?"]
+    _child_nodes_ = ["_lookup_node"]
+
+    def __init__(self, source_section = None):
+        self._lookup_node = self.adopt_child(UninitializedMateLookUpNode(self.reflective_op(), som.vm.universe.get_current()))
+
+    def reflective_op(self):
+        return ReflectiveOp.MessageActivation
+
+    def replace_lookup_list_head(self, node):
+        self._lookup_node.replace(node)
+
+    def lookup_meta_invokable(self, environment):
+        return self._lookup_node.lookup_meta_invokable(environment)
 
 class MateInvokable(MateNode):
 
@@ -41,11 +58,16 @@ class MateInvokable(MateNode):
             # El mate enviroment no define el methodo correspondiente a este nodo
             return self._som_node.invoke(receiver, arguments, call_frame)
 
-        sm_args = method.invoke_to_mate(receiver, [self._som_node.get_method(), Array.from_objects([Context(call_frame), environment] + arguments)], call_frame)
+        sm_args = method.invoke_to_mate(receiver, [self._som_node.get_method(), Array.from_objects([environment, trueObject] + arguments)], call_frame)
         assert(isinstance(sm_args, Array))
         new_args = sm_args.as_argument_array()
 
-        return self._som_node.invoke_from_mate(receiver, new_args[2:], call_frame, new_args[0])
+        if isinstance(new_args[0], Object):
+            environment = new_args[0]
+        else:
+            environment = None
+
+        return self._som_node.invoke_from_mate(receiver, new_args[2:], call_frame, environment)
 
     def reflective_op(self):
         return ReflectiveOp.MessageActivation

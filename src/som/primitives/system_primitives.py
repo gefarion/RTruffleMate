@@ -9,7 +9,7 @@ from rpython.rlib import rgc, jit
 import time
 
 def _in_truffle(ivkbl, rcvr, args, call_frame):
-    return trueObject
+    return falseObject
 
 def _load(ivkbl, rcvr, args, call_frame):
     argument = args[0]

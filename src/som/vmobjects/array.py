@@ -8,7 +8,8 @@ from som.vmobjects.double import Double
 from som.vmobjects.integer import Integer
 from som.vmobjects.method import Method
 from som.vmobjects.object import Object
-
+from som.vmobjects.character import Character
+from rpython.rlib.debug import make_sure_not_resized
 
 def put_all_obj_pl(block_method):
     assert isinstance(block_method, Method)
@@ -28,6 +29,10 @@ def put_all_double_pl(block_method):
 def put_all_long_pl(block_method):
     assert isinstance(block_method, Method)
     return "#putAll: (long_strategy) %s" % block_method.merge_point_string()
+
+def put_all_char_pl(block_method):
+    assert isinstance(block_method, Method)
+    return "#putAll: (char_strategy) %s" % block_method.merge_point_string()
 
 
 def put_all_bool_pl(block_method):
@@ -50,6 +55,9 @@ put_all_long_driver = JitDriver(greens=['block_method'], reds='auto',
 put_all_bool_driver = JitDriver(greens=['block_method'], reds='auto',
                                 is_recursive=True,
                                 get_printable_location=put_all_bool_pl)
+put_all_char_driver = JitDriver(greens=['block_method'], reds='auto',
+                                  is_recursive=True,
+                                  get_printable_location=put_all_char_pl)
 
 
 class _ArrayStrategy(object):
@@ -67,6 +75,10 @@ class _ArrayStrategy(object):
             double_arr = [value.get_embedded_double()] * size
             array._storage  = _double_strategy._erase(double_arr)
             array._strategy = _double_strategy
+        elif isinstance(value, Character):
+            char_arr = [ord(value.get_embedded_character())] * size
+            array._storage  = _char_strategy._erase(char_arr)
+            array._strategy = _char_strategy
         elif value is trueObject or value is falseObject:
             bool_arr = [value is trueObject] * size
             array._storage  = _bool_strategy._erase(bool_arr)
@@ -106,6 +118,12 @@ class _ArrayStrategy(object):
             _ArrayStrategy._set_remaining_with_block_as_double(array, block,
                                                                size, 1,
                                                                double_store, call_frame)
+        elif isinstance(first, Character):
+            char_store = [0] * size
+            char_store[0] = ord(first.get_embedded_character())
+            _ArrayStrategy._set_remaining_with_block_as_char(array, block,
+                                                               size, 1,
+                                                               char_store, call_frame)
         elif first is trueObject or first is falseObject:
             bool_store = [first is trueObject] * size
             _ArrayStrategy._set_remaining_with_block_as_double(array, block,
@@ -181,6 +199,28 @@ class _ArrayStrategy(object):
             next_i += 1
         array._strategy = _double_strategy
         array._storage  = _double_strategy._erase(storage)
+
+    @staticmethod
+    def _set_remaining_with_block_as_char(array, block, size, next_i, storage, call_frame):
+        block_method = block.get_method()
+        while next_i < size:
+            put_all_char_driver.jit_merge_point(block_method = block_method)
+            result = block_method.invoke(block, [], call_frame)
+            if isinstance(result, Character):
+                storage[next_i] = ord(result.get_embedded_character())
+            else:
+                # something else, so, let's go to the object strategy
+                new_storage = [None] * size
+                for i in range(0, next_i + 1):
+                    new_storage[i] = Character(chr(storage[i]))
+                _ArrayStrategy._set_remaining_with_block_as_obj(array, block,
+                                                                size,
+                                                                next_i + 1,
+                                                                new_storage, call_frame)
+                return
+            next_i += 1
+        array._strategy = _char_strategy
+        array._storage  = _char_strategy._erase(storage)
 
     @staticmethod
     def _set_remaining_with_block_as_bool(array, block, size, next_i, storage, call_frame):
@@ -520,6 +560,104 @@ class _BoolStrategy(_ArrayStrategy):
         return Array._from_storage_and_strategy(self._erase(new),
                                                 _bool_strategy)
 
+class _CharStrategy(_ArrayStrategy):
+
+    _erase, _unerase = rerased.new_erasing_pair("char_list")
+    _erase   = staticmethod(_erase)
+    _unerase = staticmethod(_unerase)
+
+    def get_idx(self, storage, idx):
+        store = self._unerase(storage)
+        assert isinstance(store, list)
+        assert isinstance(store[idx], int)
+        return Character(chr(store[idx]))
+
+    def set_idx(self, array, idx, value):
+        assert isinstance(array, Array)
+        if isinstance(value, Character):
+            store = self._unerase(array._storage)
+            store[idx] = ord(value.get_embedded_character())
+        else:
+            self._transition_to_object_array(array, idx, value)
+
+    def join(self, storage, separator):
+        store = self._unerase(storage)
+        assert isinstance(store, list)
+        assert isinstance(separator, str)
+
+        ll = [None] * len(store)
+        make_sure_not_resized(ll)
+
+        for i, v in enumerate(store):
+            ll[i] = str(chr(v))
+
+        return separator.join(ll)
+
+
+    def _transition_to_object_array(self, array, idx, value):
+        store = self._unerase(array._storage)
+        new_store = [None] * len(store)
+        for i, v in enumerate(store):
+            new_store[i] = Character(chr(v))
+
+        new_store[idx] = value
+        array._storage = _ObjectStrategy.new_storage_with_values(new_store)
+        array._strategy = _obj_strategy
+
+    def set_all(self, array, value):
+        assert isinstance(array, Array)
+
+        store = self._unerase(array._storage)
+        self._set_all_with_value(array, value, len(store))
+
+        # we could avoid the allocation of the new array if value is an Integer
+        # for i, _ in enumerate(store):
+        #     store[i] = value.get_embedded_integer()
+
+    def set_all_with_block(self, array, block, call_frame):
+        assert isinstance(array, Array)
+        store = self._unerase(array._storage)
+
+        # TODO: perhaps we can sometimes avoid the extra allocation of the underlying storage
+        self._set_all_with_block(array, block, len(store), call_frame)
+
+    def as_arguments_array(self, storage):
+        store = self._unerase(storage)
+        return [Character(chr(v)) for v in store]
+
+    def get_size(self, storage):
+        return len(self._unerase(storage))
+
+    @staticmethod
+    def new_storage_for(size):
+        return _CharStrategy._erase([''] * size)
+
+    @staticmethod
+    def new_storage_with_values(values):
+        assert isinstance(values, list)
+        make_sure_not_resized(values)
+        # TODO: do we guarantee this externally?
+        new = [ord(v.get_embedded_character()) for v in values]
+        return _CharStrategy._erase(new)
+
+    def copy(self, storage):
+        store = self._unerase(storage)
+        return Array._from_storage_and_strategy(self._erase(store[:]), _char_strategy)
+
+    def copy_and_extend_with(self, storage, value):
+        assert isinstance(value, Integer)
+        store = self._unerase(storage)
+        old_size = len(store)
+        new_size = old_size + 1
+
+        new = [0] * new_size
+
+        for i, v in enumerate(store):
+            new[i] = v
+
+        new[old_size]  = ord(value.get_embedded_character())
+
+        return Array._from_storage_and_strategy(self._erase(new), _char_strategy)
 
 class _EmptyStrategy(_ArrayStrategy):
 
@@ -669,6 +807,11 @@ class _PartiallyEmptyStrategy(_ArrayStrategy):
                 store.type = _double_strategy
             elif store.type is not _double_strategy:
                 store.type = _obj_strategy
+        elif isinstance(value, Character):
+            if store.type is None:
+                store.type = _char_strategy
+            elif store.type is not _char_strategy:
+                store.type = _obj_strategy
         elif value is trueObject or value is falseObject:
             if store.type is None:
                 store.type = _bool_strategy
@@ -744,6 +887,7 @@ class _PartiallyEmptyStrategy(_ArrayStrategy):
 _obj_strategy    = _ObjectStrategy()
 _long_strategy   = _LongStrategy()
 _double_strategy = _DoubleStrategy()
+_char_strategy   = _CharStrategy()
 _bool_strategy   = _BoolStrategy()
 _empty_strategy  = _EmptyStrategy()
 _partially_empty_strategy = _PartiallyEmptyStrategy()
@@ -795,24 +939,40 @@ class Array(AbstractObject):
     @staticmethod
     def _determine_strategy(values):
         is_empty    = True
+
         only_double = True
+        only_char   = True
         only_long   = True
         only_bool   = True
+
         for v in values:
             if v is None or v is nilObject:
                 continue
             if isinstance(v, int) or isinstance(v, Integer):
                 only_double = False
+                only_char   = False
+                only_bool   = False
                 is_empty    = False
                 continue
             if isinstance(v, float) or isinstance(v, Double):
                 only_long = False
-                is_empty  = False
-                continue
-            if isinstance(v, bool) or v is trueObject or v is falseObject:
+                only_char = False
                 only_bool = False
                 is_empty  = False
                 continue
+            if isinstance(v, str) or isinstance(v, Character):
+                only_long   = False
+                only_double = False
+                only_bool   = False
+                is_empty    = False
+                continue
+            if isinstance(v, bool) or v is trueObject or v is falseObject:
+                only_char   = False
+                only_long   = False
+                only_double = False
+                is_empty    = False
+                continue
+
             only_long   = False
             only_double = False
             only_bool   = False
@@ -826,6 +986,7 @@ class Array(AbstractObject):
             return _long_strategy
         if only_bool:
             return _bool_strategy
+
         return _obj_strategy
 
     def get_indexable_field(self, index):
@@ -841,6 +1002,9 @@ class Array(AbstractObject):
 
     def set_all_with_block(self, block, call_frame):
         self._strategy.set_all_with_block(self, block, call_frame)
+
+    def join(self, separator=''):
+        return self._strategy.join(self._storage, separator)
 
     def as_argument_array(self):
         return self._strategy.as_arguments_array(self._storage)

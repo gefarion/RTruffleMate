@@ -7,7 +7,7 @@ import som.vm.universe
 from mate.interpreter.nodes.lookup import UninitializedMateLookUpNode
 from rpython.rlib.jit import we_are_jitted
 from som.vmobjects.context       import Context
-from som.vm.globals import trueObject
+from som.vm.globals import trueObject, falseObject
 
 class MateInvokablePrimitive(ExpressionNode):
     _immutable_fields_ = ["_lookup_node?"]
@@ -62,12 +62,17 @@ class MateInvokable(MateNode):
         assert(isinstance(sm_args, Array))
         new_args = sm_args.as_argument_array()
 
-        if isinstance(new_args[0], Object):
-            environment = new_args[0]
-        else:
-            environment = None
+        if new_args[1] == falseObject:
+            # Paso a base level
+            if isinstance(new_args[0], Object):
+                environment = new_args[0]
+            else:
+                environment = None
 
-        return self._som_node.invoke_from_mate(receiver, new_args[2:], call_frame, environment)
+            return self._som_node.invoke_from_mate(receiver, new_args[2:], call_frame, environment)
+        else:
+            # Sigo en meta level
+            return self._som_node.invoke_to_mate(receiver, new_args[2:], call_frame)
 
     def reflective_op(self):
         return ReflectiveOp.MessageActivation

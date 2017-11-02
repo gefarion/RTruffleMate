@@ -6,6 +6,7 @@ class String(AbstractObject):
     
     def __init__(self, value):
         AbstractObject.__init__(self)
+        assert(value is not None)
         self._string = value
     
     def get_embedded_string(self):

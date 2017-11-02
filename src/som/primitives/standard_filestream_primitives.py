@@ -6,6 +6,7 @@ from som.vmobjects.string import String
 from som.vmobjects.integer import Integer
 from som.vmobjects.array import Array
 import os
+from rpython.rlib.debug import attach_gdb
 
 def _prim_open_writable(ivkbl, rcvr, args, call_frame):
     filename = args[0]
@@ -51,9 +52,12 @@ def _prim_read_into_starting_at_count(ivkbl, rcvr, args, call_frame):
     assert isinstance(count, Integer)
 
     stream = file.get_embedded_stream()
-    stream.seek(start.get_embedded_integer(), os.SEEK_SET)
+    stream.seek(start.get_embedded_integer() - 1, os.SEEK_SET)
 
     content = stream.read(count.get_embedded_integer());
+    collection.set_all(ivkbl.get_universe().new_character(' '))
+
+    size = len(content)
 
     i = 0
     for c in content:

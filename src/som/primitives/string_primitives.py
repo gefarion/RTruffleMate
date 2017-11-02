@@ -6,6 +6,7 @@ from som.vmobjects.primitive import Primitive
 from som.vmobjects.string import String
 from som.vmobjects.character import Character
 from som.vmobjects.symbol import Symbol
+from som.vmobjects.array import Array
 
 
 def _concat(ivkbl, rcvr, args, call_frame):
@@ -78,6 +79,12 @@ def _charAt(ivkbl, rcvr, args, call_frame):
     else:
         return ivkbl.get_universe().new_character(string[i])
 
+def _join(ivkbl, rcvr, args, call_frame):
+    array = args[0]
+    assert(isinstance(array, Array))
+
+    return ivkbl.get_universe().new_string(array.join(rcvr.get_embedded_string()))
+
 
 class StringPrimitives(Primitives):
     
@@ -90,3 +97,4 @@ class StringPrimitives(Primitives):
         self._install_instance_primitive(Primitive("hashcode",              self._universe, _hashcode))
         self._install_instance_primitive(Primitive("at:",                   self._universe, _at))
         self._install_instance_primitive(Primitive("charAt:",               self._universe, _charAt))
+        self._install_instance_primitive(Primitive("join:",                 self._universe, _join))

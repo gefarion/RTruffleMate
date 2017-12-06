@@ -1,17 +1,18 @@
 from som.primitives.primitives import Primitives
-from som.vm.globals import nilObject
+from som.vm.globals import nilObject, trueObject
 from som.vmobjects.abstract_object import AbstractObject
 from som.vmobjects.array       import Array
-from som.vmobjects.primitive   import Primitive 
+from som.vmobjects.primitive   import Primitive
 
 
 def _holder(ivkbl, rcvr, args, call_frame):
     return rcvr.get_holder()
 
-
 def _signature(ivkbl, rcvr, args, call_frame):
     return rcvr.get_signature()
 
+def _is_primitive(ivkbl, rcvr, args, call_frame):
+    return trueObject
 
 def _invoke_on_with(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr,    Primitive)
@@ -31,5 +32,7 @@ class PrimitivePrimitives(Primitives):
                                                    self._universe, _holder))
         self._install_instance_primitive(Primitive("signature",
                                                    self._universe, _signature))
+        self._install_instance_primitive(Primitive("isPrimitive",
+                                                   self._universe, _is_primitive))
         self._install_instance_primitive(Primitive("invokeOn:with:",
                                                    self._universe, _invoke_on_with))

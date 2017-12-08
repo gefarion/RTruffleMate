@@ -636,7 +636,7 @@ def std_println(msg = ""):
 
 
 def main(args):
-    jit.set_param(None, 'trace_limit', 15000)
+    jit.set_param(None, 'trace_limit', 60000)
     u = _current
     u.interpret(args[1:])
     u.exit(0)

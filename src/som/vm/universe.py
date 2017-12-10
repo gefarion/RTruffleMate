@@ -115,6 +115,7 @@ class Universe(object):
         self.random          = Random(abs(int(time.clock() * time.time())))
         self._object_system_initialized = False
         self._mate_enabled = False
+        self._trace_limit   = 15000
 
     def exit(self, error_code):
         if self._avoid_exit:
@@ -139,6 +140,9 @@ class Universe(object):
     def interpret(self, arguments):
         # Check for command line switches
         arguments = self.handle_arguments(arguments)
+
+        # Set jit params
+        jit.set_param(None, 'trace_limit', self._trace_limit)
 
         # Initialize the known universe
         system_object = self._initialize_object_system()
@@ -172,6 +176,14 @@ class Universe(object):
                 self._dump_bytecodes = True
             elif arguments[i] == "--mate":
                 self._mate_enabled = True
+            elif arguments[i] == "--trace-limit":
+                if i + 1 >= len(arguments):
+                    self._print_usage_and_exit()
+                try:
+                    self._trace_limit = int(arguments[i + 1])
+                    i += 1
+                except:
+                    self._print_usage_and_exit()
             elif arguments[i] in ["-h", "--help", "-?"]:
                 self._print_usage_and_exit()
             else:
@@ -636,7 +648,6 @@ def std_println(msg = ""):
 
 
 def main(args):
-    jit.set_param(None, 'trace_limit', 60000)
     u = _current
     u.interpret(args[1:])
     u.exit(0)

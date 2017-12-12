@@ -115,7 +115,12 @@ class Universe(object):
         self.random          = Random(abs(int(time.clock() * time.time())))
         self._object_system_initialized = False
         self._mate_enabled = False
-        self._trace_limit   = 15000
+
+        self._trace_limit        = 15000
+        self._threshold          = 0
+        self._function_threshold = 0
+        self._trace_eagerness    = 0
+
 
     def exit(self, error_code):
         if self._avoid_exit:
@@ -142,7 +147,17 @@ class Universe(object):
         arguments = self.handle_arguments(arguments)
 
         # Set jit params
-        jit.set_param(None, 'trace_limit', self._trace_limit)
+        if self._trace_limit != 0:
+            jit.set_param(None, 'trace_limit', self._trace_limit)
+
+        if self._threshold != 0:
+            jit.set_param(None, 'threshold', self._threshold)
+
+        if self._function_threshold != 0:
+            jit.set_param(None, 'function_threshold', self._function_threshold)
+
+        if self._trace_eagerness != 0:
+            jit.set_param(None, 'trace_eagerness', self._trace_eagerness)
 
         # Initialize the known universe
         system_object = self._initialize_object_system()
@@ -177,13 +192,17 @@ class Universe(object):
             elif arguments[i] == "--mate":
                 self._mate_enabled = True
             elif arguments[i] == "--trace-limit":
-                if i + 1 >= len(arguments):
-                    self._print_usage_and_exit()
-                try:
-                    self._trace_limit = int(arguments[i + 1])
-                    i += 1
-                except:
-                    self._print_usage_and_exit()
+                self._trace_limit = int(arguments[i + 1])
+                i += 1
+            elif arguments[i] == "--threshold":
+                self._threshold = int(arguments[i + 1])
+                i += 1
+            elif arguments[i] == "--function-threshold":
+                self._function_threshold = int(arguments[i + 1])
+                i += 1
+            elif arguments[i] == "--trace-eagerness":
+                self._trace_eagerness = int(arguments[i + 1])
+                i += 1
             elif arguments[i] in ["-h", "--help", "-?"]:
                 self._print_usage_and_exit()
             else:

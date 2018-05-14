@@ -22,6 +22,22 @@ else
 	VM = no-jit
 endif
 
+ifndef TRACE_LIMIT
+	TRACE_LIMIT = 15000
+endif
+
+ifdef SUMMARY
+	PYPYLOG=PYPYLOG=jit-summary:$(SUMMARY)
+endif
+
+ifdef LOG
+	PYPYLOG=PYPYLOG=jit-log-opt,jit-backend:$(LOG)
+endif
+
+ifndef SIZE
+	SIZE=10 10 100
+endif
+
 all: compile
 
 compile: core-lib/.git
@@ -73,20 +89,20 @@ matevm-macro:
 
 #make BENCH=Storage.som som-bench
 som-bench:
-	./som.sh -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	./som.sh -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) $(SIZE)
 
 #make BENCH=Storage.som somvm-bench
 somvm-bench:
-	sudo nice -n-20 $(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	sudo nice -n-20 $(BIN) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) $(SIZE)
 
 #make BENCH=Storage.som mate-bench
 mate-bench:
-	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 1 0 1
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) $(SIZE)
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
 	# sudo nice -n-20 $(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 0 1
-	$(BIN) --mate --trace-limit 15000 -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 10 100
+	$(PYPYLOG) $(BIN) --mate --trace-limit $(TRACE_LIMIT) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) $(SIZE)
 
 mate-iop:
 	make BENCH=VMReflectiveArgumentRead.som mate-bench

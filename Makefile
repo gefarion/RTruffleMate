@@ -7,7 +7,7 @@ TARGET    = src/targetsomstandalone.py
 
 # BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
 #BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
-BENCHS_INCLUDES = Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json/
+BENCHS_INCLUDES = Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json/:Examples/Benchmarks/Mate/Columnar
 
 FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
 
@@ -156,6 +156,18 @@ matevm-r:
 
 mate-r:
 	make BENCH=ReadonlySumKeysEnvInObj.som mate-bench
+
+matevm-ma:
+	$(BIN) --mate --trace-limit 15000 -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesAggregate.som 100 0 1000000
+
+mate-ma:
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesAggregate.som 1 0 1000
+
+matevm-mca:
+	$(BIN) --mate --trace-limit 15000 -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesColumnarAggregate.som 100 0 1000000
+
+mate-mca:
+	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesColumnarAggregate.som 1 0 1
 
 somvm-aiop:
 	make BENCH=VMReflectiveAllOperations.som somvm-bench

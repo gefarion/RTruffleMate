@@ -4,6 +4,8 @@ from som.primitives.primitives import Primitives
 from som.vmobjects.primitive   import Primitive
 from som.vmobjects.double      import Double
 from som.vmobjects.integer     import Integer
+from som.vmobjects.string      import String
+from som.vm.globals import nilObject
 
 import math
 
@@ -84,6 +86,14 @@ def _round(ivkbl, rcvr, args, call_frame):
     int_value = int(round_double(rcvr.get_embedded_double(), 0))
     return ivkbl.get_universe().new_integer(int_value)
 
+def _fromString(ivkbl, rcvr, args, call_frame):
+    param = args[0]
+    
+    if not isinstance(param, String):
+        return nilObject
+    
+    value = float(param.get_embedded_string())
+    return ivkbl.get_universe().new_double(value)
 
 def _positive_infinity(ivkbl, rcvr, args, call_frame):
     return ivkbl.get_universe().new_double(INFINITY)
@@ -112,3 +122,5 @@ class DoublePrimitives(Primitives):
         self._install_instance_primitive(Primitive("~=",       self._universe, _unequals))
 
         self._install_class_primitive(Primitive("PositiveInfinity", self._universe, _positive_infinity))
+        self._install_class_primitive(Primitive("fromString:", self._universe, _fromString))
+

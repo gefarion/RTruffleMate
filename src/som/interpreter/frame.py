@@ -19,17 +19,18 @@ _EMPTY_LIST = []
 
 class Frame(object):
         
-    _immutable_fields_ = ['_receiver', '_arguments[*]', '_args_for_inner[*]',
+    _immutable_fields_ = ['_receiver', '_arguments[*]', '_args_for_inner[*]', '_sender'
                           '_temps', '_temps_for_inner', '_on_stack', '_meta_level', '_meta_object_environment']
     _virtualizable_    = ['_temps[*]']
 
-    def __init__(self, receiver, arguments, arg_mapping, num_local_temps,
+    def __init__(self, sender, receiver, arguments, arg_mapping, num_local_temps,
                  num_context_temps, meta_level=False, meta_object_environment=None):
         make_sure_not_resized(arguments)
         make_sure_not_resized(arg_mapping)
         self = jit.hint(self, access_directly=True, fresh_virtualizable=True)
         self._receiver        = receiver
         self._arguments       = arguments
+        self._sender = sender
         self._meta_object_environment = meta_object_environment
         self._on_stack        = _FrameOnStackMarker()
         self._meta_level = meta_level
@@ -66,6 +67,9 @@ class Frame(object):
     def get_argument(self, index):
         jit.promote(index)
         return self._arguments[index]
+
+    def get_sender(self):
+        return self._sender
 
     def set_argument(self, index, value):
         self._arguments[index] = value

@@ -13,7 +13,12 @@ def _method(ivkbl, rcvr, args, call_frame):
     assert False
 
 def _sender(ivkbl, rcvr, args, call_frame):
-    assert False
+    assert isinstance(rcvr, Context)
+
+    frame = rcvr.get_embedded_frame()
+    assert isinstance(frame, Frame)
+
+    return Context(frame.get_sender())
 
 def _receiver(ivkbl, rcvr, args, call_frame):
     assert isinstance(rcvr, Context)

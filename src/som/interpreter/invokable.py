@@ -55,7 +55,7 @@ class Invokable(Node):
         make_sure_not_resized(arguments)
 
         meta_level = (call_frame is not None) and call_frame.meta_level()
-        frame = Frame(receiver, arguments, self._arg_mapping,
+        frame = Frame(call_frame, receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, meta_level)
 
         return self._execute(frame, receiver, arguments);
@@ -64,7 +64,7 @@ class Invokable(Node):
         assert arguments is not None
         make_sure_not_resized(arguments)
 
-        frame = Frame(receiver, arguments, self._arg_mapping,
+        frame = Frame(call_frame, receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, True)
 
         return self._execute(frame, receiver, arguments);
@@ -73,7 +73,7 @@ class Invokable(Node):
         assert arguments is not None
         make_sure_not_resized(arguments)
 
-        frame = Frame(receiver, arguments, self._arg_mapping,
+        frame = Frame(call_frame, receiver, arguments, self._arg_mapping,
                       self._num_local_temps, self._num_context_temps, False, meta_object)
 
         return self._execute(frame, receiver, arguments);

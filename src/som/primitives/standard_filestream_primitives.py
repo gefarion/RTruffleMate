@@ -13,8 +13,6 @@ def _prim_open_writable(ivkbl, rcvr, args, call_frame):
     writable = args[1]
 
     s = filename.get_embedded_string()
-    print s
-
     if not s or len(s) < 1:
         return nilObject
 
@@ -52,7 +50,7 @@ def _prim_read_into_starting_at_count(ivkbl, rcvr, args, call_frame):
     assert isinstance(count, Integer)
 
     stream = file.get_embedded_stream()
-    stream.seek(start.get_embedded_integer() - 1, os.SEEK_SET)
+    stream.seek(start.get_embedded_integer(), os.SEEK_SET)
 
     content = stream.read(count.get_embedded_integer());
     collection.set_all(ivkbl.get_universe().new_character(' '))

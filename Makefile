@@ -164,7 +164,7 @@ mate-ma:
 	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesAggregate.som 1 0 1000
 
 matevm-mca:
-	$(BIN) --mate --trace-limit 15000 -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesColumnarAggregate.som 100 0 1000000
+	$(BIN) --mate --enable-opts 'intbounds:rewrite:virtualize:string:pure:earlyforce:heap:unroll' --trace-limit 15000 -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesColumnarAggregate.som 1 0 10000
 
 mate-mca:
 	./som.sh --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som MoviesColumnarAggregate.som 1 0 1

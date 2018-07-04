@@ -120,6 +120,7 @@ class Universe(object):
         self._threshold          = 0
         self._function_threshold = 0
         self._trace_eagerness    = 0
+        self._enable_opts        = None
 
 
     def exit(self, error_code):
@@ -158,6 +159,9 @@ class Universe(object):
 
         if self._trace_eagerness != 0:
             jit.set_param(None, 'trace_eagerness', self._trace_eagerness)
+
+        if self._enable_opts is not None:
+            jit.set_param(None, 'enable_opts', self._enable_opts)
 
         # Initialize the known universe
         system_object = self._initialize_object_system()
@@ -202,6 +206,9 @@ class Universe(object):
                 i += 1
             elif arguments[i] == "--trace-eagerness":
                 self._trace_eagerness = int(arguments[i + 1])
+                i += 1
+            elif arguments[i] == "--enable-opts":
+                self._enable_opts = arguments[i + 1]
                 i += 1
             elif arguments[i] in ["-h", "--help", "-?"]:
                 self._print_usage_and_exit()

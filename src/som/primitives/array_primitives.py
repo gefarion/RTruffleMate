@@ -3,11 +3,15 @@ from som.vmobjects.block import Block
 from som.vmobjects.method import Method
 from som.vmobjects.primitive   import Primitive
 from som.primitives.primitives import Primitives
+from rpython.rlib.debug import attach_gdb
 
 
 def _at(ivkbl, rcvr, args, call_frame):
     i    = args[0]
-    return  rcvr.get_indexable_field(i.get_embedded_integer() - 1)
+    try:
+        return  rcvr.get_indexable_field(i.get_embedded_integer() - 1)
+    except:
+        attach_gdb()
 
 
 def _atPut(ivkbl, rcvr, args, call_frame):

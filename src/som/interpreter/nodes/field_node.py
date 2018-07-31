@@ -42,10 +42,7 @@ class FieldReadNode(_AbstractFieldNode):
     def execute(self, frame):
         self_obj = self._self_exp.execute(frame)
         assert isinstance(self_obj, Object)
-        if we_are_jitted():
-            return self_obj.get_field(self._field_idx)
-        else:
-            return self._read.read(frame, self_obj)
+        return self._read.read(frame, self_obj)
 
     def _accept(self, visitor):
         visitor.visit_FieldReadNode(self)

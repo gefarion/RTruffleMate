@@ -26,7 +26,7 @@ class File(AbstractObject):
         return self._stream.tell()
 
     def set_position(self, position):
-        self._stream.seek(position)
+        self._stream.seek(position, os.SEEK_SET)
 
     def at_end(self):
         return self._stream.tell() == self._size

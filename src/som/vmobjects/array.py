@@ -900,6 +900,9 @@ class Array(AbstractObject):
     # or for the empty strategy the size as an Integer object,
     # or something more complex
 
+    def prim_as_string(self, universe):
+        return universe.new_string(self.join(''))
+
     def get_meta_object_environment(self):
         return self._meta_object_environment
 

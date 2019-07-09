@@ -101,7 +101,6 @@ mate-bench:
 
 #make BENCH=Storage.som matevm-bench
 matevm-bench:
-	# sudo nice -n-20 $(BIN) --mate -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) 10 0 1
 	$(PYPYLOG) $(BIN) --mate --trace-limit $(TRACE_LIMIT) -cp $(BASE_INCLUDES):$(FILESYSTEM_INCLUDES):$(BENCHS_INCLUDES) Examples/Benchmarks/BenchmarkHarness.som $(BENCH) $(SIZE)
 
 mate-iop:

@@ -6,8 +6,10 @@ COMMAND   = ./som.sh
 TARGET    = src/targetsomstandalone.py
 
 # BENCHS_INCLUDES = $(shell find Examples/Benchmarks -type d -printf '%p:')
-#BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
-BENCHS_INCLUDES = Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json/:Examples/Benchmarks/Mate/Columnar
+# BENCHS_INCLUDES = Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability/DelegationProxies
+# BENCHS_INCLUDES = Examples/Benchmarks/Mate/Immutability/DelegationProxies:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/Immutability:Examples/Benchmarks/Mate/IndividualOperations:Examples/Benchmarks/Mate/Tracing:Examples/Benchmarks/DeltaBlue:Examples/Benchmarks/NBody:Examples/Benchmarks/Json/:Examples/Benchmarks/Mate/Columnar
+BENCHS_INCLUDES = Examples/Benchmarks/Mate/ImmutableAwf:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/Mate/ImmutableAwf/CD:Examples/Benchmarks/Mate/ImmutableAwf/DeltaBlue
+# BENCHS_INCLUDES = Examples/Benchmarks/Mate/ImmutableAwf:Examples/Benchmarks/Mate/Immutability/Handles:Examples/Benchmarks/CD
 
 FILESYSTEM_INCLUDES = Smalltalk/Collections/Streams:Smalltalk/FileSystem/Core:Smalltalk/FileSystem/Disk:Smalltalk/FileSystem/Streams
 
@@ -35,7 +37,7 @@ ifdef LOG
 endif
 
 ifndef SIZE
-	SIZE=10 10 100
+	SIZE=10 10 10
 endif
 
 all: compile
@@ -152,6 +154,9 @@ matevm-ss:
 
 matevm-r:
 	make BENCH=ReadonlySumKeysEnvInObj.som matevm-bench
+
+mate-d:
+	make BENCH=DelegationProxiesSumKeys.som mate-bench
 
 mate-r:
 	make BENCH=ReadonlySumKeysEnvInObj.som mate-bench
